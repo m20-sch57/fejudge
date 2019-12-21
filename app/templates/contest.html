@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div class="container-fluid window-sm">
+    <div class="d-flex flex-wrap">
+        <div class="align-self-center p-1">
+            <a class="btn rounded-circle hover-grey p-2 mr-2" href="/contests">
+                <img src="/static/img/left.png" class="image-sm">
+            </a>
+        </div>
+        <div class="mr-auto align-self-center p-1">
+            <h3 class="my-auto">
+                {{ contest.name }}
+            </h3>
+        </div>
+        {% if request.state() == 'In progress' %}
+        <div class="align-self-center p-1 mr-2">
+            <h4 class="my-auto" id="timer">
+                {{ request.time_remaining().total_seconds() }}
+            </h4>
+        </div>
+        <div class="align-self-center p-1">
+            <div class="dropdown">
+                <button class="btn rounded-circle hover-grey p-2" data-toggle="dropdown">
+                    <img src="/static/img/info.png" class="image-sm">
+                </button>
+                <div class="dropdown-menu dropdown-menu-right contest-menu">
+                    <h4 class="p-2">{{ contest.name }}</h4>
+                    <hr>
+                    <table class="table table-borderless mt-3">
+                        <tr>
+                            <td>Время начала:</td>
+                            <td class="align-middle">
+                                {{ request.start_time }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Прошло времени:</td>
+                            <td class="align-middle" id="time_passed">
+                                {{ request.time_passed().total_seconds() }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Осталось времени:</td>
+                            <td class="align-middle" id="time_remaining">
+                                {{ request.time_remaining().total_seconds() }}
+                            </td>
+                        </tr>
+                    </table>
+                    <hr>
+                    <button type="button" class="btn btn-primary btn-shadow m-1"
+                    data-toggle="modal" data-target="#finish">
+                        Завершить участие
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="align-self-center p-1">
+            <div class="dropdown">
+                <button class="btn rounded-circle hover-grey p-2" data-toggle="dropdown">
+                    <img src="/static/img/bell.png" class="image-sm">
+                </button>
+                <div class="dropdown-menu dropdown-menu-right contest-menu">
+                    <h4 class="p-2">Уведомления</h4>
+                    <hr>
+                    <p class="p-3">Новых уведомлений нет.</p>
+                </div>
+            </div>
+        </div>
+        <script src="/static/js/timer.js"></script>
+        <script>
+            start_timer('timer', -1, () => location.replace(location.pathname));
+            start_timer('time_passed', 1);
+            start_timer('time_remaining', -1);
+        </script>
+        {% else %}
+        <div class="align-self-center p-1">
+            <a class="text-secondary mx-2 my-auto" href="/contests/{{ contest_url }}/results">
+                Результаты
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    <hr>
+    <div class="d-flex flex-wrap">
+        <div class="d-flex flex-wrap mr-auto">
+            {% for any_problem in contest.problems %}
+            {% with active='problem-bar-item-active' if any_problem.number == problem.number else
+            'bg-accepted' if any_problem.score(current_user) == any_problem.max_score else 
+            'bg-failed' if any_problem.submitted(current_user) else '' %}
+            <a class="btn btn-lg problem-bar-item {{ active }} rounded-circle"
+            href="/contests/{{ contest_url }}/{{ any_problem.number }}">
+                {{ any_problem.number }}
+            </a>
+            {% endwith %}
+            {% endfor %}
+        </div>
+        <h4 class="align-self-center m-2">
+            Всего баллов: {{ contest.total_score(current_user) }}
+        </h4>
+    </div>
+</div>
+<br>
+<div class="container-fluid window-sm">
+    {% if problem.problem_type == 'Programming' %}
+    {% include 'problem_prog.html' %}
+    {% elif problem.problem_type == 'Test' %}
+    {% include 'problem_test.html' %}
+    {% endif %}
+</div>
+<div class="modal fade" id="finish">
+    <div class="modal-md modal-dialog centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Завершить участие</h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                Если вы завершите ваше участие в контесте, вы больше не сможете выполнять задания в нём.
+                Вы дейстительно хотите закончить?
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary btn-shadow" href="/contests/{{ contest_url }}/finish">
+                    Завершить участие
+                </a>
+                <button class="btn btn-shadow" data-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

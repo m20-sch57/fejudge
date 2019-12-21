@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div class="container-fluid window">
+    <div class="container">
+        <form action="register" method="POST" novalidate>
+            <h1>Регистрация пользователя</h1>
+            <br><br>
+            {{ form.hidden_tag() }}
+            <div class="form-group row">
+                <div class="col-lg-2">
+                    {{ form.username.label(class="col-form-label") }}
+                </div>
+                <div class="col-lg-10">
+                    {% with class="form-control is-invalid" if form.username.errors else "form-control" %}
+                    {{ form.username(class=class, placeholder="Username") }}
+                    {% endwith %}
+                    {% for error in form.username.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-2">
+                    {{ form.fullname.label(class="col-form-label") }}
+                </div>
+                <div class="col-lg-10">
+                    {% with class="form-control is-invalid" if form.fullname.errors else "form-control" %}
+                    {{ form.fullname(class=class, placeholder="Name Surname") }}
+                    {% endwith %}
+                    {% for error in form.fullname.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-2">
+                    {{ form.password.label(class="col-form-label") }}
+                </div>
+                <div class="col-lg-10">
+                    {% with class="form-control is-invalid" if form.password.errors else "form-control" %}
+                    {{ form.password(class=class, placeholder="Password") }}
+                    {% endwith %}
+                    {% for error in form.password.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-2">
+                    {{ form.password2.label(class="col-form-label") }}
+                </div>
+                <div class="col-lg-10">
+                    {% with class="form-control is-invalid" if form.password2.errors else "form-control" %}
+                    {{ form.password2(class=class, placeholder="Password") }}
+                    {% endwith %}
+                    {% for error in form.password2.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary btn-shadow">
+                Зарегистрироваться
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

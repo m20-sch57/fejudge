@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div class="container-fluid window">
+    <div class="container">
+        <form action="login" method="POST" novalidate>
+            <h1>Вход в систему</h1>
+            <br><br>
+            {{ form.hidden_tag() }}
+            <div class="form-group row">
+                <div class="col-lg-2">
+                    {{ form.username.label(class="col-form-label") }}
+                </div>
+                <div class="col-lg-10">
+                    {% with class="form-control is-invalid" if form.username.errors else "form-control" %}
+                    {{ form.username(class=class, placeholder="Username") }}
+                    {% endwith %}
+                    {% for error in form.username.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-2">
+                    {{ form.password.label(class="col-form-label") }}
+                </div>
+                <div class="col-lg-10">
+                    {% with class="form-control is-invalid" if form.password.errors else "form-control" %}
+                    {{ form.password(class=class, placeholder="Password") }}
+                    {% endwith %}
+                    {% for error in form.password.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
+            <div class="d-flex flex-wrap">
+                <div class="align-self-center">
+                    <button type="submit" class="btn btn-primary btn-shadow mr-4">
+                        Войти в систему
+                    </button>
+                </div>
+                <div class="align-self-center">
+                    <a href="/register">Нет аккаунта? Зарегистрируйся!</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

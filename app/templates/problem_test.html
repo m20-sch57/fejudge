@@ -1,0 +1,36 @@
+<div class="p-1">
+    <h3>Задача {{ problem.number }}. {{ problem.name }}</h3>
+</div>
+<br>
+<p>{{ problem.statement }}</p>
+<br>
+<hr>
+<form action="" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="d-flex flex-wrap">
+        <div class="align-self-center p-2">
+            {{ form.answer.label(class="h3 text-center") }}
+        </div>
+        <div class="flex-grow-1 align-self-center p-2">
+            {{ form.answer(class="form-control", placeholder="Ответ") }}
+        </div>
+        <div class="align-self-center p-2">
+            <button type="submit" class="btn btn-primary btn-shadow mr-4">
+                Проверить
+            </button>
+        </div>
+        {% if problem.number != contest.problems.all()|length %}
+        <div class="align-self-center p-2">
+            <a href="/contests/{{ contest_url }}/{{ problem.number+1 }}">
+                Следующее задание >
+            </a>
+        </div>
+        {% else %}
+        <div class="align-self-center p-2">
+            <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#finish">
+                Завершить участие >
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</form>

@@ -1,0 +1,148 @@
+<div class="d-flex flex-wrap">
+    <div class="p-1 mr-auto">
+        <h3>Задача {{ problem.number }}. {{ problem.name }}</h3>
+    </div>
+    <div class="p-1">
+        <h4>Баллы: {{ problem.score(current_user) }}</h4>
+    </div>
+</div>
+<div class="py-3">
+    <p>{{ problem.statement }}</p>
+</div>
+<br>
+{% if request.state() == 'In progress' %}
+<form action="/contests/{{ contest_url }}/{{ problem.number }}/send"
+method="POST" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <h3 class="py-1">Отправить решение</h3>
+    <div class="py-3">
+        {{ form.language(class="form-control btn-shadow w-auto") }}
+        <div class="d-flex flex-wrap mt-2">
+            {{ form.source(id="fileUpload", hidden="") }}
+            <label for="fileUpload" class="btn btn-primary btn-shadow mr-3 my-1">
+                Выберите файл
+            </label>
+            <label class="my-auto" id="fileUploadLabel">
+                Файл не выбран
+            </label>
+        </div>
+        <button type="submit" id="submitProg" class="btn btn-success btn-shadow mt-2" disabled>
+            Отправить решение
+        </button>
+    </div>
+</form>
+<script src="/static/js/submit_prog.js"></script>
+<br>
+{% endif %}
+<h3 class="py-1">
+    Посылки по этой задаче ({{ submissions.count() }} из {{ problem.max_submissions }})
+</h3>
+<div class="py-3">
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered table-classic">
+            <thead>
+                <th>ID</th>
+                <th>Время</th>
+                <th>Язык</th>
+                <th>Статус</th>
+                <th>Баллы</th>
+                <th>Исходный код</th>
+                <th>Протокол</th>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                {% with class='' if loop.index != 1 else 
+                'bg-accepted' if submission.status == 'Accepted' else 
+                'bg-failed' if submission.status in ['Partial', 'Failed'] %}
+                <tr class="{{ class }}">
+                    <td>{{ submission.id }}</td>
+                    <td>{{ submission.time_from_start() }}</td>
+                    <td>{{ submission.formatted_language() }}</td>
+                    <td>{{ submission.formatted_status() }}</td>
+                    <td>{{ submission.score if submission.show_score() else '' }}</td>
+                    <td>
+                        <button type="button" class="btn btn-link text-dark p-0" 
+                        data-toggle="modal" data-target="#source_{{ submission.id }}">
+                            Просмотр
+                        </button>
+                    </td>
+                    <td>
+                        {% if submission.is_judged() %}
+                        <button type="button" class="btn btn-link text-dark p-0"
+                        data-toggle="modal" data-target="#protocol_{{ submission.id }}">
+                            Просмотр
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% for submission in submissions %}
+<div class="modal fade" id="source_{{ submission.id }}">
+    <div class="modal-lg modal-dialog modal-dialog-scrollable centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Исходный код посылки №{{ submission.id }}</h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <pre><code class="{{ submission.language }}">{{ submission.answer }}</code></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success btn-shadow">Скачать посылку</button>
+                <button class="btn btn-shadow" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="protocol_{{ submission.id }}">
+    <div class="modal-lg modal-dialog modal-dialog-scrollable centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Протокол тестирования посылки №{{ submission.id }}
+                </h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h5>Сообщение компилятора:</h5>
+                <p>{{ submission.get_details()['compiler'] }}</p>
+                <br>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered table-classic">
+                        <thead>
+                            <th>Test #</th>
+                            <th>Status</th>
+                            <th>Time (S)</th>
+                            <th>Memory (KB)</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody>
+                            {% for test_details in submission.get_details()['tests'] %}
+                            {% with class='text-success' if test_details['status'] == 'OK' else 'text-danger' %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td class="{{ class }}">
+                                    {{ submission.formatted_test_status(test_details['status']) }}
+                                </td>
+                                <td>{{ test_details['time_usage_s'] }}</td>
+                                <td>{{ test_details['memory_usage_kb'] }}</td>
+                                <td>{{ test_details['score'] }} ({{ test_details['maxscore'] }})</td>
+                            </tr>
+                            {% endwith %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-shadow" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
