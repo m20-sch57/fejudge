@@ -74,7 +74,7 @@ def register():
 def profile_page(username):
     user = User.query.filter_by(username=username).first_or_404()
     avatar_form = EditAvatarForm()
-    profile_form = EditProfileForm(current_user.fullname)
+    profile_form = EditProfileForm(user.fullname)
     password_form = EditPasswordForm()
     return render_template('user.html', title='View profile', user=user, 
         avatar_form=avatar_form, profile_form=profile_form, password_form=password_form)
