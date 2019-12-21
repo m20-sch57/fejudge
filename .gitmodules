@@ -1,0 +1,3 @@
+[submodule "libsbox"]
+	path = libsbox
+	url = https://github.com/Forestryks/libsbox
