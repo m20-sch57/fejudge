@@ -14,12 +14,14 @@ def clear_data(session):
     session.commit()
 
 def clear_submissions():
-    shutil.rmtree(os.path.join(basedir, 'submissions'))
+    if os.path.exists(os.path.join(basedir, 'submissions')):
+        shutil.rmtree(os.path.join(basedir, 'submissions'))
     os.makedirs(os.path.join(basedir, 'submissions'))
-    os.chmod(os.path.join(basedir, 'submissions'), 0o777)
-    shutil.rmtree(os.path.join(basedir, 'logs', 'submissions'))
+    os.chmod(os.path.join(basedir, 'submissions'), 0o755)
+    if os.path.exists(os.path.join(basedir, 'logs', 'submissions')):
+        shutil.rmtree(os.path.join(basedir, 'logs', 'submissions'))
     os.makedirs(os.path.join(basedir, 'logs', 'submissions'))
-    os.chmod(os.path.join(basedir, 'logs', 'submissions'), 0o777)
+    os.chmod(os.path.join(basedir, 'logs', 'submissions'), 0o755)
 
 
 clear_data(db.session)

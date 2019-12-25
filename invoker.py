@@ -134,7 +134,7 @@ for message in consumer:
     db.session.commit()
     if not os.path.exists(submission_dir):
         os.makedirs(submission_dir)
-        os.chmod(submission_dir, 0o777)
+        os.chmod(submission_dir, 0o755)
     open(submission_file, 'w').write(submission.answer)
     os.chmod(submission_file, 0o666)
     open(submission_error, 'w').close()
@@ -142,7 +142,7 @@ for message in consumer:
     open(submission_program, 'w').close()
     os.chmod(submission_program, 0o777)
     log = open(submission_log, 'w')
-    os.chmod(submission_log, 0o777)
+    os.chmod(submission_log, 0o666)
     print('Started judging at {}\n\nProblem ID: {}\nLanguage: {}\nUser ID: {}\n'.format(
         datetime.datetime.utcnow(),
         submission.problem.id,
