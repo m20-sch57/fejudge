@@ -1,3 +1,4 @@
+import os
 from urllib.parse import unquote_plus
 from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
@@ -90,8 +91,7 @@ def avatar(filename):
 def change_avatar():
     form = EditAvatarForm()
     if form.validate_on_submit():
-        image = form.image.data
-        filename = avatars.save_avatar(image)
+        filename = avatars.save_avatar(form.image.data)
         current_user.avatar = filename
         db.session.commit()
         flash('Сохранено', category='alert-success')
@@ -174,6 +174,21 @@ def judge_submisssion(submission_id):
     producer.send('judge', value={'id': submission_id})
 
 
+@app.route('/download/submission/<submission_id>')
+@login_required
+def download_submission(submission_id):
+    submission = Submission.query.filter_by(id=submission_id).first_or_404()
+    if submission.user != current_user:
+        flash('Недопустимая операция', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    source = submission.source
+    download_folder = app.config['SUBMISSIONS_DOWNLOAD_PATH']
+    filename = str(submission_id).zfill(6) + '.' + submission.language
+    path = os.path.join(download_folder, filename)
+    open(path, 'w').write(source)
+    return send_from_directory(download_folder, filename, as_attachment=True)
+
+
 @app.route('/contests/<contest_url>/<number>/send', methods=['POST'])
 @login_required
 def send(contest_url, number):
@@ -188,11 +203,10 @@ def send(contest_url, number):
             if not problem_form.validate_on_submit():
                 raise ValueError('Form is not valid')
             language = problem_form.language.data
-            source = problem_form.source.data
-            answer = source.read().decode('utf-8')
+            source = problem_form.source.data.read().decode('utf-8')
             current_time = datetime.now().replace(microsecond=0)
             submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
-                language=language, status='In queue', score=0, answer=answer)
+                language=language, status='In queue', score=0, source=source)
             current_user.active_language = language
             db.session.add(submission)
             db.session.commit()

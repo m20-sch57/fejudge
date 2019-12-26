@@ -6,26 +6,33 @@ from app import db
 from app.models import User, Contest, Problem, Submission
 from datetime import timedelta
 
+
 def clear_data(session):
     meta = db.metadata
     for table in reversed(meta.sorted_tables):
-        print('Clear table %s' % table)
         session.execute(table.delete())
     session.commit()
 
-def clear_submissions():
-    if os.path.exists(os.path.join(basedir, 'submissions')):
-        shutil.rmtree(os.path.join(basedir, 'submissions'))
-    os.makedirs(os.path.join(basedir, 'submissions'))
-    os.chmod(os.path.join(basedir, 'submissions'), 0o755)
-    if os.path.exists(os.path.join(basedir, 'logs', 'submissions')):
-        shutil.rmtree(os.path.join(basedir, 'logs', 'submissions'))
-    os.makedirs(os.path.join(basedir, 'logs', 'submissions'))
-    os.chmod(os.path.join(basedir, 'logs', 'submissions'), 0o755)
+
+def clear_folder(folder):
+    if not os.path.isdir(folder):
+        return
+    for item in os.listdir(folder):
+        path = os.path.join(folder, item)
+        if os.path.isfile(path):
+            os.remove(path)
+        else:
+            shutil.rmtree(path)
+
+
+def clear_submission_data():
+    clear_folder(os.path.join(basedir, 'submissions'))
+    clear_folder(os.path.join(basedir, 'logs', 'submissions'))
+    clear_folder(os.path.join(basedir, 'download', 'submissions'))
 
 
 clear_data(db.session)
-clear_submissions()
+clear_submission_data()
 
 u = User(
     username='Kuyanov',

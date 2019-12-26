@@ -90,10 +90,12 @@ method="POST" enctype="multipart/form-data" novalidate>
                 <button class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <pre><code class="{{ submission.language }}">{{ submission.answer }}</code></pre>
+                <pre><code class="{{ submission.language }}">{{ submission.source }}</code></pre>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success btn-shadow">Скачать посылку</button>
+                <a class="btn btn-success btn-shadow" href="/download/submission/{{ submission.id }}">
+                    Скачать посылку
+                </a>
                 <button class="btn btn-shadow" data-dismiss="modal">Закрыть</button>
             </div>
         </div>

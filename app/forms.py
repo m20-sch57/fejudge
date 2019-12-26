@@ -59,7 +59,7 @@ class EditPasswordForm(FlaskForm):
 
 
 class InputProblemForm(FlaskForm):
-    answer = StringField('Ответ:', validators=[DataRequired()])
+    source = StringField('Ответ:', validators=[DataRequired()])
 
 
 class FileProblemForm(FlaskForm):

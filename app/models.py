@@ -137,7 +137,7 @@ class Submission(db.Model):
     language = db.Column(db.String(32))
     status = db.Column(db.String(32))
     score = db.Column(db.Integer)
-    answer = db.Column(db.Text)
+    source = db.Column(db.Text)
     details = db.Column(db.Text, default='{}')
 
     def __repr__(self):

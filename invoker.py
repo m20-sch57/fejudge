@@ -6,10 +6,9 @@ import time
 import datetime
 
 from kafka import KafkaConsumer
-from config import basedir
 import common
 
-from app import db
+from app import app, db
 from app.models import Submission
 
 
@@ -112,7 +111,7 @@ for message in consumer:
     submission_details = {'tests': [], 'compiler': ''}
 
     # Submission paths
-    submission_dir = os.path.join(basedir, 'submissions', str(submission.id).zfill(6))
+    submission_dir = os.path.join(app.config['SUBMISSIONS_EXEC_PATH'], str(submission.id).zfill(6))
     submission_file = os.path.join(submission_dir, 'participant.' + submission.language)
     submission_program = os.path.join(submission_dir, 'participant.out')
     submission_checker_program = os.path.join(submission_dir, 'checker.out')
@@ -121,10 +120,10 @@ for message in consumer:
     submission_answer = os.path.join(submission_dir, 'answer.txt')
     submission_result = os.path.join(submission_dir, 'result.txt')
     submission_error = os.path.join(submission_dir, 'error.txt')
-    submission_log = os.path.join(basedir, 'logs', 'submissions', str(submission.id).zfill(6))
+    submission_log = os.path.join(app.config['SUBMISSIONS_LOG_PATH'], str(submission.id).zfill(6))
 
     # Problem paths
-    problem_dir = os.path.join(basedir, 'problems', str(problem.id).zfill(6))
+    problem_dir = os.path.join(app.config['PROBLEMS_PATH'], str(problem.id).zfill(6))
     problem_input = os.path.join(problem_dir, 'input')
     problem_output = os.path.join(problem_dir, 'output')
     problem_checker_program = os.path.join(problem_dir, 'checker.out')
@@ -135,7 +134,7 @@ for message in consumer:
     if not os.path.exists(submission_dir):
         os.makedirs(submission_dir)
         os.chmod(submission_dir, 0o755)
-    open(submission_file, 'w').write(submission.answer)
+    open(submission_file, 'w').write(submission.source)
     os.chmod(submission_file, 0o666)
     open(submission_error, 'w').close()
     os.chmod(submission_error, 0o666)
@@ -182,13 +181,10 @@ for message in consumer:
     submission.status = 'Running'
     db.session.commit()
 
-    # start1 = time.time()
-
     tests_list = sorted(os.listdir(problem_input))
     total_score = 0
     for it, test_str in enumerate(tests_list):
         test_maxscore = calc_test_maxscore(problem.max_score, len(tests_list), it + 1)
-        # start = time.time()
 
         # Current test input and output files
         test_input = os.path.join(problem_input, test_str)
@@ -274,10 +270,7 @@ for message in consumer:
             submission_status,
             open(submission_result).read()
         ), file=log)
-        #print(time.time() - start)
 
-    # print("RUN TIME:", time.time() - start1)
-    # print(submission_details)
     submission.status = 'Accepted' if total_score == problem.max_score else 'Partial'
     submission.score = total_score
     submission.set_details(submission_details)
