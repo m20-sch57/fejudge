@@ -14,7 +14,8 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     username = StringField('Ваш логин:', validators=[DataRequired()])
-    fullname = StringField('Полное имя:', validators=[DataRequired()])
+    #fullname = StringField('Полное имя:', validators=[DataRequired()])
+    email = StringField('Введите почту:', validators=[DataRequired(), Email()])
     password = PasswordField('Введите пароль:')
     password2 = PasswordField('Повторите пароль:', validators=[EqualTo('password')])
 
@@ -23,10 +24,15 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Этот логин уже занят.')
 
-    def validate_fullname(self, fullname):
-        user = User.query.filter_by(fullname=fullname.data).first()
+    # def validate_fullname(self, fullname):
+    #     user = User.query.filter_by(fullname=fullname.data).first()
+    #     if user is not None:
+    #         raise ValidationError('Это имя уже занято.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Это имя уже занято.')
+            raise ValidationError('Эта почта уже занята.')
 
 
 class EditAvatarForm(FlaskForm):
@@ -42,14 +48,19 @@ class EditProfileForm(FlaskForm):
     email = StringField('Почта:', validators=[DataRequired(), Email()])
     phone = StringField('Телефон:', validators=[DataRequired()])
 
-    def __init__(self, original_fullname, *args, **kwargs):
+    def __init__(self, original_email, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.original_fullname = original_fullname
+        self.original_email = original_email
 
-    def validate_fullname(self, fullname):
-        user = User.query.filter_by(fullname=fullname.data).first()
-        if self.original_fullname != fullname.data and user is not None:
-            raise ValidationError('Это имя уже занято.')
+    # def validate_fullname(self, fullname):
+    #     user = User.query.filter_by(fullname=fullname.data).first()
+    #     if self.original_fullname != fullname.data and user is not None:
+    #         raise ValidationError('Это имя уже занято.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if self.original_email != email.data and user is not None:
+            raise ValidationError('Эта почта уже занята.')
 
 
 class EditPasswordForm(FlaskForm):

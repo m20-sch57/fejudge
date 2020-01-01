@@ -22,13 +22,13 @@
             </div>
             <div class="form-group row">
                 <div class="col-lg-2">
-                    {{ form.fullname.label(class="col-form-label") }}
+                    {{ form.email.label(class="col-form-label") }}
                 </div>
                 <div class="col-lg-10">
-                    {% with class="form-control is-invalid" if form.fullname.errors else "form-control" %}
-                    {{ form.fullname(class=class, placeholder="Name Surname") }}
+                    {% with class="form-control is-invalid" if form.email.errors else "form-control" %}
+                    {{ form.email(class=class, placeholder="Email") }}
                     {% endwith %}
-                    {% for error in form.fullname.errors %}
+                    {% for error in form.email.errors %}
                     <span class="text-danger">{{ error }}</span>
                     {% endfor %}
                 </div>

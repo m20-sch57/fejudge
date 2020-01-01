@@ -61,7 +61,7 @@ def register():
     if form.validate_on_submit():
         user = User(
             username=form.username.data,
-            fullname=form.fullname.data,
+            email=form.email.data,
         )
         user.set_password(form.password.data)
         db.session.add(user)
@@ -75,7 +75,7 @@ def register():
 def profile_page(username):
     user = User.query.filter_by(username=username).first_or_404()
     avatar_form = EditAvatarForm()
-    profile_form = EditProfileForm(user.fullname)
+    profile_form = EditProfileForm(user.email)
     password_form = EditPasswordForm()
     return render_template('user.html', title='View profile', user=user, 
         avatar_form=avatar_form, profile_form=profile_form, password_form=password_form)
@@ -103,7 +103,7 @@ def change_avatar():
 @app.route('/changeProfile', methods=['POST'])
 @login_required
 def change_profile():
-    form = EditProfileForm(current_user.fullname)
+    form = EditProfileForm(current_user.email)
     if form.validate_on_submit():
         current_user.fullname = form.fullname.data
         current_user.birthdate = form.birthdate.data

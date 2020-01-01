@@ -12,11 +12,11 @@ from app import db, login
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
-    fullname = db.Column(db.String(128), unique=True)
+    fullname = db.Column(db.String(128), default='')
     password_hash = db.Column(db.String(128))
 
     avatar = db.Column(db.String(64), default='user.png')
-    email = db.Column(db.String(128), default='email@example.com')
+    email = db.Column(db.String(128), unique=True)
     phone = db.Column(db.String(32), default='+7 (000) 000-00-00')
     birthdate = db.Column(db.Date, default=date.today())
     active_language = db.Column(db.String(32), default='cpp')

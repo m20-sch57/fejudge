@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 3f234484d970
+Revision ID: 60414ff9e82a
 Revises: 
-Create Date: 2019-12-21 19:27:44.842362
+Create Date: 2020-01-01 20:22:42.884889
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3f234484d970'
+revision = '60414ff9e82a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,7 +36,7 @@ def upgrade():
     sa.Column('birthdate', sa.Date(), nullable=True),
     sa.Column('active_language', sa.String(length=32), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_user')),
-    sa.UniqueConstraint('fullname', name=op.f('uq_user_fullname')),
+    sa.UniqueConstraint('email', name=op.f('uq_user_email')),
     sa.UniqueConstraint('username', name=op.f('uq_user_username'))
     )
     op.create_table('contest_request',
@@ -70,7 +70,7 @@ def upgrade():
     sa.Column('language', sa.String(length=32), nullable=True),
     sa.Column('status', sa.String(length=32), nullable=True),
     sa.Column('score', sa.Integer(), nullable=True),
-    sa.Column('answer', sa.Text(), nullable=True),
+    sa.Column('source', sa.Text(), nullable=True),
     sa.Column('details', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['contest_id'], ['contest.id'], name=op.f('fk_submission_contest_id_contest')),
     sa.ForeignKeyConstraint(['problem_id'], ['problem.id'], name=op.f('fk_submission_problem_id_problem')),
