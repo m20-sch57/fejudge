@@ -1,10 +1,10 @@
 # Fejudge
 Fair electronic judge
 
+# About Fejudge
 Fejudge is contest management system, created for automatic solution evaluation.
 
 # Prerequisites
-
 - linux kernel version 5 or higher
 - cgroup v1 heirarchy mounted in /sys/fs/cgroup
 - C++ 17 compiler, with `std::filesystem` support
