@@ -3,6 +3,7 @@
 echo -e "Stopping servers..."
 $1/bin/kafka-server-stop.sh
 $1/bin/zookeeper-server-stop.sh
+sleep 2
 echo -e "Completed.\n"
 
 echo -e "Deleting /tmp/kafka-logs..."
@@ -11,11 +12,12 @@ echo -e "Completed.\n"
 
 echo -e "Starting zookeeper..."
 $1/bin/zookeeper-server-start.sh -daemon $1/config/zookeeper.properties
+sleep 10
 echo -e "Completed.\n"
 
 echo "Starting kafka server..."
-while ! nc -z localhost 2181; do echo "Connecting to localhost:2181..." && sleep 5; done && \
 $1/bin/kafka-server-start.sh -daemon $1/config/server.properties
+sleep 2
 echo -e "Completed.\n"
 
 echo -e "Creating topic judge (optional)..."
