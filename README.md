@@ -31,3 +31,22 @@ These instructions will guide you through the installation process of Fejudge.
 ```
 python3 run.py
 ```
+5. Run invoker in order to judge solutions
+```
+sudo python3 invoker.py
+```
+
+## Documentation
+
+TODO
+
+## Authors
+
+- **Fedor Kuyanov**([@kuyanov](https://github.com/kuyanov))
+- **Andrei Odintsov** ([@Forestryks](https://github.com/Forestryks))
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+
