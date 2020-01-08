@@ -14,6 +14,7 @@ $1/bin/zookeeper-server-start.sh -daemon $1/config/zookeeper.properties
 echo -e "Completed.\n"
 
 echo "Starting kafka server..."
+while ! nc -z localhost 2181; do echo "Connecting to localhost:2181..." && sleep 5; done && \
 $1/bin/kafka-server-start.sh -daemon $1/config/server.properties
 echo -e "Completed.\n"
 
