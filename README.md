@@ -21,8 +21,8 @@ These instructions will guide you through the installation process of Fejudge.
 
 ### Installing
 
-1. Download kafka binaries from [here](https://kafka.apache.org/downloads) and extract it
-2. Set up [libsbox](https://github.com/Forestryks/libsbox)
+1. Set up [libsbox](https://github.com/Forestryks/libsbox)
+2. Download kafka binaries from [here](https://kafka.apache.org/downloads) and extract it
 3. Run kafka servers
 ```
 ./run_kafka.sh <PathToKafkaBinaries>
@@ -47,6 +47,6 @@ TODO
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
