@@ -31,7 +31,7 @@
                                 <span class="fa fa-address-card"></span>
                             </h2>
                             <p class="align-self-center m-2 mr-auto">
-                                {{ user.fullname }}
+                                {{ user.fullname if user.fullname else 'Не заполнено' }}
                             </p>
                         </div>
                         <div class="d-flex flex-wrap">
@@ -39,7 +39,7 @@
                                 <span class="fa fa-birthday-cake"></span>
                             </p>
                             <p class="align-self-center m-2 mr-auto">
-                                {{ user.birthdate }}
+                                {{ user.birthdate if user.birthdate else 'Не заполнено' }}
                             </p>
                         </div>
                         <div class="d-flex flex-wrap">
@@ -47,7 +47,7 @@
                                 <span class="fa fa-envelope"></span>
                             </p>
                             <p class="align-self-center m-2 mr-auto">
-                                {{ user.email }}
+                                {{ user.email if user.email else 'Не заполнено' }}
                             </p>
                         </div>
                         <div class="d-flex flex-wrap">
@@ -55,7 +55,7 @@
                                 <span class="fa fa-phone-alt"></span>
                             </p>
                             <p class="align-self-center m-2 mr-auto">
-                                {{ user.phone }}
+                                {{ user.phone if user.phone else 'Не заполнено' }}
                             </p>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                         data-toggle="modal" data-target="#changePassword">
                             Изменить пароль
                         </button>
-                        <a class="btn btn-block btn-link" href="/restorePassword">
+                        <a class="btn btn-block btn-link" href="/restore">
                             Восстановить пароль
                         </a>
                     </div>

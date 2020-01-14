@@ -5,7 +5,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 
 from app import app, db, producer, avatars
-from app.forms import LoginForm, RegistrationForm, EditAvatarForm, EditProfileForm, EditPasswordForm
+from app.forms import LoginForm, RegistrationForm, RestorePasswordForm
+from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
 from app.models import User, Contest, Problem, ContestRequest, Submission
 
@@ -69,6 +70,18 @@ def register():
         flash('You have successfully registered!', category='alert-success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', active='register', form=form)
+
+
+@app.route('/restore', methods=['GET', 'POST'])
+def restore_password():
+    form = RestorePasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None:
+            flash('Invalid username', category='alert-danger')
+            return redirect(url_for('restore_password'))
+        print('KEK')
+    return render_template('restore.html', title='Restore password', form=form)
 
 
 @app.route('/user/<username>')

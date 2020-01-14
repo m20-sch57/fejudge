@@ -14,7 +14,6 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     username = StringField('Ваш логин:', validators=[DataRequired()])
-    #fullname = StringField('Полное имя:', validators=[DataRequired()])
     email = StringField('Введите почту:', validators=[DataRequired(), Email()])
     password = PasswordField('Введите пароль:')
     password2 = PasswordField('Повторите пароль:', validators=[EqualTo('password')])
@@ -24,15 +23,14 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Этот логин уже занят.')
 
-    # def validate_fullname(self, fullname):
-    #     user = User.query.filter_by(fullname=fullname.data).first()
-    #     if user is not None:
-    #         raise ValidationError('Это имя уже занято.')
-
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Эта почта уже занята.')
+
+
+class RestorePasswordForm(FlaskForm):
+    username = StringField('Введите ваш логин:', validators=[DataRequired()])
 
 
 class EditAvatarForm(FlaskForm):
@@ -43,19 +41,14 @@ class EditAvatarForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    fullname = StringField('Полное имя:', validators=[DataRequired()])
-    birthdate = DateField('Дата рождения:', validators=[DataRequired()])
+    fullname = StringField('Полное имя:')
+    birthdate = DateField('Дата рождения:')
     email = StringField('Почта:', validators=[DataRequired(), Email()])
-    phone = StringField('Телефон:', validators=[DataRequired()])
+    phone = StringField('Телефон:')
 
     def __init__(self, original_email, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.original_email = original_email
-
-    # def validate_fullname(self, fullname):
-    #     user = User.query.filter_by(fullname=fullname.data).first()
-    #     if self.original_fullname != fullname.data and user is not None:
-    #         raise ValidationError('Это имя уже занято.')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()

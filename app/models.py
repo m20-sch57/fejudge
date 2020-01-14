@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
 
     avatar = db.Column(db.String(64), default='user.png')
     email = db.Column(db.String(128), unique=True)
-    phone = db.Column(db.String(32), default='+7 (000) 000-00-00')
+    phone = db.Column(db.String(32), default='')
     birthdate = db.Column(db.Date, default=date.today())
     active_language = db.Column(db.String(32), default='cpp')
 
