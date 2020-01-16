@@ -1,4 +1,5 @@
 import json
+import smtplib
 from flask import Flask
 from flask_avatars import Avatars
 from flask_sqlalchemy import SQLAlchemy
@@ -25,6 +26,12 @@ migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 producer = KafkaProducer(
     bootstrap_servers=['localhost:9092'],
     value_serializer=lambda x: json.dumps(x).encode('utf-8')
+)
+smtp_server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+smtp_server.starttls()
+smtp_server.login(
+    app.config['SYSTEM_EMAIL'],
+    app.config['SYSTEM_EMAIL_PASSWORD']
 )
 
 avatars = Avatars(app)

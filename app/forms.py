@@ -33,6 +33,10 @@ class RestorePasswordForm(FlaskForm):
     username = StringField('Введите ваш логин:', validators=[DataRequired()])
 
 
+class VerificationCodeForm(FlaskForm):
+    code = StringField('Введите код:', validators=[DataRequired()])
+
+
 class EditAvatarForm(FlaskForm):
     image = FileField('Выбрать файл', validators=[
         FileRequired(),

@@ -5,10 +5,11 @@ from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 
 from app import app, db, producer, avatars
-from app.forms import LoginForm, RegistrationForm, RestorePasswordForm
+from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
 from app.models import User, Contest, Problem, ContestRequest, Submission
+from app.email import send_verification_code
 
 
 @app.errorhandler(404)
@@ -73,15 +74,29 @@ def register():
 
 
 @app.route('/restore', methods=['GET', 'POST'])
-def restore_password():
+def restore_welcome():
     form = RestorePasswordForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None:
             flash('Invalid username', category='alert-danger')
-            return redirect(url_for('restore_password'))
-        print('KEK')
+            return redirect(url_for('restore_welcome'))
+        return redirect(url_for('restore_selected', username=user.username))
     return render_template('restore.html', title='Restore password', form=form)
+
+
+@app.route('/restore/<username>', methods=['GET', 'POST'])
+def restore_selected(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    send_verification_code(user.email, 1791791791)
+    form = VerificationCodeForm()
+    if form.validate_on_submit():
+        code = form.code.data
+        if code != '1791791791':
+            flash('Code is incorrect', category='alert-danger')
+            return redirect(url_for('restore_selected', username=username))
+        
+    return render_template('verify.html', title='Restore password', form=form, user=user)
 
 
 @app.route('/user/<username>')

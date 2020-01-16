@@ -4,17 +4,17 @@
 <div class="container-fluid window">
     <div class="container">
         <form action="" method="POST" novalidate>
-            <h1>Восстановить пароль</h1>
+            <h1>Введите код</h1>
             <br><br>
-            <h5>Здесь вы можете восстановить ваш пароль.</h5>
-            <h5>Для этого необходимо всего лишь ввести логин.</h5>
+            <h5>Код подтверждения был отправлен на почту {{ user.email }}.</h5>
+            <h5>Дождитесь его получения, это может занять несколько минут.</h5>
             <br>
             {{ form.hidden_tag() }}
             <div class="form-group">
-                {% with class="form-control is-invalid" if form.username.errors else "form-control" %}
-                {{ form.username(class=class, placeholder="Username") }}
+                {% with class="form-control is-invalid" if form.code.errors else "form-control" %}
+                {{ form.code(class=class, placeholder="Code") }}
                 {% endwith %}
-                {% for error in form.username.errors %}
+                {% for error in form.code.errors %}
                 <span class="text-danger">{{ error }}</span>
                 {% endfor %}
             </div>
