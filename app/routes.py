@@ -1,4 +1,6 @@
 import os
+import strgen
+
 from urllib.parse import unquote_plus
 from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
@@ -9,7 +11,7 @@ from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, Verifica
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
 from app.models import User, Contest, Problem, ContestRequest, Submission
-from app.email import send_verification_code
+from app.email import send_verification_code, send_new_password
 
 
 @app.errorhandler(404)
@@ -42,7 +44,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password', category='alert-danger')
+            flash('Incorrect username or password', category='alert-danger')
             return redirect(url_for('login'))
         login_user(user)
         return redirect(url_for('contests_page'))
@@ -68,7 +70,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('You have successfully registered!', category='alert-success')
+        flash('You have successfully registered', category='alert-success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', active='register', form=form)
 
@@ -79,8 +81,9 @@ def restore_welcome():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None:
-            flash('Invalid username', category='alert-danger')
+            flash('Incorrect username', category='alert-danger')
             return redirect(url_for('restore_welcome'))
+        send_verification_code(user.email, user.fullname, 1791791791)
         return redirect(url_for('restore_selected', username=user.username))
     return render_template('restore.html', title='Restore password', form=form)
 
@@ -88,14 +91,18 @@ def restore_welcome():
 @app.route('/restore/<username>', methods=['GET', 'POST'])
 def restore_selected(username):
     user = User.query.filter_by(username=username).first_or_404()
-    send_verification_code(user.email, 1791791791)
     form = VerificationCodeForm()
     if form.validate_on_submit():
         code = form.code.data
         if code != '1791791791':
-            flash('Code is incorrect', category='alert-danger')
+            flash('Code is incorrect, try again', category='alert-danger')
             return redirect(url_for('restore_selected', username=username))
-        
+        new_password = strgen.StringGenerator('[\w\d]{16}').render()
+        user.set_password(new_password)
+        send_new_password(user.email, user.fullname, new_password)
+        db.session.commit()
+        flash('New password has been sent to you by email', category='alert-success')
+        return redirect(url_for('login'))
     return render_template('verify.html', title='Restore password', form=form, user=user)
 
 
@@ -122,9 +129,9 @@ def change_avatar():
         filename = avatars.save_avatar(form.image.data)
         current_user.avatar = filename
         db.session.commit()
-        flash('Сохранено', category='alert-success')
+        flash('Your avatar has been saved', category='alert-success')
     else:
-        flash('Введённые данные некорректны', category='alert-danger')
+        flash('Data is incorrect', category='alert-danger')
     return redirect(url_for('profile_page', username=current_user.username))
 
 
@@ -138,9 +145,9 @@ def change_profile():
         current_user.email = form.email.data
         current_user.phone = form.phone.data
         db.session.commit()
-        flash('Сохранено', category='alert-success')
+        flash('Your information has been saved', category='alert-success')
     else:
-        flash('Введённые данные некорректны', category='alert-danger')
+        flash('Data is incorrect', category='alert-danger')
     return redirect(url_for('profile_page', username=current_user.username))
 
 
@@ -150,13 +157,13 @@ def change_password():
     form = EditPasswordForm()
     if form.validate_on_submit():
         if not current_user.check_password(form.old_password.data):
-            flash('Неверный старый пароль', category='alert-danger')
+            flash('Incorrect password', category='alert-danger')
         else:
             current_user.set_password(form.new_password.data)
             db.session.commit()
-            flash('Пароль успешно изменён', category='alert-success')
+            flash('Password has been successfully changed', category='alert-success')
     else:
-        flash('Введённые данные некорректны', category='alert-danger')
+        flash('Data is incorrect', category='alert-danger')
     return redirect(url_for('profile_page', username=current_user.username))
 
 
@@ -184,7 +191,7 @@ def contest_page(contest_url, number):
     problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
     submissions = Submission.query.filter_by(problem=problem, user=current_user).order_by(Submission.time.desc())
     if contest_request is None:
-        flash('Недопустимая операция', category='alert-danger')
+        flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
     if contest_request.state() == 'Finished':
         flash('Ваше участие в контесте завершено', category='alert-info')
@@ -207,7 +214,7 @@ def judge_submisssion(submission_id):
 def download_submission(submission_id):
     submission = Submission.query.filter_by(id=submission_id).first_or_404()
     if submission.user != current_user:
-        flash('Недопустимая операция', category='alert-danger')
+        flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
     source = submission.source
     download_folder = app.config['SUBMISSIONS_DOWNLOAD_PATH']
@@ -239,9 +246,9 @@ def send(contest_url, number):
             db.session.add(submission)
             db.session.commit()
             judge_submisssion(submission.id)
-            flash('Решение успешно отправлено', category='alert-success')
+            flash('Your solution has been sent', category='alert-success')
     except ValueError as error:
-        flash('Ошибка отправки: ' + str(error), category='alert-danger')
+        flash('Submission error: ' + str(error), category='alert-danger')
     return redirect(url_for('contest_page', contest_url=contest_url, number=number))
 
 
@@ -251,7 +258,7 @@ def start_contest(contest_url):
     contest = get_contest_by_url(contest_url)
     contest_request = get_contest_request(contest)
     if contest_request is not None:
-        flash('Недопустимая операция', category='alert-danger')
+        flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
     contest_request = ContestRequest(contest=contest, user=current_user, 
         start_time=datetime.now().replace(microsecond=0))
@@ -265,7 +272,7 @@ def finish_contest(contest_url):
     contest = get_contest_by_url(contest_url)
     contest_request = get_contest_request(contest)
     if contest_request is None or contest_request.state() in ['Not started', 'Finished']:
-        flash('Недопустимая операция', category='alert-danger')
+        flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
     current_time = datetime.now().replace(microsecond=0)
     contest_request.finish_time = current_time

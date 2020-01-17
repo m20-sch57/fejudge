@@ -4,6 +4,33 @@ from email.mime.text import MIMEText
 from app import app, smtp_server
 
 
+VERIFY_LETTER = \
+"""
+Dear {},
+
+You submitted a request to restore your password.
+Here is the code:
+{}
+
+Do not share it with anyone!
+
+Yours,
+Fejudge team
+"""
+
+NEW_PASSWORD_LETTER = \
+"""
+Dear {},
+
+You tried to restore your password recently.
+Your new password is:
+{}
+
+Yours,
+Fejudge team
+"""
+
+
 def send_email(from_email, to_email, subject, message):
     msg = MIMEMultipart()
     msg['From'] = from_email
@@ -13,34 +40,19 @@ def send_email(from_email, to_email, subject, message):
     smtp_server.send_message(msg)
 
 
-def send_verification_code(email, code):
+def send_verification_code(email, name, code):
     send_email(
         app.config['SYSTEM_EMAIL'],
         email,
         'Fejudge: verification code',
-        """
-        Hello!
-        Here is the code to restore your password:
-        {}
-
-        Do not share it with anyone!
-
-        Fejudge team
-        """.format(code)
+        VERIFY_LETTER.format(name, code)
     )
 
 
-def send_new_password(email, password):
+def send_new_password(email, name, password):
     send_email(
         app.config['SYSTEM_EMAIL'],
         email,
         'Fejudge: new password',
-        """
-        Hello!
-
-        Your new password is:
-        {}
-
-        Fejudge team
-        """.format(password)
+        NEW_PASSWORD_LETTER.format(name, password)
     )
