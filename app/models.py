@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
     birthdate = db.Column(db.Date, default=date.today())
     active_language = db.Column(db.String(32), default='cpp')
 
+    restore_tokens = db.relationship('RestoreToken', backref='user', lazy='dynamic')
     contest_requests = db.relationship('ContestRequest', backref='user', lazy='dynamic')
     submissions = db.relationship('Submission', backref='user', lazy='dynamic')
 
@@ -32,6 +33,20 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class RestoreToken(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    code = db.Column(db.String(10))
+    time = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<RESTORE_TOKEN USER={} CODE={}>'.format(self.user_id, self.code)
+
+    @staticmethod
+    def get_token(user):
+        return RestoreToken.query.filter_by(user=user).order_by(desc(RestoreToken.time)).first()
 
 
 class Contest(db.Model):

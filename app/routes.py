@@ -10,7 +10,7 @@ from app import app, db, producer, avatars
 from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
-from app.models import User, Contest, Problem, ContestRequest, Submission
+from app.models import User, RestoreToken, Contest, Problem, ContestRequest, Submission
 from app.email import send_verification_code, send_new_password
 
 
@@ -83,7 +83,11 @@ def restore_welcome():
         if user is None:
             flash('Incorrect username', category='alert-danger')
             return redirect(url_for('restore_welcome'))
-        send_verification_code(user.email, user.fullname, 1791791791)
+        current_time = datetime.now().replace(microsecond=0)
+        code = strgen.StringGenerator('[0-9]{10}').render()
+        restore_token = RestoreToken(user=user, code=code, time=current_time)
+        send_verification_code(user.email, user.fullname, code)
+        db.session.commit()
         return redirect(url_for('restore_selected', username=user.username))
     return render_template('restore.html', title='Restore password', form=form)
 
@@ -94,7 +98,11 @@ def restore_selected(username):
     form = VerificationCodeForm()
     if form.validate_on_submit():
         code = form.code.data
-        if code != '1791791791':
+        restore_token = RestoreToken.get_token(user)
+        if restore_token is None:
+            flash('Error while finding selected user', category='alert-danger')
+            return redirect(url_for('restore_welcome'))
+        if code != restore_token.code:
             flash('Code is incorrect, try again', category='alert-danger')
             return redirect(url_for('restore_selected', username=username))
         new_password = strgen.StringGenerator('[\w\d]{16}').render()

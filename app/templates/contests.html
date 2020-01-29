@@ -3,7 +3,13 @@
 {% block app_content %}
 <div class="container-fluid window">
     <div class="container">
-        <h1 class="m-1">Контесты</h1>
+        <div class="d-flex flex-wrap">
+            <h1 class="my-auto mr-auto">Контесты</h1>
+            <h4 class="my-auto mr-2">Категория:</h4>
+            <select class="form-control btn-shadow w-auto h-auto m-1">
+                <option selected value="common">Общие</option>
+            </select>
+        </div>
         <br><hr>
         <script src="/static/js/timer.js"></script>
         {% for contest, request in contests %}
