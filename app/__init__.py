@@ -26,13 +26,6 @@ producer = KafkaProducer(
     bootstrap_servers=['localhost:9092'],
     value_serializer=lambda x: json.dumps(x).encode('utf-8')
 )
-# smtp_server = smtplib.SMTP()
-# init_smtp_server()
-# smtp_server.starttls()
-# smtp_server.login(
-#     app.config['SYSTEM_EMAIL'],
-#     app.config['SYSTEM_EMAIL_PASSWORD']
-# )
 
 avatars = Avatars(app)
 login = LoginManager(app)

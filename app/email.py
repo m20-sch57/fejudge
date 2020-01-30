@@ -46,6 +46,7 @@ def send_email(from_email, to_email, subject, message):
         app.config['SYSTEM_EMAIL_PASSWORD']
     )
     smtp_server.send_message(msg)
+    smtp_server.close()
 
 
 def send_verification_code(email, name, code):
