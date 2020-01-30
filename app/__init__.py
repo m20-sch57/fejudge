@@ -1,5 +1,4 @@
 import json
-import smtplib
 from flask import Flask
 from flask_avatars import Avatars
 from flask_sqlalchemy import SQLAlchemy
@@ -27,12 +26,13 @@ producer = KafkaProducer(
     bootstrap_servers=['localhost:9092'],
     value_serializer=lambda x: json.dumps(x).encode('utf-8')
 )
-smtp_server = smtplib.SMTP(host='smtp.gmail.com', port=587)
-smtp_server.starttls()
-smtp_server.login(
-    app.config['SYSTEM_EMAIL'],
-    app.config['SYSTEM_EMAIL_PASSWORD']
-)
+# smtp_server = smtplib.SMTP()
+# init_smtp_server()
+# smtp_server.starttls()
+# smtp_server.login(
+#     app.config['SYSTEM_EMAIL'],
+#     app.config['SYSTEM_EMAIL_PASSWORD']
+# )
 
 avatars = Avatars(app)
 login = LoginManager(app)

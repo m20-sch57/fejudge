@@ -1,7 +1,8 @@
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from app import app, smtp_server
+from app import app
 
 
 VERIFY_LETTER = \
@@ -37,6 +38,13 @@ def send_email(from_email, to_email, subject, message):
     msg['To'] = to_email
     msg['Subject'] = subject
     msg.attach(MIMEText(message, 'plain'))
+
+    smtp_server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    smtp_server.starttls()
+    smtp_server.login(
+        app.config['SYSTEM_EMAIL'],
+        app.config['SYSTEM_EMAIL_PASSWORD']
+    )
     smtp_server.send_message(msg)
 
 
