@@ -51,10 +51,25 @@ function uploadFiles(files) {
     }
 }
 
+function showProfileForm() {
+    document.getElementById('fullname').removeAttribute('hidden');
+    document.getElementById('fullnameLabel').setAttribute('hidden', '');
+    document.getElementById('birthdate').removeAttribute('hidden');
+    document.getElementById('birthdateLabel').setAttribute('hidden', '');
+    document.getElementById('email').removeAttribute('hidden');
+    document.getElementById('emailLabel').setAttribute('hidden', '');
+    document.getElementById('phone').removeAttribute('hidden');
+    document.getElementById('phoneLabel').setAttribute('hidden', '');
+    changeProfile.setAttribute('hidden', '');
+    submitProfile.removeAttribute('hidden');
+}
+
 let dropArea = document.getElementById('dropArea');
 let fileUpload = document.getElementById('fileUpload');
 let fileUploadLabel = document.getElementById('fileUploadLabel');
 let submitAvatar = document.getElementById('submitAvatar');
+let changeProfile = document.getElementById('changeProfile');
+let submitProfile = document.getElementById('submitProfile');
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false);
@@ -70,3 +85,5 @@ dropArea.addEventListener('drop', eventName => uploadFiles(eventName.dataTransfe
 fileUpload.onchange = function() {
     uploadFiles(this.files);
 }
+
+changeProfile.onclick = showProfileForm;
