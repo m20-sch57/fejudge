@@ -40,7 +40,8 @@
                                     </h6>
                                 </div>
                                 <div class="align-self-center">
-                                    {{ profile_form.fullname(class='form-control', value=user.fullname, id='fullname', hidden='') }}
+                                    {{ profile_form.fullname(class='form-control', placeholder='Fullname',
+                                    value=user.fullname, id='fullname', hidden='') }}
                                 </div>
                             </div>
                             <div class="d-flex flex-wrap">
@@ -55,7 +56,8 @@
                                     </h6>
                                 </div>
                                 <div class="align-self-center">
-                                    {{ profile_form.birthdate(class='form-control', value=user.birthdate, id='birthdate', hidden='') }}
+                                    {{ profile_form.birthdate(class='form-control', placeholder='Date of birth', 
+                                    value=user.birthdate, id='birthdate', hidden='') }}
                                 </div>
                             </div>
                             <div class="d-flex flex-wrap">
@@ -70,7 +72,8 @@
                                     </h6>
                                 </div>
                                 <div class="align-self-center">
-                                    {{ profile_form.email(class='form-control', value=user.email, id='email', hidden='') }}
+                                    {{ profile_form.email(class='form-control', placeholder='Email', 
+                                    value=user.email, id='email', hidden='') }}
                                 </div>
                             </div>
                             <div class="d-flex flex-wrap">
@@ -85,24 +88,33 @@
                                     </h6>
                                 </div>
                                 <div class="align-self-center">
-                                    {{ profile_form.phone(class='form-control', value=user.phone, id='phone', hidden='') }}
+                                    {{ profile_form.phone(class='form-control', placeholder='Phone',
+                                    value=user.phone, id='phone', hidden='') }}
                                 </div>
                             </div>
                             <br>
                         </div>
                         {% if current_user == user %}
                         <div class="col-md-5">
-                            <button type="button" class="btn btn-block btn-lg btn-info btn-shadow my-3" id="changeProfile">
-                                <span class="fa fa-pen"></span> Редактировать
-                            </button>
-                            <button type="submit" class="btn btn-block btn-lg btn-info btn-shadow my-3" id="submitProfile" hidden>
-                                <span class="fa fa-check"></span> Сохранить
-                            </button>
-                            <button type="button" class="btn btn-block btn-link"
-                            data-toggle="modal" data-target="#changePassword">
+                            <div class="d-flex flex-wrap mt-1 mb-3">
+                                <button type="button" class="btn btn-block btn-lg btn-info btn-shadow" id="changeProfile">
+                                    <span class="fa fa-pen"></span> Редактировать
+                                </button>
+                                <div class="flex-fill mx-1">
+                                    <button type="submit" class="btn btn-block btn-lg btn-success btn-shadow" id="submitProfile" hidden>
+                                        <span class="fa fa-check"></span>
+                                    </button>
+                                </div>
+                                <div class="flex-fill mx-1">
+                                    <button type="button" class="btn btn-block btn-lg btn-danger btn-shadow" id="cancelProfile" hidden>
+                                        <span class="fa fa-times"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <a class="btn btn-block btn-link" href="/changePassword">
                                 Изменить пароль
-                            </button>
-                            <a class="btn btn-block btn-link" href="/restore">
+                            </a>
+                            <a class="btn btn-block btn-link" href="/restorePassword">
                                 Восстановить пароль
                             </a>
                         </div>
@@ -138,48 +150,6 @@
                     <button type="submit" id="submitAvatar" class="btn btn-success btn-shadow my-1" disabled>
                         Сохранить
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="changePassword">
-    <div class="modal-lg modal-dialog centered">
-        <div class="modal-content">
-            <form action="/changePassword" method="POST" novalidate>
-                {{ password_form.hidden_tag() }}
-                <div class="modal-header">
-                    <h5 class="modal-title">Изменить пароль</h5>
-                    <button class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row">
-                        <div class="col-lg-3">
-                            {{ password_form.old_password.label(class='col-form-label') }}
-                        </div>
-                        <div class="col-lg-9">
-                            {{ password_form.old_password(class='form-control', placeholder='Old password') }}
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-lg-3">
-                            {{ password_form.new_password.label(class='col-form-label') }}
-                        </div>
-                        <div class="col-lg-9">
-                            {{ password_form.new_password(class='form-control', placeholder='New password') }}
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-lg-3">
-                            {{ password_form.new_password2.label(class='col-form-label') }}
-                        </div>
-                        <div class="col-lg-9">
-                            {{ password_form.new_password2(class='form-control', placeholder='New password') }}
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-shadow">Изменить пароль</button>
                 </div>
             </form>
         </div>

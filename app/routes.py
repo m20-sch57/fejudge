@@ -75,25 +75,25 @@ def register():
     return render_template('register.html', title='Register', active='register', form=form)
 
 
-@app.route('/restore', methods=['GET', 'POST'])
-def restore_welcome():
+@app.route('/restorePassword', methods=['GET', 'POST'])
+def restore_password_welcome():
     form = RestorePasswordForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None:
             flash('Incorrect username', category='alert-danger')
-            return redirect(url_for('restore_welcome'))
+            return redirect(url_for('restore_password_welcome'))
         current_time = datetime.now().replace(microsecond=0)
         code = strgen.StringGenerator('[0-9]{10}').render()
         restore_token = RestoreToken(user=user, code=code, time=current_time)
         send_verification_code(user.email, user.fullname, code)
         db.session.commit()
-        return redirect(url_for('restore_selected', username=user.username))
-    return render_template('restore.html', title='Restore password', form=form)
+        return redirect(url_for('restore_password_selected', username=user.username))
+    return render_template('restore_password.html', title='Restore password', form=form)
 
 
-@app.route('/restore/<username>', methods=['GET', 'POST'])
-def restore_selected(username):
+@app.route('/restorePassword/<username>', methods=['GET', 'POST'])
+def restore_password_selected(username):
     user = User.query.filter_by(username=username).first_or_404()
     form = VerificationCodeForm()
     if form.validate_on_submit():
@@ -101,10 +101,10 @@ def restore_selected(username):
         restore_token = RestoreToken.get_token(user)
         if restore_token is None:
             flash('Error while finding selected user', category='alert-danger')
-            return redirect(url_for('restore_welcome'))
+            return redirect(url_for('restore_password_welcome'))
         if code != restore_token.code:
             flash('Code is incorrect, try again', category='alert-danger')
-            return redirect(url_for('restore_selected', username=username))
+            return redirect(url_for('restore_password_selected', username=username))
         new_password = strgen.StringGenerator('[\w\d]{16}').render()
         user.set_password(new_password)
         send_new_password(user.email, user.fullname, new_password)
@@ -114,14 +114,28 @@ def restore_selected(username):
     return render_template('verify.html', title='Restore password', form=form, user=user)
 
 
+@app.route('/changePassword', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = EditPasswordForm()
+    if form.validate_on_submit():
+        if not current_user.check_password(form.old_password.data):
+            flash('Incorrect password', category='alert-danger')
+            return redirect(url_for('change_password'))
+        current_user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('Password has been successfully changed', category='alert-success')
+        return redirect(url_for('logout'))
+    return render_template('change_password.html', title='Change password', form=form)
+
+
 @app.route('/user/<username>')
 def profile_page(username):
     user = User.query.filter_by(username=username).first_or_404()
     avatar_form = EditAvatarForm()
     profile_form = EditProfileForm(user.email)
-    password_form = EditPasswordForm()
     return render_template('user.html', title='View profile', user=user, 
-        avatar_form=avatar_form, profile_form=profile_form, password_form=password_form)
+        avatar_form=avatar_form, profile_form=profile_form)
 
 
 @app.route('/avatars/<filename>')
@@ -159,33 +173,17 @@ def change_profile():
     return redirect(url_for('profile_page', username=current_user.username))
 
 
-@app.route('/changePassword', methods=['POST'])
-@login_required
-def change_password():
-    form = EditPasswordForm()
-    if form.validate_on_submit():
-        if not current_user.check_password(form.old_password.data):
-            flash('Incorrect password', category='alert-danger')
-        else:
-            current_user.set_password(form.new_password.data)
-            db.session.commit()
-            flash('Password has been successfully changed', category='alert-success')
-    else:
-        flash('Data is incorrect', category='alert-danger')
-    return redirect(url_for('profile_page', username=current_user.username))
-
-
 def get_contest_by_url(contest_url):
     contest_name = unquote_plus(contest_url)
     return Contest.query.filter_by(name=contest_name).first_or_404()
 
 
 def get_contest_request(contest):
-    return ContestRequest.query.filter_by(contest_id=contest.id, user_id=current_user.id).first()
+    if not current_user.is_anonymous:
+        return ContestRequest.query.filter_by(contest_id=contest.id, user_id=current_user.id).first()
 
 
 @app.route('/contests')
-@login_required
 def contests_page():
     full_contests = [(contest, get_contest_request(contest)) for contest in Contest.query.all()]
     return render_template('contests.html', title='Contests', active='contests', contests=full_contests)

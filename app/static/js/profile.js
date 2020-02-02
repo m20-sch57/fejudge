@@ -62,6 +62,21 @@ function showProfileForm() {
     document.getElementById('phoneLabel').setAttribute('hidden', '');
     changeProfile.setAttribute('hidden', '');
     submitProfile.removeAttribute('hidden');
+    cancelProfile.removeAttribute('hidden');
+}
+
+function hideProfileForm() {
+    document.getElementById('fullname').setAttribute('hidden', '');
+    document.getElementById('fullnameLabel').removeAttribute('hidden');
+    document.getElementById('birthdate').setAttribute('hidden', '');
+    document.getElementById('birthdateLabel').removeAttribute('hidden');
+    document.getElementById('email').setAttribute('hidden', '');
+    document.getElementById('emailLabel').removeAttribute('hidden');
+    document.getElementById('phone').setAttribute('hidden', '');
+    document.getElementById('phoneLabel').removeAttribute('hidden');
+    changeProfile.removeAttribute('hidden');
+    submitProfile.setAttribute('hidden', '');
+    cancelProfile.setAttribute('hidden', '');
 }
 
 let dropArea = document.getElementById('dropArea');
@@ -70,6 +85,7 @@ let fileUploadLabel = document.getElementById('fileUploadLabel');
 let submitAvatar = document.getElementById('submitAvatar');
 let changeProfile = document.getElementById('changeProfile');
 let submitProfile = document.getElementById('submitProfile');
+let cancelProfile = document.getElementById('cancelProfile');
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false);
@@ -87,3 +103,4 @@ fileUpload.onchange = function() {
 }
 
 changeProfile.onclick = showProfileForm;
+cancelProfile.onclick = hideProfileForm;
