@@ -123,7 +123,7 @@ class ContestRequest(db.Model):
         return self.finish_time or self.start_time + self.contest.duration
 
     def state(self):
-        current_time = datetime.now().replace(microsecond=0)
+        current_time = datetime.utcnow().replace(microsecond=0)
         if current_time < self.start_time:
             return 'Not started'
         if current_time >= self.get_finish_time():
@@ -133,13 +133,13 @@ class ContestRequest(db.Model):
     def time_remaining(self):
         if self.state() != 'In progress':
             return timedelta()
-        current_time = datetime.now().replace(microsecond=0)
+        current_time = datetime.utcnow().replace(microsecond=0)
         return self.get_finish_time() - current_time
 
     def time_passed(self):
         if self.state() != 'In progress':
             return timedelta()
-        current_time = datetime.now().replace(microsecond=0)
+        current_time = datetime.utcnow().replace(microsecond=0)
         return current_time - self.start_time
 
 

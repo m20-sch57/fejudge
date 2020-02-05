@@ -83,7 +83,7 @@ def restore_password_welcome():
         if user is None:
             flash('Incorrect username', category='alert-danger')
             return redirect(url_for('restore_password_welcome'))
-        current_time = datetime.now().replace(microsecond=0)
+        current_time = datetime.utcnow().replace(microsecond=0)
         code = strgen.StringGenerator('[0-9]{10}').render()
         restore_token = RestoreToken(user=user, code=code, time=current_time)
         send_verification_code(user.email, user.fullname, code)
@@ -245,7 +245,7 @@ def send(contest_url, number):
                 raise ValueError('Form is not valid')
             language = problem_form.language.data
             source = problem_form.source.data.read().decode('utf-8')
-            current_time = datetime.now().replace(microsecond=0)
+            current_time = datetime.utcnow().replace(microsecond=0)
             submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
                 language=language, status='In queue', score=0, source=source)
             current_user.active_language = language
@@ -267,7 +267,7 @@ def start_contest(contest_url):
         flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
     contest_request = ContestRequest(contest=contest, user=current_user, 
-        start_time=datetime.now().replace(microsecond=0))
+        start_time=datetime.utcnow().replace(microsecond=0))
     db.session.commit()
     return redirect(url_for('contest_page', contest_url=contest_url, number=1))
 
@@ -280,7 +280,7 @@ def finish_contest(contest_url):
     if contest_request is None or contest_request.state() in ['Not started', 'Finished']:
         flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
-    current_time = datetime.now().replace(microsecond=0)
+    current_time = datetime.utcnow().replace(microsecond=0)
     contest_request.finish_time = current_time
     db.session.commit()
     return redirect(url_for('contest_page', contest_url=contest_url, number=1))
