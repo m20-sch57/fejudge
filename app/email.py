@@ -1,8 +1,5 @@
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
-from app import app
+from flask_mail import Message
+from app import app, mail
 
 
 VERIFY_LETTER = \
@@ -32,36 +29,26 @@ Fejudge team
 """
 
 
-def send_email(from_email, to_email, subject, message):
-    msg = MIMEMultipart()
-    msg['From'] = from_email
-    msg['To'] = to_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(message, 'plain'))
-
-    smtp_server = smtplib.SMTP(host='smtp.gmail.com', port=587)
-    smtp_server.starttls()
-    smtp_server.login(
-        app.config['SYSTEM_EMAIL'],
-        app.config['SYSTEM_EMAIL_PASSWORD']
-    )
-    smtp_server.send_message(msg)
-    smtp_server.close()
+def send_email(subject, sender, recipients, text_body='', html_body=''):
+    msg = Message(subject=subject, sender=sender, recipients=recipients)
+    msg.body = text_body
+    msg.html = html_body
+    mail.send(msg)
 
 
 def send_verification_code(email, name, code):
     send_email(
-        app.config['SYSTEM_EMAIL'],
-        email,
-        'Fejudge: verification code',
-        VERIFY_LETTER.format(name, code)
+        subject='Fejudge: verification code',
+        sender=app.config['MAIL_USERNAME'],
+        recipients=[email],
+        text_body=VERIFY_LETTER.format(name, code)
     )
 
 
 def send_new_password(email, name, password):
     send_email(
-        app.config['SYSTEM_EMAIL'],
-        email,
-        'Fejudge: new password',
-        NEW_PASSWORD_LETTER.format(name, password)
+        subject='Fejudge: new password',
+        sender=app.config['MAIL_USERNAME'],
+        recipients=[email],
+        text_body=NEW_PASSWORD_LETTER.format(name, password)
     )

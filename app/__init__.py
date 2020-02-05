@@ -1,9 +1,11 @@
 import json
+
 from flask import Flask
 from flask_avatars import Avatars
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_mail import Mail
 from sqlalchemy import MetaData
 from kafka import KafkaProducer
 from config import Config
@@ -22,6 +24,7 @@ app.config.from_object(Config)
 
 db = SQLAlchemy(app, metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
+mail = Mail(app)
 producer = KafkaProducer(
     bootstrap_servers=['localhost:9092'],
     value_serializer=lambda x: json.dumps(x).encode('utf-8')

@@ -110,7 +110,7 @@ def restore_password_selected(username):
         send_new_password(user.email, user.fullname, new_password)
         db.session.commit()
         flash('New password has been sent to you by email', category='alert-success')
-        return redirect(url_for('login'))
+        return redirect(url_for('logout'))
     return render_template('verify.html', title='Restore password', form=form, user=user)
 
 
