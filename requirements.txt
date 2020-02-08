@@ -1,0 +1,9 @@
+Flask==1.1.1
+Flask-Avatars==0.2.2
+Flask-Login==0.4.1
+Flask-Mail==0.9.1
+Flask-Migrate==2.5.2
+Flask-SQLAlchemy==2.4.1
+Flask-WTF==0.14.2
+kafka-python==1.4.7
+StringGenerator==0.3.3
