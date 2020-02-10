@@ -10,7 +10,8 @@ class Config(object):
     MAIL_PORT = os.environ.get('MAIL_PORT') or 587
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') or True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'fejudge.system@gmail.com'
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'Fedroadmin'
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
+    KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False

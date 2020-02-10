@@ -26,7 +26,7 @@ db = SQLAlchemy(app, metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 mail = Mail(app)
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9092'],
+    bootstrap_servers=[app.config['KAFKA_SERVER']],
     value_serializer=lambda x: json.dumps(x).encode('utf-8'),
     api_version=(0, 10)
 )

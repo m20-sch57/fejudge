@@ -11,7 +11,7 @@ services:
         depends_on: 
             - zookeeper
         environment:
-            KAFKA_ADVERTISED_HOST_NAME: localhost
+            KAFKA_ADVERTISED_HOST_NAME: kafka
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
             KAFKA_CREATE_TOPICS: judge:1:1
         volumes:
@@ -21,3 +21,6 @@ services:
         image: fejudge
         ports: 
             - 3013:3013
+        environment:
+            KAFKA_SERVER: kafka:9092
+            MAIL_PASSWORD: Fedroadmin
