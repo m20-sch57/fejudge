@@ -101,7 +101,8 @@ consumer = KafkaConsumer(
     enable_auto_commit=True,
     auto_commit_interval_ms=2000,
     group_id='my-group',
-    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+    value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+    api_version=(0, 10)
 )
 
 
