@@ -2,10 +2,10 @@ import os
 from app import app
 
 
-if not os.path.exists(app.config['SUBMISSIONS_EXEC_PATH']):
-    os.makedirs(app.config['SUBMISSIONS_EXEC_PATH'])
-if not os.path.exists(app.config['SUBMISSIONS_LOG_PATH']):
-    os.makedirs(app.config['SUBMISSIONS_LOG_PATH'])
+# if not os.path.exists(app.config['SUBMISSIONS_EXEC_PATH']):
+#     os.makedirs(app.config['SUBMISSIONS_EXEC_PATH'])
+# if not os.path.exists(app.config['SUBMISSIONS_LOG_PATH']):
+#     os.makedirs(app.config['SUBMISSIONS_LOG_PATH'])
 if not os.path.exists(app.config['SUBMISSIONS_DOWNLOAD_PATH']):
     os.makedirs(app.config['SUBMISSIONS_DOWNLOAD_PATH'])
 

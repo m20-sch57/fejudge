@@ -3,7 +3,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, DateField, SelectField
 from wtforms.validators import ValidationError, DataRequired, EqualTo, Email
 
-import common
+import constants
 from app.models import User
 
 
@@ -73,7 +73,7 @@ class InputProblemForm(FlaskForm):
 class FileProblemForm(FlaskForm):
     language = SelectField(
         'Programming language',
-        choices=list(common.LANGUAGE_MATCHING.items()),
+        choices=list(constants.LANGUAGE_MATCHING.items()),
         default='cpp'
     )
     source = FileField('Выберите файл', validators=[

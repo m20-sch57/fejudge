@@ -211,8 +211,17 @@ def contest_page(contest_url, number):
         form=problem_form)
 
 
-def judge_submisssion(submission_id):
-    producer.send('judge', value={'id': submission_id})
+def judge_submisssion(submission):
+    producer.send('judge', value={
+        'submission': {
+            'id': submission.id,
+            'language': submission.language,
+            'source': submission.source
+        },
+        'problem': {
+            'id': submission.problem.id
+        }
+    })
 
 
 @app.route('/download/submission/<submission_id>')
@@ -251,7 +260,7 @@ def send(contest_url, number):
             current_user.active_language = language
             db.session.add(submission)
             db.session.commit()
-            judge_submisssion(submission.id)
+            judge_submisssion(submission)
             flash('Your solution has been sent', category='alert-success')
     except ValueError as error:
         flash('Submission error: ' + str(error), category='alert-danger')

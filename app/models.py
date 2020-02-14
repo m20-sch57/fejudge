@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import date, datetime, timedelta
 
-import common
+import constants
 from app import db, login
 
 
@@ -163,14 +163,14 @@ class Submission(db.Model):
         return self.time - contest_request.start_time
 
     def formatted_language(self):
-        return common.LANGUAGE_MATCHING[self.language]
+        return constants.LANGUAGE_MATCHING[self.language]
 
     def formatted_status(self):
-        return common.STATUS_MATCHING[self.status]
+        return constants.STATUS_MATCHING[self.status]
 
     @staticmethod
     def formatted_test_status(test_status):
-        return common.STATUS_MATCHING[test_status]
+        return constants.STATUS_MATCHING[test_status]
 
     def show_score(self):
         return self.status not in ['In queue', 'Compiling']
