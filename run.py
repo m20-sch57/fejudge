@@ -9,7 +9,7 @@ def run_app():
     app.run(host='0.0.0.0', port=3013, debug=False, threaded=True)
 
 def run_judge():
-    judge.run(host='', port=3113)
+    judge.run(host='0.0.0.0', port=3113)
 
 
 # if not os.path.exists(app.config['SUBMISSIONS_EXEC_PATH']):

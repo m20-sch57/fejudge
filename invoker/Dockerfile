@@ -3,9 +3,7 @@ FROM python:3.6-buster
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY . /fejudge
-WORKDIR /fejudge
+COPY . /invoker
+WORKDIR /invoker
 
-EXPOSE 3013
-EXPOSE 3113
-ENTRYPOINT ["python3", "run.py"]
+ENTRYPOINT ["python3", "invoker.py"]

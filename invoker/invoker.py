@@ -142,6 +142,7 @@ def calc_test_maxscore(problem_maxscore, tests_cnt, test_num):
         return problem_maxscore // tests_cnt
 
 
+print('Starting invoker')
 libsbox = Libsbox()
 judge = ServerProxy('http://' + Config.JUDGE_SERVER, use_builtin_types=True)
 consumer = KafkaConsumer(

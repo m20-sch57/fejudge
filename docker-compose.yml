@@ -17,10 +17,18 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
     fejudge:
-        # build: .
         image: fejudge
         ports: 
             - 3013:3013
+            - 3113:3113
         environment:
             KAFKA_SERVER: kafka:9092
             MAIL_PASSWORD: Fedroadmin
+    invoker:
+        image: invoker
+        environment: 
+            KAFKA_SERVER: kafka:9092
+            JUDGE_SERVER: fejudge:3113
+        volumes:
+            - /etc/libsboxd/socket:/etc/libsboxd/socket
+
