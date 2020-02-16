@@ -219,7 +219,10 @@ def judge_submisssion(submission):
             'source': submission.source
         },
         'problem': {
-            'id': submission.problem.id
+            'id': submission.problem.id,
+            'max_score': submission.problem.max_score,
+            'time_limit_ms': 1000,
+            'memory_limit_kb': 262144
         }
     })
 

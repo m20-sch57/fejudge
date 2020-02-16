@@ -1,4 +1,5 @@
 import os
+import sys
 import socket
 import json
 import time
@@ -7,14 +8,27 @@ from config import Config
 
 
 class Libsbox:
-    @staticmethod
-    def connect():
-        while not os.path.exists(Config.SOCKET_FILE):
-            print('Waiting for libsbox to start...')
-            time.sleep(1)
-        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        client.connect(Config.SOCKET_FILE)
-        return client
+    def __init__(self):
+        self.sock = None
+        socket.setdefaulttimeout(60)
+
+    def connect(self):
+        if not os.path.exists(Config.SOCKET_FILE):
+            while not os.path.exists(Config.SOCKET_FILE):
+                print('Waiting for libsbox to start...', end='\r')
+                time.sleep(1)
+            print()
+            print('Found libsbox')
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.connect(Config.SOCKET_FILE)
+
+    def send(self, obj):
+        self.connect()
+        self.sock.send(json.dumps(obj).encode('utf-8'))
+        self.sock.send(bytes([0]))
+        response = self.sock.recv(1024)
+        self.sock.close()
+        return response.decode('utf-8')
 
     @staticmethod
     def build_object(**kwargs):
@@ -45,11 +59,3 @@ class Libsbox:
             ]
         }
 
-    @staticmethod
-    def send(obj):
-        client = Libsbox.connect()
-        client.send(json.dumps(obj).encode('utf-8'))
-        client.send(bytes([0]))
-        response = client.recv(1024)
-        client.close()
-        return response.decode('utf-8')
