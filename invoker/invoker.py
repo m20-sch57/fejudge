@@ -142,7 +142,6 @@ def calc_test_maxscore(problem_maxscore, tests_cnt, test_num):
         return problem_maxscore // tests_cnt
 
 
-print('Starting invoker')
 libsbox = Libsbox()
 judge = ServerProxy('http://' + Config.JUDGE_SERVER, use_builtin_types=True)
 consumer = KafkaConsumer(
@@ -184,6 +183,7 @@ for message in consumer:
     )
     
     judge.set_submission_result(submission['id'], 'Compiling', 0)
+    # os.chmod(submission_program, 0o777)
     compile_object = libsbox.build_object(
         argv=constants.COMPILE_ARGV[submission['language']],
         work_dir=Config.SUBMISSION_DIR,

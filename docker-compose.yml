@@ -4,6 +4,8 @@ services:
         image: wurstmeister/zookeeper
         ports:
             - 2181:2181
+        logging: 
+            driver: none
     kafka:
         image: wurstmeister/kafka
         ports:
@@ -16,6 +18,14 @@ services:
             KAFKA_CREATE_TOPICS: judge:1:1
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+        logging: 
+            driver: none
+    libsbox:
+        image: libsbox
+        privileged: true
+        volumes:
+            - /etc/libsboxd:/etc/libsboxd
+            - /tmp/invoker/submission:/invoker/submission
     fejudge:
         image: fejudge
         ports: 
@@ -30,5 +40,5 @@ services:
             KAFKA_SERVER: kafka:9092
             JUDGE_SERVER: fejudge:3113
         volumes:
-            - /etc/libsboxd/socket:/etc/libsboxd/socket
-
+            - /etc/libsboxd:/etc/libsboxd
+            - /tmp/invoker/submission:/invoker/submission

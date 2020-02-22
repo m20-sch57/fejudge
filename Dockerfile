@@ -8,4 +8,4 @@ WORKDIR /fejudge
 
 EXPOSE 3013
 EXPOSE 3113
-ENTRYPOINT ["python3", "run.py"]
+ENTRYPOINT [ "python3", "run.py" ]

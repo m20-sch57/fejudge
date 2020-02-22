@@ -12,8 +12,6 @@ def run_judge():
     judge.run(host='0.0.0.0', port=3113)
 
 
-# if not os.path.exists(app.config['SUBMISSIONS_EXEC_PATH']):
-#     os.makedirs(app.config['SUBMISSIONS_EXEC_PATH'])
 if not os.path.exists(app.config['SUBMISSIONS_LOG_PATH']):
     os.makedirs(app.config['SUBMISSIONS_LOG_PATH'])
 if not os.path.exists(app.config['SUBMISSIONS_DOWNLOAD_PATH']):
