@@ -1,23 +1,25 @@
 import os
 
 
-basedir = os.path.dirname(__file__)
-
-
 class Config(object):
     KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
     JUDGE_SERVER = os.environ.get('JUDGE_SERVER') or 'localhost:3113'
     SOCKET_FILE = os.environ.get('SOCKET_FILE') or '/etc/libsboxd/socket'
+    LOCAL_DIR = os.environ.get('LOCAL_DIR') or os.path.dirname(__file__)
+    DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(os.getcwd(), 'data')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
 
-    SUBMISSION_INPUT_NAME = os.environ.get('SUBMISSION_INPUT_NAME') or 'input.txt'
-    SUBMISSION_OUTPUT_NAME = os.environ.get('SUBMISSION_OUTPUT_NAME') or 'output.txt'
-    SUBMISSION_ANSWER_NAME = os.environ.get('SUBMISSION_ANSWER_NAME') or 'answer.txt'
-    SUBMISSION_RESULT_NAME = os.environ.get('SUBMISSION_RESULT_NAME') or 'result.txt'
-    SUBMISSION_ERROR_NAME = os.environ.get('SUBMISSION_ERROR_NAME') or 'error.txt'
-    SUBMISSION_CHECKER_NAME = os.environ.get('SUBMISSION_CHECKER_NAME') or 'checker.out'
+    PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
+    SUBMISSIONS_LOG_PATH = os.path.join(DATA_DIR, 'logs', 'submissions')
+    SUBMISSION_DIR = os.path.join(LOCAL_DIR, 'submission')
 
-    SUBMISSION_DIR = os.environ.get('SUBMISSION_DIR') or \
-        os.path.join(basedir, 'submission')
+    SUBMISSION_INPUT_NAME = 'input.txt'
+    SUBMISSION_OUTPUT_NAME = 'output.txt'
+    SUBMISSION_ANSWER_NAME = 'answer.txt'
+    SUBMISSION_RESULT_NAME = 'result.txt'
+    SUBMISSION_ERROR_NAME = 'error.txt'
+    SUBMISSION_CHECKER_NAME = 'checker.out'
     SUBMISSION_INPUT = os.path.join(SUBMISSION_DIR, SUBMISSION_INPUT_NAME)
     SUBMISSION_OUTPUT = os.path.join(SUBMISSION_DIR, SUBMISSION_OUTPUT_NAME)
     SUBMISSION_ANSWER = os.path.join(SUBMISSION_DIR, SUBMISSION_ANSWER_NAME)

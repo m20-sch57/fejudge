@@ -1,21 +1,15 @@
 import os
 import shutil
 
-from config import basedir
+from config import Config
 from app import db
 from app.models import User, Contest, Problem, Submission
 from datetime import timedelta
 
 
-def clear_data(session):
-    meta = db.metadata
-    for table in reversed(meta.sorted_tables):
-        session.execute(table.delete())
-    session.commit()
-
-
 def clear_folder(folder):
     if not os.path.isdir(folder):
+        print('Clear folder {}: folder not exist.'.format(folder))
         return
     for item in os.listdir(folder):
         path = os.path.join(folder, item)
@@ -25,14 +19,16 @@ def clear_folder(folder):
             shutil.rmtree(path)
 
 
-def clear_submission_data():
-    clear_folder(os.path.join(basedir, 'submissions'))
-    clear_folder(os.path.join(basedir, 'logs', 'submissions'))
-    clear_folder(os.path.join(basedir, 'download', 'submissions'))
+def clear_data(session):
+    meta = db.metadata
+    for table in reversed(meta.sorted_tables):
+        session.execute(table.delete())
+    session.commit()
+    clear_folder(Config.SUBMISSIONS_LOG_PATH)
+    clear_folder(Config.SUBMISSIONS_DOWNLOAD_PATH)
 
 
 clear_data(db.session)
-clear_submission_data()
 
 u = User(
     username='Kuyanov',

@@ -1,4 +1,4 @@
-version: '2'
+version: '3.3'
 services:
     zookeeper:
         image: wurstmeister/zookeeper
@@ -24,13 +24,12 @@ services:
         image: libsbox
         privileged: true
         volumes:
-            - /etc/libsboxd:/etc/libsboxd
-            - /tmp/invoker/submission:/invoker/submission
+            - libsboxd:/etc/libsboxd
+            - submission:/invoker/submission
     fejudge:
         image: fejudge
         ports: 
             - 3013:3013
-            - 3113:3113
         environment:
             KAFKA_SERVER: kafka:9092
             MAIL_PASSWORD: Fedroadmin
@@ -40,5 +39,8 @@ services:
             KAFKA_SERVER: kafka:9092
             JUDGE_SERVER: fejudge:3113
         volumes:
-            - /etc/libsboxd:/etc/libsboxd
-            - /tmp/invoker/submission:/invoker/submission
+            - libsboxd:/etc/libsboxd
+            - submission:/invoker/submission
+volumes:
+    libsboxd:
+    submission:

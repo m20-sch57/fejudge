@@ -93,7 +93,7 @@ class Problem(db.Model):
     submissions = db.relationship('Submission', backref='problem', lazy='dynamic')
 
     def __repr__(self):
-        return '<PROBLEM {}>'.format(self.statement)
+        return '<PROBLEM {}>'.format(self.name)
 
     def last_submission(self, user):
         return self.submissions.filter_by(user=user).order_by(desc(Submission.time)).first()

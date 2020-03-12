@@ -1,30 +1,92 @@
 import os
-import socket
 import json
 import time
 import datetime
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 from kafka import KafkaConsumer
-from xmlrpc.client import ServerProxy
 
 import constants
 from libsbox import Libsbox
 from config import Config
+from models import Base, Submission
 
 
 def read_file(path):
     return open(path, 'r').read()
 
 
+def read_binary(path):
+    return open(path, 'rb').read()
+
+
 def write_file(path, data=''):
-    if type(data) is str:
-        fout = open(path, 'w')
-    elif type(data) is bytes:
-        fout = open(path, 'wb')
-    else:
-        raise ValueError('write_file: unknown type')
+    fout = open(path, 'w')
     fout.write(data)
     fout.close()
+
+
+def write_binary(path, data=b''):
+    fout = open(path, 'wb')
+    fout.write(data)
+    fout.close()
+
+
+def number_of_tests(problem_id):
+    path = os.path.join(
+        Config.PROBLEMS_PATH,
+        str(problem_id).zfill(6),
+        'input'
+    )
+    return len(os.listdir(path))
+
+
+def get_test_data(problem_id, test_number):
+    test_input_file = os.path.join(
+        Config.PROBLEMS_PATH,
+        str(problem_id).zfill(6), 
+        'input',
+        str(test_number).zfill(3)
+    )
+    test_output_file = os.path.join(
+        Config.PROBLEMS_PATH,
+        str(problem_id).zfill(6),
+        'output',
+        str(test_number).zfill(3) + '.a'
+    )
+    return {
+        'input': read_file(test_input_file),
+        'output': read_file(test_output_file)
+    }
+
+
+def get_checker_binary(problem_id):
+    path = os.path.join(
+        Config.PROBLEMS_PATH,
+        str(problem_id).zfill(6),
+        Config.SUBMISSION_CHECKER_NAME
+    )
+    return read_binary(path)
+
+
+def write_logs(submission_id, data):
+    path = os.path.join(
+        Config.SUBMISSIONS_LOG_PATH,
+        str(submission_id).zfill(6) + '.txt'
+    )
+    open(path, 'a').write(data)
+
+
+def set_submission_status(submission_id, status, score=0, details=None):
+    submission = session.query(Submission).filter_by(id=submission_id).first()
+    if submission is None:
+        return
+    submission.status = status
+    submission.score = score
+    if details is not None:
+        submission.details = json.dumps(details)
+    session.commit()
 
 
 def clear_submission(items_to_stay=[]):
@@ -63,7 +125,7 @@ def parse_checker_status(response):
 
 
 def run_on_test(test_number):
-    test_data = judge.get_test_data(problem['id'], test_number)
+    test_data = get_test_data(problem['id'], test_number)
     clear_submission(items_to_stay=['participant.out'])
     write_file(Config.SUBMISSION_INPUT, test_data['input'])
     write_file(Config.SUBMISSION_OUTPUT)
@@ -84,7 +146,7 @@ def run_on_test(test_number):
     write_file(Config.SUBMISSION_INPUT, test_data['input'])
     write_file(Config.SUBMISSION_ANSWER, test_data['output'])
     write_file(Config.SUBMISSION_RESULT)
-    write_file(Config.SUBMISSION_CHECKER, checker_program)
+    write_binary(Config.SUBMISSION_CHECKER, checker_program)
 
     checker_object = libsbox.build_object(
         argv=[
@@ -112,7 +174,7 @@ def run_on_test(test_number):
         'wall_time_usage_s': submission_task['wall_time_usage_ms'] / 1000,
         'memory_usage_kb': submission_task['memory_usage_kb']
     }
-    judge.write_logs(submission['id'], (
+    write_logs(submission['id'], (
         '===== Test #{}, execution time: {}ms, memory used: {}kb =====\n'
         'Input data:\n{}\n'
         'Solution output data:\n{}\n'
@@ -142,8 +204,11 @@ def calc_test_maxscore(problem_maxscore, tests_cnt, test_num):
         return problem_maxscore // tests_cnt
 
 
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+Base.metadata.create_all(engine)
+session = Session(bind=engine)
+
 libsbox = Libsbox()
-judge = ServerProxy('http://' + Config.JUDGE_SERVER, use_builtin_types=True)
 consumer = KafkaConsumer(
     'judge',
     bootstrap_servers=[Config.KAFKA_SERVER],
@@ -169,11 +234,11 @@ for message in consumer:
 
     submission_file = os.path.join(Config.SUBMISSION_DIR, 'participant.' + submission['language'])
     submission_program = os.path.join(Config.SUBMISSION_DIR, 'participant.out')
-    checker_program = judge.get_checker_binary(problem['id'])
+    checker_program = get_checker_binary(problem['id'])
     write_file(submission_file, submission['source'])
     write_file(submission_program)
     write_file(Config.SUBMISSION_ERROR)
-    judge.write_logs(submission['id'],
+    write_logs(submission['id'],
         'Started judging at {}\n\nProblem ID: {}\nSubmission ID: {}\nLanguage: {}\n'.format(
             datetime.datetime.today().replace(microsecond=0),
             problem['id'],
@@ -182,7 +247,7 @@ for message in consumer:
         )
     )
     
-    judge.set_submission_result(submission['id'], 'Compiling', 0)
+    set_submission_status(submission['id'], status='Compiling')
     # os.chmod(submission_program, 0o777)
     compile_object = libsbox.build_object(
         argv=constants.COMPILE_ARGV[submission['language']],
@@ -195,7 +260,7 @@ for message in consumer:
     )
     compile_response = json.loads(libsbox.send(compile_object))
     submission_details['compiler'] = read_file(Config.SUBMISSION_ERROR)
-    judge.write_logs(submission['id'],
+    write_logs(submission['id'],
         'Compilation code: {}\nCompilation output:\n{}\n\n'.format(
             compile_response['tasks'][0]['exit_code'],
             submission_details['compiler']
@@ -205,8 +270,8 @@ for message in consumer:
         submission_status = 'CE'
         submission_score = 0
     else:
-        judge.set_submission_result(submission['id'], 'Running', 0)
-        tests_cnt = judge.tests_cnt(problem['id'])
+        set_submission_status(submission['id'], status='Running')
+        tests_cnt = number_of_tests(problem['id'])
         total_score = 0
         for test_number in range(1, tests_cnt + 1):
             test_status, test_details = run_on_test(test_number)
@@ -219,9 +284,8 @@ for message in consumer:
         submission_status = 'Accepted' if total_score == problem['max_score'] else 'Partial'
         submission_score = total_score
 
-    judge.set_submission_result(submission['id'], submission_status, submission_score)
-    judge.set_submission_details(submission['id'], submission_details)
-    judge.write_logs(submission['id'],
+    set_submission_status(submission['id'], status=submission_status, score=submission_score, details=submission_details)
+    write_logs(submission['id'],
         'Submission status: {}\nSubmission score: {}\n'.format(
             submission_status,
             submission_score
