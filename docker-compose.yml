@@ -21,14 +21,14 @@ services:
         logging: 
             driver: none
     libsbox:
-        image: libsbox
+        build: ./libsbox
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
             - submission:/invoker/submission
             - data:/invoker/data
     fejudge:
-        image: fejudge
+        build: .
         ports: 
             - 3013:3013
         environment:
@@ -37,7 +37,7 @@ services:
         volumes:
             - data:/fejudge/data
     invoker:
-        image: invoker
+        build: ./invoker
         environment: 
             KAFKA_SERVER: kafka:9092
             JUDGE_SERVER: fejudge:3113
