@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.0'
 services:
     zookeeper:
         image: wurstmeister/zookeeper
@@ -26,6 +26,7 @@ services:
         volumes:
             - libsboxd:/etc/libsboxd
             - submission:/invoker/submission
+            - data:/invoker/data
     fejudge:
         image: fejudge
         ports: 
@@ -33,6 +34,8 @@ services:
         environment:
             KAFKA_SERVER: kafka:9092
             MAIL_PASSWORD: Fedroadmin
+        volumes:
+            - data:/fejudge/data
     invoker:
         image: invoker
         environment: 
@@ -41,6 +44,8 @@ services:
         volumes:
             - libsboxd:/etc/libsboxd
             - submission:/invoker/submission
+            - data:/invoker/data
 volumes:
     libsboxd:
     submission:
+    data:

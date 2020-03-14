@@ -119,6 +119,8 @@ def run_on_test(test_number):
     shutil.copyfile(test_output_file, Config.SUBMISSION_ANSWER)
     write_file(Config.SUBMISSION_RESULT)
 
+    os.chmod(Config.SUBMISSION_CHECKER, 0o777)
+    os.chmod(Config.SUBMISSION_RESULT, 0o777)
     checker_object = libsbox.build_object(
         argv=[
             './' + Config.SUBMISSION_CHECKER_NAME,
@@ -184,7 +186,7 @@ def compile():
     )
     
     set_submission_status(submission['id'], status='Compiling')
-    # os.chmod(submission_program, 0o777)
+    os.chmod(submission_program, 0o777)
     compile_object = libsbox.build_object(
         argv=constants.COMPILE_ARGV[submission['language']],
         work_dir=Config.SUBMISSION_DIR,
