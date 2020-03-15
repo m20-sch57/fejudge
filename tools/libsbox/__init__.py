@@ -1,10 +1,9 @@
 import os
-import sys
 import socket
 import json
 import time
 
-from config import Config
+from libsbox.config import Config
 
 
 class Libsbox:

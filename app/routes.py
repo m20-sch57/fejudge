@@ -212,6 +212,9 @@ def contest_page(contest_url, number):
 
 
 def judge_submisssion(submission):
+    producer.send('packages', value={
+        'source': 'kek'
+    })
     producer.send('judge', value={
         'submission': {
             'id': submission.id,

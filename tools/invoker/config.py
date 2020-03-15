@@ -3,8 +3,6 @@ import os
 
 class Config(object):
     KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
-    JUDGE_SERVER = os.environ.get('JUDGE_SERVER') or 'localhost:3113'
-    SOCKET_FILE = os.environ.get('SOCKET_FILE') or '/etc/libsboxd/socket'
     LOCAL_DIR = os.environ.get('LOCAL_DIR') or os.path.dirname(__file__)
     DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(os.getcwd(), 'data')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \

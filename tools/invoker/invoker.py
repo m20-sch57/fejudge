@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import json
 import time
@@ -9,6 +10,7 @@ from sqlalchemy.orm import Session
 from kafka import KafkaConsumer
 
 import constants
+sys.path.append('..')
 from libsbox import Libsbox
 from config import Config
 from models import Base, Submission
