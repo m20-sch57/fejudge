@@ -10,8 +10,6 @@ services:
         image: wurstmeister/kafka
         ports:
             - 9092:9092
-        depends_on: 
-            - zookeeper
         environment:
             KAFKA_ADVERTISED_HOST_NAME: kafka
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -21,7 +19,9 @@ services:
         logging: 
             driver: none
     libsbox:
-        build: ./libsbox
+        build:
+            context: ./tools
+            dockerfile: docker-files/Dockerfile_libsbox
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd

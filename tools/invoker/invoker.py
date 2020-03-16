@@ -11,7 +11,7 @@ from kafka import KafkaConsumer
 
 import constants
 sys.path.append('..')
-from libsbox import Libsbox
+from libsbox.client import Libsbox
 from config import Config
 from models import Base, Submission
 

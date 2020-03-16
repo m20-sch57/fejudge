@@ -4,7 +4,7 @@ import json
 from kafka import KafkaConsumer
 
 sys.path.append('..')
-from libsbox import Libsbox
+from libsbox.client import Libsbox
 from config import Config
 
 

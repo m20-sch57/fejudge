@@ -1,6 +1,6 @@
 LANGUAGE_MATCHING = {
     'cpp': 'GNU C++ 9.2.1',
-    'py': 'Python 3.6',
+    'py': 'Python 3.7',
     'txt': 'Plain Text'
 }
 

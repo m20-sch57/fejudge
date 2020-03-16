@@ -3,7 +3,7 @@ import socket
 import json
 import time
 
-from libsbox.config import Config
+from libsbox.client.config import Config
 
 
 class Libsbox:
