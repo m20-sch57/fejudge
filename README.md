@@ -33,8 +33,10 @@ python3 run.py
 ```
 5. Run invoker from project directory in order to judge solutions
 ```
-sudo python3 invoker/invoker.py
+sudo python3 tools/invoker/invoker.py
 ```
+
+To start in docker, run ```docker-compose up``` in the project directory.
 
 ## Documentation
 
