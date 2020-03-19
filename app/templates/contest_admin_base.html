@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div class="container-fluid window-sm">
+    <div class="d-flex flex-wrap">
+        <div class="align-self-center p-1">
+            <a class="btn rounded-circle hover-grey p-2 mr-2" href="/contests">
+                <img src="/static/img/left.png" class="image-sm">
+            </a>
+        </div>
+        <div class="mr-auto align-self-center p-1">
+            <h3 class="my-auto">
+                {{ contest.name }}
+            </h3>
+        </div>
+    </div>
+    <hr>
+    <div class="d-flex flex-wrap">
+        <div class="d-flex flex-wrap mr-auto">
+            <div class="align-self-center p-1">
+                <a class="text-dark mx-2 my-auto" href="/contests/{{ contest_url }}/admin/info">
+                    Общая информация
+                </a>
+            </div>
+            <div class="align-self-center p-1">
+                <a class="text-dark mx-2 my-auto" href="/contests/{{ contest_url }}/admin/problems">
+                    Задачи
+                </a>
+            </div>
+            <div class="align-self-center p-1">
+                <a class="text-dark mx-2 my-auto" href="/contests/{{ contest_url }}/admin/participants">
+                    Участники
+                </a>
+            </div>
+            <div class="align-self-center p-1">
+                <a class="text-dark mx-2 my-auto" href="/contests/{{ contest_url }}/admin/submissions">
+                    Посылки
+                </a>
+            </div>
+            <div class="align-self-center p-1">
+                <a class="text-dark mx-2 my-auto" href="/contests/{{ contest_url }}/admin/notifications">
+                    Уведомления
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container-fluid window-sm">
+    {% block contest_content %}{% endblock %}
+</div>
+{% endblock %}

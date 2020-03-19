@@ -3,7 +3,7 @@ import shutil
 
 from config import Config
 from app import db
-from app.models import User, Contest, Problem, Submission
+from app.models import User, Contest, Problem, Submission, ContestRequest
 from datetime import timedelta
 
 
@@ -39,7 +39,7 @@ u = User(
 u.set_password('fedor2002')
 db.session.add(u)
 
-c = Contest(name='Идейные задачи', duration=timedelta(hours=24))
+c = Contest(name='Идейные задачи', duration=timedelta(hours=24), owner=u)
 db.session.add(c)
 problems = []
 for i in range(4):

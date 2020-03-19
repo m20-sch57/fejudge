@@ -102,11 +102,7 @@
 </div>
 <br>
 <div class="container-fluid window-sm">
-    {% if problem.problem_type == 'Programming' %}
-    {% include 'problem_prog.html' %}
-    {% elif problem.problem_type == 'Test' %}
-    {% include 'problem_test.html' %}
-    {% endif %}
+    {% block contest_content %}{% endblock %}
 </div>
 <div class="modal fade" id="finish">
     <div class="modal-md modal-dialog centered">

@@ -15,10 +15,51 @@
         {% for contest, request in contests %}
         {% with contest_url=contest.name|urlencode %}
         <div class="d-flex flex-wrap">
+            {% if current_user.is_anonymous %}
             <div class="align-self-center mt-2 mr-auto">
                 <label class="h4 mb-3">{{ contest.name }}</label>
                 <div class="d-flex flex-wrap">
-                    {% if request == None %}
+                    <p class="text-secondary mx-3 my-0">
+                        Вы не вошли в систему
+                    </p>
+                </div>
+            </div>
+            <div class="align-self-center ml-auto mt-2">
+                <a class="btn btn-lg btn-secondary btn-shadow font-weight-bold" href="/login">
+                    Войти в систему <span class="fa fa-arrow-right"></span>
+                </a>
+            </div>
+            {% elif contest.owner == current_user %}
+            <div class="align-self-center mt-2 mr-auto">
+                <label class="h4 mb-3">{{ contest.name }}</label>
+                <div class="d-flex flex-wrap">
+                    <p class="text-primary mx-3 my-0">Админ</p>
+                    <p class="text-primary mx-3 my-0">
+                        <span class="fa fa-clock"></span>
+                        {{ contest.duration_in_minutes() }} минут
+                    </p>
+                    <p class="text-primary mx-3 my-0">
+                        <span class="fa fa-users"></span>
+                        {{ contest.contest_requests.count() }} участников
+                    </p>
+                    <p class="text-primary mx-3 my-0">
+                        <span class="fa fa-tasks"></span>
+                        {{ contest.problems.count() }} заданий
+                    </p>
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/results">
+                        Результаты
+                    </a>
+                </div>
+            </div>
+            <div class="align-self-center ml-auto mt-2">
+                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/admin">
+                    Просмотр <span class="fa fa-arrow-right"></span>
+                </a>
+            </div>
+            {% elif request == None %}
+            <div class="align-self-center mt-2 mr-auto">
+                <label class="h4 mb-3">{{ contest.name }}</label>
+                <div class="d-flex flex-wrap">
                     <p class="text-secondary mx-3 my-0">До начала</p>
                     <p class="text-secondary mx-3 my-0">
                         <span class="fa fa-clock"></span>
@@ -28,7 +69,18 @@
                         <span class="fa fa-tasks"></span>
                         {{ contest.problems.count() }} заданий
                     </p>
-                    {% elif request.state() == 'In progress' %}
+                </div>
+            </div>
+            <div class="align-self-center ml-auto mt-2">
+                <button type="button" class="btn btn-lg btn-secondary btn-shadow font-weight-bold"
+                data-toggle="modal" data-target="#start_{{ contest.id }}">
+                    Участвовать <span class="fa fa-arrow-right"></span>
+                </button>
+            </div>
+            {% elif request.state() == 'In progress' %}
+            <div class="align-self-center mt-2 mr-auto">
+                <label class="h4 mb-3">{{ contest.name }}</label>
+                <div class="d-flex flex-wrap">
                     <p class="text-primary mx-3 my-0">В процессе</p>
                     <p class="text-primary mx-3 my-0">
                         <span class="fa fa-clock"></span>
@@ -45,7 +97,17 @@
                     <script>
                         start_timer('timer_{{ contest.id }}', -1);
                     </script>
-                    {% else %}
+                </div>
+            </div>
+            <div class="align-self-center ml-auto mt-2">
+                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
+                    Продолжить <span class="fa fa-arrow-right"></span>
+                </a>
+            </div>
+            {% else %}
+            <div class="align-self-center mt-2 mr-auto">
+                <label class="h4 mb-3">{{ contest.name }}</label>
+                <div class="d-flex flex-wrap">
                     <p class="text-success mx-3 my-0">Завершён</p>
                     <p class="text-success mx-3 my-0">
                         Баллы: {{ contest.total_score(current_user) }} / {{ contest.total_maxscore() }}
@@ -53,29 +115,14 @@
                     <a class="text-success mx-3 my-0" href="/contests/{{ contest_url }}/results">
                         Результаты
                     </a>
-                    {% endif %}
                 </div>
             </div>
             <div class="align-self-center ml-auto mt-2">
-                {% if current_user.is_anonymous %}
-                <a class="btn btn-lg btn-secondary btn-shadow font-weight-bold" href="/login">
-                    Войти в систему <span class="fa fa-arrow-right"></span>
-                </a>
-                {% elif request == None %}
-                <button type="button" class="btn btn-lg btn-secondary btn-shadow font-weight-bold"
-                data-toggle="modal" data-target="#start_{{ contest.id }}">
-                    Участвовать <span class="fa fa-arrow-right"></span>
-                </button>
-                {% elif request.state() == 'In progress' %}
-                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
-                    Продолжить <span class="fa fa-arrow-right"></span>
-                </a>
-                {% else %}
                 <a class="btn btn-lg btn-success btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
                     Просмотр <span class="fa fa-arrow-right"></span>
                 </a>
-                {% endif %}
             </div>
+            {% endif %}
         </div>
         <hr>
         {% endwith %}

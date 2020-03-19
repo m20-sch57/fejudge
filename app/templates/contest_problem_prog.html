@@ -1,3 +1,6 @@
+{% extends 'contest_user_base.html' %}
+
+{% block contest_content %}
 <div class="d-flex flex-wrap">
     <div class="p-1 mr-auto">
         <h3>Задача {{ problem.number }}. {{ problem.name }}</h3>
@@ -148,3 +151,4 @@ method="POST" enctype="multipart/form-data" novalidate>
     </div>
 </div>
 {% endfor %}
+{% endblock %}

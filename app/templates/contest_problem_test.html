@@ -1,3 +1,6 @@
+{% extends 'contest_user_base.html' %}
+
+{% block contest_content %}
 <div class="p-1">
     <h3>Задача {{ problem.number }}. {{ problem.name }}</h3>
 </div>
@@ -34,3 +37,4 @@
         {% endif %}
     </div>
 </form>
+{% endblock %}

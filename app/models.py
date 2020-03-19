@@ -23,6 +23,7 @@ class User(UserMixin, db.Model):
 
     restore_tokens = db.relationship('RestoreToken', backref='user', lazy='dynamic')
     contest_requests = db.relationship('ContestRequest', backref='user', lazy='dynamic')
+    owned_contests = db.relationship('Contest', backref='owner', lazy='dynamic')
     submissions = db.relationship('Submission', backref='user', lazy='dynamic')
 
     def __repr__(self):
@@ -51,7 +52,7 @@ class RestoreToken(db.Model):
 
 class Contest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     name = db.Column(db.String(64), unique=True)
     duration = db.Column(db.Interval)

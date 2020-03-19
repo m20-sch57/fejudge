@@ -33,7 +33,7 @@ def request_entity_too_large(error):
 @app.route('/')
 @app.route('/welcome')
 def welcome():
-    return render_template('welcome.html', title='About')
+    return render_template('welcome.html', title='About', active='about')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -201,14 +201,72 @@ def contest_page(contest_url, number):
         return redirect(url_for('contests_page'))
     if contest_request.state() == 'Finished':
         flash('Ваше участие в контесте завершено', category='alert-info')
-    problem_form = {}
     if problem.problem_type == 'Programming':
         problem_form = FileProblemForm(language=current_user.active_language)
+        return render_template('contest_problem_prog.html', title=contest.name, contest_url=contest_url,
+            contest=contest, problem=problem, request=contest_request, submissions=submissions, 
+            form=problem_form)
     elif problem.problem_type == 'Test':
         problem_form = InputProblemForm()
-    return render_template('contest.html', title=contest.name, contest_url=contest_url,
-        contest=contest, problem=problem, request=contest_request, submissions=submissions, 
-        form=problem_form)
+        return render_template('contest_problem_test.html', title=contest.name, contest_url=contest_url,
+            contest=contest, problem=problem, request=contest_request, submissions=submissions, 
+            form=problem_form)
+
+
+@app.route('/contests/<contest_url>/admin')
+@app.route('/contests/<contest_url>/admin/info')
+@login_required
+def contest_admin_info(contest_url):
+    contest = get_contest_by_url(contest_url)
+    if contest.owner != current_user:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    return render_template('contest_admin_info.html',
+        title=contest.name, contest_url=contest_url, contest=contest)
+
+
+@app.route('/contests/<contest_url>/admin/problems')
+@login_required
+def contest_admin_problems(contest_url):
+    contest = get_contest_by_url(contest_url)
+    if contest.owner != current_user:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    return render_template('contest_admin_problems.html',
+        title=contest.name, contest_url=contest_url, contest=contest)
+
+
+@app.route('/contests/<contest_url>/admin/participants')
+@login_required
+def contest_admin_participants(contest_url):
+    contest = get_contest_by_url(contest_url)
+    if contest.owner != current_user:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    return render_template('contest_admin_participants.html',
+        title=contest.name, contest_url=contest_url, contest=contest)
+
+
+@app.route('/contests/<contest_url>/admin/submissions')
+@login_required
+def contest_admin_submissions(contest_url):
+    contest = get_contest_by_url(contest_url)
+    if contest.owner != current_user:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    return render_template('contest_admin_submissions.html',
+        title=contest.name, contest_url=contest_url, contest=contest)
+
+
+@app.route('/contests/<contest_url>/admin/notifications')
+@login_required
+def contest_admin_notifications(contest_url):
+    contest = get_contest_by_url(contest_url)
+    if contest.owner != current_user:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    return render_template('contest_admin_notifications.html',
+        title=contest.name, contest_url=contest_url, contest=contest)
 
 
 def judge_submisssion(submission):
