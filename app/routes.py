@@ -10,6 +10,7 @@ from app import app, db, producer, avatars
 from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
+from app.forms import AdminInfoForm
 from app.models import User, RestoreToken, Contest, Problem, ContestRequest, Submission
 from app.email import send_verification_code, send_new_password
 
@@ -86,7 +87,7 @@ def restore_password_welcome():
         current_time = datetime.utcnow().replace(microsecond=0)
         code = strgen.StringGenerator('[0-9]{10}').render()
         restore_token = RestoreToken(user=user, code=code, time=current_time)
-        send_verification_code(user.email, user.fullname, code)
+        send_verification_code(user.email, user.first_name, code)
         db.session.commit()
         return redirect(url_for('restore_password_selected', username=user.username))
     return render_template('restore_password.html', title='Restore password', form=form)
@@ -107,7 +108,7 @@ def restore_password_selected(username):
             return redirect(url_for('restore_password_selected', username=username))
         new_password = strgen.StringGenerator('[\w\d]{16}').render()
         user.set_password(new_password)
-        send_new_password(user.email, user.fullname, new_password)
+        send_new_password(user.email, user.first_name, new_password)
         db.session.commit()
         flash('New password has been sent to you by email', category='alert-success')
         return redirect(url_for('logout'))
@@ -162,10 +163,9 @@ def change_avatar():
 def change_profile():
     form = EditProfileForm(current_user.email)
     if form.validate_on_submit():
-        current_user.fullname = form.fullname.data
-        current_user.birthdate = form.birthdate.data
+        current_user.first_name = form.first_name.data
+        current_user.second_name = form.second_name.data
         current_user.email = form.email.data
-        current_user.phone = form.phone.data
         db.session.commit()
         flash('Your information has been saved', category='alert-success')
     else:
@@ -221,8 +221,9 @@ def contest_admin_info(contest_url):
     if contest.owner != current_user:
         flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
+    info_form = AdminInfoForm()
     return render_template('contest_admin_info.html',
-        title=contest.name, contest_url=contest_url, contest=contest)
+        title=contest.name, contest_url=contest_url, contest=contest, info_form=info_form)
 
 
 @app.route('/contests/<contest_url>/admin/problems')

@@ -1,14 +1,16 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block app_content %}
 <div class="container-fluid window">
     <div class="container">
         <div class="d-flex flex-wrap">
-            <h1 class="my-auto mr-auto">Контесты</h1>
-            <h4 class="my-auto mr-2">Категория:</h4>
-            <select class="form-control btn-shadow w-auto h-auto m-1">
-                <option selected value="common">Общие</option>
-            </select>
+            <h1 class="mr-auto my-auto">Контесты</h1>
+            <div class="d-flex flex-wrap">
+                <h4 class="mr-2 my-auto">Категория:</h4>
+                <select class="form-control btn-shadow w-auto h-auto m-1">
+                    <option selected value="common">Общие</option>
+                </select>
+            </div>
         </div>
         <br><hr>
         <script src="/static/js/timer.js"></script>
@@ -16,7 +18,7 @@
         {% with contest_url=contest.name|urlencode %}
         <div class="d-flex flex-wrap">
             {% if current_user.is_anonymous %}
-            <div class="align-self-center mt-2 mr-auto">
+            <div class="mr-auto my-auto">
                 <label class="h4 mb-3">{{ contest.name }}</label>
                 <div class="d-flex flex-wrap">
                     <p class="text-secondary mx-3 my-0">
@@ -24,13 +26,13 @@
                     </p>
                 </div>
             </div>
-            <div class="align-self-center ml-auto mt-2">
+            <div class="py-2 ml-auto my-auto">
                 <a class="btn btn-lg btn-secondary btn-shadow font-weight-bold" href="/login">
                     Войти в систему <span class="fa fa-arrow-right"></span>
                 </a>
             </div>
             {% elif contest.owner == current_user %}
-            <div class="align-self-center mt-2 mr-auto">
+            <div class="mr-auto my-auto">
                 <label class="h4 mb-3">{{ contest.name }}</label>
                 <div class="d-flex flex-wrap">
                     <p class="text-primary mx-3 my-0">Админ</p>
@@ -51,13 +53,13 @@
                     </a>
                 </div>
             </div>
-            <div class="align-self-center ml-auto mt-2">
+            <div class="py-2 ml-auto my-auto">
                 <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/admin">
-                    Просмотр <span class="fa fa-arrow-right"></span>
+                    Подробнее <span class="fa fa-arrow-right"></span>
                 </a>
             </div>
             {% elif request == None %}
-            <div class="align-self-center mt-2 mr-auto">
+            <div class="mr-auto my-auto">
                 <label class="h4 mb-3">{{ contest.name }}</label>
                 <div class="d-flex flex-wrap">
                     <p class="text-secondary mx-3 my-0">До начала</p>
@@ -71,14 +73,14 @@
                     </p>
                 </div>
             </div>
-            <div class="align-self-center ml-auto mt-2">
+            <div class="py-2 ml-auto my-auto">
                 <button type="button" class="btn btn-lg btn-secondary btn-shadow font-weight-bold"
                 data-toggle="modal" data-target="#start_{{ contest.id }}">
                     Участвовать <span class="fa fa-arrow-right"></span>
                 </button>
             </div>
-            {% elif request.state() == 'In progress' %}
-            <div class="align-self-center mt-2 mr-auto">
+            {% elif request.state() == "In progress" %}
+            <div class="mr-auto my-auto">
                 <label class="h4 mb-3">{{ contest.name }}</label>
                 <div class="d-flex flex-wrap">
                     <p class="text-primary mx-3 my-0">В процессе</p>
@@ -95,17 +97,17 @@
                         Текущие результаты
                     </a>
                     <script>
-                        start_timer('timer_{{ contest.id }}', -1);
+                        start_timer("timer_{{ contest.id }}", -1);
                     </script>
                 </div>
             </div>
-            <div class="align-self-center ml-auto mt-2">
+            <div class="py-2 ml-auto my-auto">
                 <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
                     Продолжить <span class="fa fa-arrow-right"></span>
                 </a>
             </div>
             {% else %}
-            <div class="align-self-center mt-2 mr-auto">
+            <div class="mr-auto my-auto">
                 <label class="h4 mb-3">{{ contest.name }}</label>
                 <div class="d-flex flex-wrap">
                     <p class="text-success mx-3 my-0">Завершён</p>
@@ -117,7 +119,7 @@
                     </a>
                 </div>
             </div>
-            <div class="align-self-center ml-auto mt-2">
+            <div class="py-2 ml-auto my-auto">
                 <a class="btn btn-lg btn-success btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
                     Просмотр <span class="fa fa-arrow-right"></span>
                 </a>

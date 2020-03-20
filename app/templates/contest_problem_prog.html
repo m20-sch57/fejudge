@@ -1,4 +1,4 @@
-{% extends 'contest_user_base.html' %}
+{% extends "contest_user_base.html" %}
 
 {% block contest_content %}
 <div class="d-flex flex-wrap">
@@ -13,9 +13,9 @@
     <p>{{ problem.statement }}</p>
 </div>
 <br>
-{% if request.state() == 'In progress' %}
+{% if request.state() == "In progress" %}
 <form action="/contests/{{ contest_url }}/{{ problem.number }}/send"
-method="POST" enctype="multipart/form-data" novalidate>
+method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <h3 class="py-1">Отправить решение</h3>
     <div class="py-3">
@@ -54,15 +54,15 @@ method="POST" enctype="multipart/form-data" novalidate>
             </thead>
             <tbody>
                 {% for submission in submissions %}
-                {% with class='' if loop.index != 1 else 
-                'bg-accepted' if submission.status == 'Accepted' else 
-                'bg-failed' if submission.status in ['Partial', 'Failed'] %}
+                {% with class="" if loop.index != 1 else 
+                "bg-accepted" if submission.status == "Accepted" else 
+                "bg-failed" if submission.status in ["Partial", "Failed"] %}
                 <tr class="{{ class }}">
                     <td>{{ submission.id }}</td>
                     <td>{{ submission.time_from_start() }}</td>
                     <td>{{ submission.formatted_language() }}</td>
                     <td>{{ submission.formatted_status() }}</td>
-                    <td>{{ submission.score if submission.show_score() else '' }}</td>
+                    <td>{{ submission.score if submission.show_score() else "" }}</td>
                     <td>
                         <button type="button" class="btn btn-link text-dark p-0" 
                         data-toggle="modal" data-target="#source_{{ submission.id }}">
@@ -115,7 +115,7 @@ method="POST" enctype="multipart/form-data" novalidate>
             </div>
             <div class="modal-body">
                 <h5>Сообщение компилятора:</h5>
-                <p>{{ submission.get_details()['compiler'] }}</p>
+                <p>{{ submission.get_details()["compiler"] }}</p>
                 <br>
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered table-classic">
@@ -127,16 +127,16 @@ method="POST" enctype="multipart/form-data" novalidate>
                             <th>Score</th>
                         </thead>
                         <tbody>
-                            {% for test_details in submission.get_details()['tests'] %}
-                            {% with class='text-success' if test_details['status'] == 'OK' else 'text-danger' %}
+                            {% for test_details in submission.get_details()["tests"] %}
+                            {% with class="text-success" if test_details["status"] == "OK" else "text-danger" %}
                             <tr>
                                 <td>{{ loop.index }}</td>
                                 <td class="{{ class }}">
-                                    {{ submission.formatted_test_status(test_details['status']) }}
+                                    {{ submission.formatted_test_status(test_details["status"]) }}
                                 </td>
-                                <td>{{ test_details['time_usage_s'] }}</td>
-                                <td>{{ test_details['memory_usage_kb'] }}</td>
-                                <td>{{ test_details['score'] }} ({{ test_details['maxscore'] }})</td>
+                                <td>{{ test_details["time_usage_s"] }}</td>
+                                <td>{{ test_details["memory_usage_kb"] }}</td>
+                                <td>{{ test_details["score"] }} ({{ test_details["maxscore"] }})</td>
                             </tr>
                             {% endwith %}
                             {% endfor %}

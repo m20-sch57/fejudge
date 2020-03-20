@@ -12,14 +12,13 @@ from app import db, login
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
-    fullname = db.Column(db.String(128), default='')
+    first_name = db.Column(db.String(128), default='')
+    second_name = db.Column(db.String(128), default='')
     password_hash = db.Column(db.String(128))
 
     avatar = db.Column(db.String(64), default='user.png')
     email = db.Column(db.String(128), unique=True)
-    phone = db.Column(db.String(32), default='')
-    birthdate = db.Column(db.Date, default=date.today())
-    active_language = db.Column(db.String(32), default='cpp')
+    active_language = db.Column(db.String(16), default='cpp')
 
     restore_tokens = db.relationship('RestoreToken', backref='user', lazy='dynamic')
     contest_requests = db.relationship('ContestRequest', backref='user', lazy='dynamic')
@@ -55,6 +54,8 @@ class Contest(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     name = db.Column(db.String(64), unique=True)
+    contest_type = db.Column(db.String(16))
+    start_time = db.Column(db.DateTime)
     duration = db.Column(db.Interval)
 
     contest_requests = db.relationship('ContestRequest', backref='contest', lazy='dynamic')
@@ -150,8 +151,8 @@ class Submission(db.Model):
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     time = db.Column(db.DateTime)
-    language = db.Column(db.String(32))
-    status = db.Column(db.String(32))
+    language = db.Column(db.String(16))
+    status = db.Column(db.String(16))
     score = db.Column(db.Integer)
     source = db.Column(db.Text)
     details = db.Column(db.Text, default='{}')

@@ -1,22 +1,17 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block app_content %}
 <div class="container-fluid window">
     <div class="container">
-        <form action="" method="POST" novalidate>
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
             <h1>Введите код</h1>
             <br><br>
             <h5>Код подтверждения был отправлен на почту {{ user.email }}.</h5>
             <h5>Дождитесь его получения, это может занять несколько минут.</h5>
             <br>
-            {{ form.hidden_tag() }}
             <div class="form-group">
-                {% with class="form-control is-invalid" if form.code.errors else "form-control" %}
-                {{ form.code(class=class, placeholder="Code") }}
-                {% endwith %}
-                {% for error in form.code.errors %}
-                <span class="text-danger">{{ error }}</span>
-                {% endfor %}
+                {{ form.code(class="form-control", placeholder="Code") }}
             </div>
             <br>
             <button type="submit" class="btn btn-primary btn-shadow">

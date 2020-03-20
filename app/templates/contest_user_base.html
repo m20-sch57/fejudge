@@ -1,25 +1,25 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block app_content %}
 <div class="container-fluid window-sm">
     <div class="d-flex flex-wrap">
-        <div class="align-self-center p-1">
+        <div class="p-1 my-auto">
             <a class="btn rounded-circle hover-grey p-2 mr-2" href="/contests">
                 <img src="/static/img/left.png" class="image-sm">
             </a>
         </div>
-        <div class="mr-auto align-self-center p-1">
+        <div class="p-1 mr-auto my-auto">
             <h3 class="my-auto">
                 {{ contest.name }}
             </h3>
         </div>
-        {% if request.state() == 'In progress' %}
-        <div class="align-self-center p-1 mr-2">
+        {% if request.state() == "In progress" %}
+        <div class="p-1 mr-2 my-auto">
             <h4 class="my-auto" id="timer">
                 {{ request.time_remaining().total_seconds() }}
             </h4>
         </div>
-        <div class="align-self-center p-1">
+        <div class="p-1 my-auto">
             <div class="dropdown">
                 <button class="btn rounded-circle hover-grey p-2" data-toggle="dropdown">
                     <img src="/static/img/info.png" class="image-sm">
@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="align-self-center p-1">
+        <div class="p-1 my-auto">
             <div class="dropdown">
                 <button class="btn rounded-circle hover-grey p-2" data-toggle="dropdown">
                     <img src="/static/img/bell.png" class="image-sm">
@@ -69,12 +69,12 @@
         </div>
         <script src="/static/js/timer.js"></script>
         <script>
-            start_timer('timer', -1, () => location.replace(location.pathname));
-            start_timer('time_passed', 1);
-            start_timer('time_remaining', -1);
+            start_timer("timer", -1, () => location.replace(location.pathname));
+            start_timer("time_passed", 1);
+            start_timer("time_remaining", -1);
         </script>
         {% else %}
-        <div class="align-self-center p-1">
+        <div class="p-1 my-auto">
             <a class="text-secondary mx-2 my-auto" href="/contests/{{ contest_url }}/results">
                 Результаты
             </a>
@@ -85,9 +85,9 @@
     <div class="d-flex flex-wrap">
         <div class="d-flex flex-wrap mr-auto">
             {% for any_problem in contest.problems %}
-            {% with active='problem-bar-item-active' if any_problem.number == problem.number else
-            'bg-accepted' if any_problem.score(current_user) == any_problem.max_score else 
-            'bg-failed' if any_problem.submitted(current_user) else '' %}
+            {% with active="problem-bar-item-active" if any_problem.number == problem.number else
+            "bg-accepted" if any_problem.score(current_user) == any_problem.max_score else 
+            "bg-failed" if any_problem.submitted(current_user) else "" %}
             <a class="btn btn-lg problem-bar-item {{ active }} rounded-circle"
             href="/contests/{{ contest_url }}/{{ any_problem.number }}">
                 {{ any_problem.number }}
@@ -95,7 +95,7 @@
             {% endwith %}
             {% endfor %}
         </div>
-        <h4 class="align-self-center m-2">
+        <h4 class="mx-2 my-auto">
             Всего баллов: {{ contest.total_score(current_user) }}
         </h4>
     </div>

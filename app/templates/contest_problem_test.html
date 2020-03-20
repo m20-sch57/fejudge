@@ -1,4 +1,4 @@
-{% extends 'contest_user_base.html' %}
+{% extends "contest_user_base.html" %}
 
 {% block contest_content %}
 <div class="p-1">
@@ -8,28 +8,28 @@
 <p>{{ problem.statement }}</p>
 <br>
 <hr>
-<form action="" method="POST" novalidate>
+<form action="" method="POST">
     {{ form.hidden_tag() }}
     <div class="d-flex flex-wrap">
-        <div class="align-self-center p-2">
+        <div class="p-2 my-auto">
             {{ form.source.label(class="h3 text-center") }}
         </div>
-        <div class="flex-grow-1 align-self-center p-2">
+        <div class="flex-grow-1 p-2 my-auto">
             {{ form.source(class="form-control", placeholder="Ответ") }}
         </div>
-        <div class="align-self-center p-2">
+        <div class="p-2 my-auto">
             <button type="submit" class="btn btn-primary btn-shadow mr-4">
                 Проверить
             </button>
         </div>
         {% if problem.number != contest.problems.all()|length %}
-        <div class="align-self-center p-2">
+        <div class="p-2 my-auto">
             <a href="/contests/{{ contest_url }}/{{ problem.number+1 }}">
                 Следующее задание >
             </a>
         </div>
         {% else %}
-        <div class="align-self-center p-2">
+        <div class="p-2 my-auto">
             <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#finish">
                 Завершить участие >
             </button>

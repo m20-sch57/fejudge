@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, DateField, SelectField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, Email
+from wtforms.validators import ValidationError, DataRequired, EqualTo
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms_components import IntegerField, DateField, SelectField, EmailField
 
 import constants
 from app.models import User
@@ -14,9 +15,11 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     username = StringField('Ваш логин:', validators=[DataRequired()])
-    email = StringField('Введите почту:', validators=[DataRequired(), Email()])
+    email = EmailField('Введите почту:', validators=[DataRequired()])
     password = PasswordField('Введите пароль:')
-    password2 = PasswordField('Повторите пароль:', validators=[EqualTo('password')])
+    password2 = PasswordField('Повторите пароль:', validators=[
+        EqualTo('password', message='Пароли должны совпадать')
+    ])
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -45,10 +48,9 @@ class EditAvatarForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    fullname = StringField('Полное имя:')
-    birthdate = DateField('Дата рождения:')
-    email = StringField('Почта:', validators=[DataRequired(), Email()])
-    phone = StringField('Телефон:')
+    first_name = StringField('Имя:')
+    second_name = StringField('Фамилия:')
+    email = EmailField('Почта:', validators=[DataRequired()])
 
     def __init__(self, original_email, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,3 +81,9 @@ class FileProblemForm(FlaskForm):
     source = FileField('Выберите файл', validators=[
         FileRequired()
     ])
+
+
+class AdminInfoForm(FlaskForm):
+    name = StringField('Название контеста:', validators=[DataRequired()])
+    duration = IntegerField('Продолжительность (минут):', validators=[DataRequired()])
+    contest_type = SelectField('Тип контеста:', choices=[('Virtual', 'Виртуальный')])

@@ -52,28 +52,24 @@ function uploadFiles(files) {
 }
 
 function showProfileForm() {
-    document.getElementById('fullname').removeAttribute('hidden');
-    document.getElementById('fullnameLabel').setAttribute('hidden', '');
-    document.getElementById('birthdate').removeAttribute('hidden');
-    document.getElementById('birthdateLabel').setAttribute('hidden', '');
+    document.getElementById('firstName').removeAttribute('hidden');
+    document.getElementById('firstNameLabel').setAttribute('hidden', '');
+    document.getElementById('secondName').removeAttribute('hidden');
+    document.getElementById('secondNameLabel').setAttribute('hidden', '');
     document.getElementById('email').removeAttribute('hidden');
     document.getElementById('emailLabel').setAttribute('hidden', '');
-    document.getElementById('phone').removeAttribute('hidden');
-    document.getElementById('phoneLabel').setAttribute('hidden', '');
     changeProfile.setAttribute('hidden', '');
     submitProfile.removeAttribute('hidden');
     cancelProfile.removeAttribute('hidden');
 }
 
 function hideProfileForm() {
-    document.getElementById('fullname').setAttribute('hidden', '');
-    document.getElementById('fullnameLabel').removeAttribute('hidden');
-    document.getElementById('birthdate').setAttribute('hidden', '');
-    document.getElementById('birthdateLabel').removeAttribute('hidden');
+    document.getElementById('firstName').setAttribute('hidden', '');
+    document.getElementById('firstNameLabel').removeAttribute('hidden');
+    document.getElementById('secondName').setAttribute('hidden', '');
+    document.getElementById('secondNameLabel').removeAttribute('hidden');
     document.getElementById('email').setAttribute('hidden', '');
     document.getElementById('emailLabel').removeAttribute('hidden');
-    document.getElementById('phone').setAttribute('hidden', '');
-    document.getElementById('phoneLabel').removeAttribute('hidden');
     changeProfile.removeAttribute('hidden');
     submitProfile.setAttribute('hidden', '');
     cancelProfile.setAttribute('hidden', '');
