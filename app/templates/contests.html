@@ -40,14 +40,14 @@
                         <span class="fa fa-clock"></span>
                         {{ contest.duration_in_minutes() }} минут
                     </p>
-                    <p class="text-primary mx-3 my-0">
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/admin/participants">
                         <span class="fa fa-users"></span>
                         {{ contest.contest_requests.count() }} участников
-                    </p>
-                    <p class="text-primary mx-3 my-0">
+                    </a>
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/admin/problems">
                         <span class="fa fa-tasks"></span>
-                        {{ contest.problems.count() }} заданий
-                    </p>
+                        {{ contest.problems.count() }} задач
+                    </a>
                     <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/results">
                         Результаты
                     </a>
@@ -69,7 +69,7 @@
                     </p>
                     <p class="text-secondary mx-3 my-0">
                         <span class="fa fa-tasks"></span>
-                        {{ contest.problems.count() }} заданий
+                        {{ contest.problems.count() }} задач
                     </p>
                 </div>
             </div>
@@ -145,9 +145,9 @@
                 <ul>
                     <li>Название: {{ contest.name }}</li>
                     <li>Продолжительность: {{ contest.duration_in_minutes() }} минут</li>
-                    <li>Количество заданий: {{ contest.problems.count() }}</li>
+                    <li>Количество задач: {{ contest.problems.count() }}</li>
                 </ul>
-                <p>Приостановить выполнение заданий будет невозможно.<br>Вы уверены, что хотите продолжить?</p>
+                <p>Приостановить решение задач будет невозможно.<br>Вы уверены, что хотите продолжить?</p>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-success btn-shadow" href="/contests/{{ contest_url }}/start">

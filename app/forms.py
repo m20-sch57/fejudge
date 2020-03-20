@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import ValidationError, DataRequired, EqualTo
+from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms_components import IntegerField, DateField, SelectField, EmailField
 
 import constants
-from app.models import User
+from app.models import User, Contest
 
 
 class LoginForm(FlaskForm):
@@ -65,7 +65,9 @@ class EditProfileForm(FlaskForm):
 class EditPasswordForm(FlaskForm):
     old_password = PasswordField('Старый пароль:')
     new_password = PasswordField('Новый пароль:')
-    new_password2 = PasswordField('Повторите пароль:', validators=[EqualTo('new_password')])
+    new_password2 = PasswordField('Повторите пароль:', validators=[
+        EqualTo('new_password', message='Пароли должны совпадать')
+    ])
 
 
 class InputProblemForm(FlaskForm):
@@ -78,12 +80,21 @@ class FileProblemForm(FlaskForm):
         choices=list(constants.LANGUAGE_MATCHING.items()),
         default='cpp'
     )
-    source = FileField('Выберите файл', validators=[
-        FileRequired()
-    ])
+    source = FileField('Выберите файл', validators=[FileRequired()])
 
 
 class AdminInfoForm(FlaskForm):
     name = StringField('Название контеста:', validators=[DataRequired()])
-    duration = IntegerField('Продолжительность (минут):', validators=[DataRequired()])
     contest_type = SelectField('Тип контеста:', choices=[('Virtual', 'Виртуальный')])
+    duration = IntegerField('Продолжительность (минут):', validators=[
+        DataRequired(), NumberRange(min=1, max=1000000)
+    ])
+
+    def __init__(self, original_name, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.original_name = original_name
+
+    def validate_name(self, name):
+        contest = Contest.query.filter_by(name=name.data).first()
+        if self.original_name != name.data and contest is not None:
+            raise ValidationError('Это имя уже занято.')

@@ -4,7 +4,7 @@ import strgen
 from urllib.parse import unquote_plus
 from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from app import app, db, producer, avatars
 from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
@@ -213,15 +213,21 @@ def contest_page(contest_url, number):
             form=problem_form)
 
 
-@app.route('/contests/<contest_url>/admin')
-@app.route('/contests/<contest_url>/admin/info')
+@app.route('/contests/<contest_url>/admin', methods=['GET', 'POST'])
+@app.route('/contests/<contest_url>/admin/info', methods=['GET', 'POST'])
 @login_required
 def contest_admin_info(contest_url):
     contest = get_contest_by_url(contest_url)
     if contest.owner != current_user:
         flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
-    info_form = AdminInfoForm()
+    info_form = AdminInfoForm(contest.name, contest_type=contest.contest_type)
+    if info_form.validate_on_submit():
+        contest.name = info_form.name.data
+        contest.contest_type = info_form.contest_type.data
+        contest.duration = timedelta(minutes=info_form.duration.data)
+        db.session.commit()
+        flash('Contest info has been saved', category='alert-success')
     return render_template('contest_admin_info.html',
         title=contest.name, contest_url=contest_url, contest=contest, info_form=info_form)
 

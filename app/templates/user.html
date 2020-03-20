@@ -31,7 +31,7 @@
                             {{ profile_form.first_name.label(class="col-form-label") }}
                         </div>
                         <div class="col-md-9">
-                            <h6 class="col-form-label" id="firstNameLabel">
+                            <h6 class="col-form-label font-weight-bold" id="firstNameLabel">
                                 {{ user.first_name if user.first_name else "Не заполнено" }}
                             </h6>
                             {{ profile_form.first_name(class="form-control", placeholder="First name", 
@@ -43,7 +43,7 @@
                             {{ profile_form.second_name.label(class="col-form-label") }}
                         </div>
                         <div class="col-md-9">
-                            <h6 class="col-form-label" id="secondNameLabel">
+                            <h6 class="col-form-label font-weight-bold" id="secondNameLabel">
                                 {{ user.second_name if user.second_name else "Не заполнено" }}
                             </h6>
                             {{ profile_form.second_name(class="form-control", placeholder="Second name", 
@@ -55,7 +55,7 @@
                             {{ profile_form.email.label(class="col-form-label") }}
                         </div>
                         <div class="col-md-9">
-                            <h6 class="col-form-label" id="emailLabel">
+                            <h6 class="col-form-label font-weight-bold" id="emailLabel">
                                 {{ user.email if user.email else "Не заполнено" }}
                             </h6>
                             {{ profile_form.email(class="form-control", placeholder="Email", 
