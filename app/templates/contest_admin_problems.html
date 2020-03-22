@@ -1,5 +1,13 @@
 {% extends "contest_admin_base.html" %}
 
 {% block contest_content %}
-<h3>Задачи ({{ contest.problems.count() }})</h3>
+<div class="pb-3">
+    <h3>Задачи ({{ contest.problems.count() }})</h3>
+</div>
+<div class="pb-1">
+    <a class="btn btn-success btn-shadow" href="/contests/{{ contest_url }}/admin/newproblem">
+        <span class="fa fa-plus"></span>
+        Добавить задачу
+    </a>
+</div>
 {% endblock %}

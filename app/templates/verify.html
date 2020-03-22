@@ -5,18 +5,23 @@
     <div class="container">
         <form action="" method="POST">
             {{ form.hidden_tag() }}
-            <h1>Введите код</h1>
-            <br><br>
-            <h5>Код подтверждения был отправлен на почту {{ user.email }}.</h5>
-            <h5>Дождитесь его получения, это может занять несколько минут.</h5>
-            <br>
-            <div class="form-group">
-                {{ form.code(class="form-control", placeholder="Code") }}
+            <div class="pb-5">
+                <h1>Введите код</h1>
             </div>
-            <br>
-            <button type="submit" class="btn btn-primary btn-shadow">
-                Продолжить <span class="fa fa-arrow-right"></span>
-            </button>
+            <div class="pb-4">
+                <h5>Код подтверждения был отправлен на почту {{ user.email }}.</h5>
+                <h5>Дождитесь его получения, это может занять несколько минут.</h5>
+            </div>
+            <div class="pb-1">
+                <div class="form-group">
+                    {{ form.code(class="form-control", placeholder="Code") }}
+                </div>
+            </div>
+            <div class="pb-1">
+                <button type="submit" class="btn btn-primary btn-shadow">
+                    Продолжить <span class="fa fa-arrow-right"></span>
+                </button>
+            </div>
         </form>
     </div>
 </div>

@@ -3,7 +3,7 @@
 {% block app_content %}
 <div class="container-fluid window">
     <div class="container">
-        <div class="d-flex flex-wrap">
+        <div class="d-flex flex-wrap pb-3">
             <h1 class="mr-auto my-auto">Контесты</h1>
             <div class="d-flex flex-wrap">
                 <h4 class="mr-2 my-auto">Категория:</h4>
@@ -12,7 +12,7 @@
                 </select>
             </div>
         </div>
-        <br><hr>
+        <hr>
         <script src="/static/js/timer.js"></script>
         {% for contest, request in contests %}
         {% with contest_url=contest.name|urlencode %}

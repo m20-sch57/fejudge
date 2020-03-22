@@ -3,35 +3,39 @@
 {% block contest_content %}
 <form action="" method="POST">
     {{ info_form.hidden_tag() }}
-    <h3>Общая информация</h3>
-    <br>
-    <div class="form-group row">
-        <div class="col-md-3">
-            {{ info_form.name.label(class="col-form-label") }}
+    <div class="pb-3">
+        <h3>Общая информация</h3>
+    </div>
+    <div class="pb-3">
+        <div class="form-group row">
+            <div class="col-md-3">
+                {{ info_form.name.label(class="col-form-label") }}
+            </div>
+            <div class="col-md-9">
+                {{ info_form.name(class="form-control", value=contest.name) }}
+            </div>
         </div>
-        <div class="col-md-9">
-            {{ info_form.name(class="form-control", value=contest.name) }}
+        <div class="form-group row">
+            <div class="col-md-3">
+                {{ info_form.contest_type.label(class="col-form-label") }}
+            </div>
+            <div class="col-md-9">
+                {{ info_form.contest_type(class="form-control") }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                {{ info_form.duration.label(class="col-form-label") }}
+            </div>
+            <div class="col-md-9">
+                {{ info_form.duration(class="form-control", value=contest.duration_in_minutes()) }}
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <div class="col-md-3">
-            {{ info_form.contest_type.label(class="col-form-label") }}
-        </div>
-        <div class="col-md-9">
-            {{ info_form.contest_type(class="form-control") }}
-        </div>
+    <div class="pb-1">
+        <button type="submit" class="btn btn-success btn-shadow">
+            Сохранить
+        </button>
     </div>
-    <div class="form-group row">
-        <div class="col-md-3">
-            {{ info_form.duration.label(class="col-form-label") }}
-        </div>
-        <div class="col-md-9">
-            {{ info_form.duration(class="form-control", value=contest.duration_in_minutes()) }}
-        </div>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-success btn-shadow">
-        Сохранить
-    </button>
 </form>
 {% endblock %}

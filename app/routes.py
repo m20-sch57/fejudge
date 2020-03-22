@@ -1,6 +1,7 @@
 import os
 import strgen
 
+from functools import wraps
 from urllib.parse import unquote_plus
 from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
@@ -213,14 +214,23 @@ def contest_page(contest_url, number):
             form=problem_form)
 
 
+def contest_admin(func):
+    @wraps(func)
+    def decorated_view(contest_url, *args, **kwargs):
+        contest = get_contest_by_url(contest_url)
+        if contest.owner != current_user:
+            flash('You do not have admin privileges', category='alert-danger')
+            return redirect(url_for('contests_page'))
+        return func(contest_url, *args, **kwargs)
+    return decorated_view
+
+
 @app.route('/contests/<contest_url>/admin', methods=['GET', 'POST'])
 @app.route('/contests/<contest_url>/admin/info', methods=['GET', 'POST'])
 @login_required
+@contest_admin
 def contest_admin_info(contest_url):
     contest = get_contest_by_url(contest_url)
-    if contest.owner != current_user:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
     info_form = AdminInfoForm(contest.name, contest_type=contest.contest_type)
     if info_form.validate_on_submit():
         contest.name = info_form.name.data
@@ -234,46 +244,47 @@ def contest_admin_info(contest_url):
 
 @app.route('/contests/<contest_url>/admin/problems')
 @login_required
+@contest_admin
 def contest_admin_problems(contest_url):
     contest = get_contest_by_url(contest_url)
-    if contest.owner != current_user:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
     return render_template('contest_admin_problems.html',
         title=contest.name, contest_url=contest_url, contest=contest)
 
 
 @app.route('/contests/<contest_url>/admin/participants')
 @login_required
+@contest_admin
 def contest_admin_participants(contest_url):
     contest = get_contest_by_url(contest_url)
-    if contest.owner != current_user:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
     return render_template('contest_admin_participants.html',
         title=contest.name, contest_url=contest_url, contest=contest)
 
 
 @app.route('/contests/<contest_url>/admin/submissions')
 @login_required
+@contest_admin
 def contest_admin_submissions(contest_url):
     contest = get_contest_by_url(contest_url)
-    if contest.owner != current_user:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
     return render_template('contest_admin_submissions.html',
         title=contest.name, contest_url=contest_url, contest=contest)
 
 
 @app.route('/contests/<contest_url>/admin/notifications')
 @login_required
+@contest_admin
 def contest_admin_notifications(contest_url):
     contest = get_contest_by_url(contest_url)
-    if contest.owner != current_user:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
     return render_template('contest_admin_notifications.html',
         title=contest.name, contest_url=contest_url, contest=contest)
+
+
+@app.route('/contests/<contest_url>/admin/newproblem')
+@login_required
+@contest_admin
+def contest_admin_newproblem(contest_url):
+    contest = get_contest_by_url(contest_url)
+    return render_template('contest_admin_newproblem.html',
+        title='New problem', contest_url=contest_url, contest=contest)
 
 
 def judge_submisssion(submission):
