@@ -33,7 +33,7 @@ clear_data(db.session)
 u = User(
     username='Kuyanov',
     first_name='Fedor',
-    second_name='Kuyanov',
+    last_name='Kuyanov',
     email='feodor.kuyanov@gmail.com'
 )
 u.set_password('fedor2002')

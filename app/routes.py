@@ -165,7 +165,7 @@ def change_profile():
     form = EditProfileForm(current_user.email)
     if form.validate_on_submit():
         current_user.first_name = form.first_name.data
-        current_user.second_name = form.second_name.data
+        current_user.last_name = form.last_name.data
         current_user.email = form.email.data
         db.session.commit()
         flash('Your information has been saved', category='alert-success')

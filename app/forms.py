@@ -49,7 +49,7 @@ class EditAvatarForm(FlaskForm):
 
 class EditProfileForm(FlaskForm):
     first_name = StringField('Имя:')
-    second_name = StringField('Фамилия:')
+    last_name = StringField('Фамилия:')
     email = EmailField('Почта:', validators=[DataRequired()])
 
     def __init__(self, original_email, *args, **kwargs):

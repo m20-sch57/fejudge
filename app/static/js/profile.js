@@ -54,8 +54,8 @@ function uploadFiles(files) {
 function showProfileForm() {
     document.getElementById('firstName').removeAttribute('hidden');
     document.getElementById('firstNameLabel').setAttribute('hidden', '');
-    document.getElementById('secondName').removeAttribute('hidden');
-    document.getElementById('secondNameLabel').setAttribute('hidden', '');
+    document.getElementById('lastName').removeAttribute('hidden');
+    document.getElementById('lastNameLabel').setAttribute('hidden', '');
     document.getElementById('email').removeAttribute('hidden');
     document.getElementById('emailLabel').setAttribute('hidden', '');
     changeProfile.setAttribute('hidden', '');
@@ -66,8 +66,8 @@ function showProfileForm() {
 function hideProfileForm() {
     document.getElementById('firstName').setAttribute('hidden', '');
     document.getElementById('firstNameLabel').removeAttribute('hidden');
-    document.getElementById('secondName').setAttribute('hidden', '');
-    document.getElementById('secondNameLabel').removeAttribute('hidden');
+    document.getElementById('lastName').setAttribute('hidden', '');
+    document.getElementById('lastNameLabel').removeAttribute('hidden');
     document.getElementById('email').setAttribute('hidden', '');
     document.getElementById('emailLabel').removeAttribute('hidden');
     changeProfile.removeAttribute('hidden');
