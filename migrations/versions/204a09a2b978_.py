@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 526f9ee2c16f
+Revision ID: 204a09a2b978
 Revises: 
-Create Date: 2020-03-20 15:16:27.382274
+Create Date: 2020-03-25 22:19:19.654879
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '526f9ee2c16f'
+revision = '204a09a2b978'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -63,10 +63,8 @@ def upgrade():
     op.create_table('problem',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('contest_id', sa.Integer(), nullable=True),
-    sa.Column('name', sa.String(length=64), nullable=True),
     sa.Column('problem_type', sa.String(length=16), nullable=True),
     sa.Column('number', sa.Integer(), nullable=True),
-    sa.Column('statement', sa.Text(), nullable=True),
     sa.Column('max_score', sa.Integer(), nullable=True),
     sa.Column('max_submissions', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['contest_id'], ['contest.id'], name=op.f('fk_problem_contest_id_contest')),

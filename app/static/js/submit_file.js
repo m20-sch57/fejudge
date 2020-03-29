@@ -1,11 +1,11 @@
 function reset() {
     fileUploadLabel.innerHTML = 'Файл не выбран';
-    submitProg.setAttribute('disabled', '');
+    submit.setAttribute('disabled', '');
 }
 
 function uploadFile(file) {
     fileUploadLabel.innerHTML = file.name;
-    submitProg.removeAttribute('disabled');
+    submit.removeAttribute('disabled');
 }
 
 function uploadFiles(files) {
@@ -20,7 +20,7 @@ function uploadFiles(files) {
 
 let fileUpload = document.getElementById('fileUpload');
 let fileUploadLabel = document.getElementById('fileUploadLabel');
-let submitProg = document.getElementById('submitProg');
+let submit = document.getElementById('submit');
 
 fileUpload.onchange = function() {
     uploadFiles(this.files);

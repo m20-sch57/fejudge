@@ -3,14 +3,14 @@
 {% block contest_content %}
 <div class="d-flex flex-wrap pb-3">
     <div class="py-1 mr-auto">
-        <h3>Задача {{ problem.number }}. {{ problem.name }}</h3>
+        <h3>Задача {{ problem.number }}. Name.</h3>
     </div>
     <div class="py-1">
         <h4>Баллы: {{ problem.score(current_user) }}</h4>
     </div>
 </div>
 <div class="pb-4">
-    <p>{{ problem.statement }}</p>
+    <p>Statement.</p>
 </div>
 {% if request.state() == "In progress" %}
 <form action="/contests/{{ contest_url }}/{{ problem.number }}/send"
@@ -33,13 +33,13 @@ method="POST" enctype="multipart/form-data">
             </label>
         </div>
         <div class="pb-2">
-            <button type="submit" id="submitProg" class="btn btn-success btn-shadow" disabled>
+            <button type="submit" id="submit" class="btn btn-success btn-shadow" disabled>
                 Отправить решение
             </button>
         </div>
     </div>
 </form>
-<script src="/static/js/submit_prog.js"></script>
+<script src="/static/js/submit_file.js"></script>
 {% endif %}
 <div class="pb-3">
     <h3>Посылки по этой задаче ({{ submissions.count() }} из {{ problem.max_submissions }})</h3>

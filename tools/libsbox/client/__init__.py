@@ -14,10 +14,10 @@ class Libsbox:
     def connect(self):
         if not os.path.exists(Config.SOCKET_FILE):
             while not os.path.exists(Config.SOCKET_FILE):
-                print('Waiting for libsbox to start...', end='\r')
+                print('Waiting for libsbox to start...', end='\r', flush=True)
                 time.sleep(1)
             print()
-            print('Found libsbox')
+            print('Found libsbox', flush=True)
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.connect(Config.SOCKET_FILE)
 

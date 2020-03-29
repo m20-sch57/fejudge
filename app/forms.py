@@ -98,3 +98,7 @@ class AdminInfoForm(FlaskForm):
         contest = Contest.query.filter_by(name=name.data).first()
         if self.original_name != name.data and contest is not None:
             raise ValidationError('Это имя уже занято.')
+
+
+class UploadPackageForm(FlaskForm):
+    package = FileField('Выберите файл', validators=[DataRequired()])

@@ -1,8 +1,10 @@
 COMPILE_ARGV = {
     'cpp': ['g++-9', 'participant.cpp', '-o', 'participant.out', '-std=c++17', '-Wall', '-Wextra', '-O2'],
-    'py': ['cp', 'participant.py', 'participant.out']
+    'py': ['cp', 'participant.py', 'participant.out'],
+    'txt': ['cp', 'participant.txt', 'participant.out']
 }
 RUN_ARGV = {
     'cpp': ['./participant.out'],
-    'py': ['python3', 'participant.out']
+    'py': ['python3', 'participant.out'],
+    'txt': ['cp', 'participant.out', 'output.txt']
 }

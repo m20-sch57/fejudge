@@ -26,6 +26,8 @@ def clear_data(session):
     session.commit()
     clear_folder(Config.SUBMISSIONS_LOG_PATH)
     clear_folder(Config.SUBMISSIONS_DOWNLOAD_PATH)
+    clear_folder(Config.PROBLEMS_UPLOAD_PATH)
+    clear_folder(Config.PROBLEMS_PATH)
 
 
 clear_data(db.session)
@@ -41,18 +43,16 @@ db.session.add(u)
 
 c = Contest(name='Идейные задачи', duration=timedelta(hours=24), owner=u)
 db.session.add(c)
-problems = []
-for i in range(4):
-    p = Problem(
-        contest=c,
-        number=i+1,
-        name='A+B',
-        problem_type='Programming',
-        statement='Это условие задачи.\nВы должны догадаться сами и сдать решение',
-        max_score=100
-    )
-    db.session.add(p)
-    problems.append(p)
+# problems = []
+# for i in range(4):
+#     p = Problem(
+#         contest=c,
+#         number=i+1,
+#         problem_type='Programming',
+#         max_score=100
+#     )
+#     db.session.add(p)
+#     problems.append(p)
 
 
 db.session.commit()

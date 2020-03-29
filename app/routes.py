@@ -11,9 +11,10 @@ from app import app, db, producer, avatars
 from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
-from app.forms import AdminInfoForm
+from app.forms import AdminInfoForm, UploadPackageForm
 from app.models import User, RestoreToken, Contest, Problem, ContestRequest, Submission
 from app.email import send_verification_code, send_new_password
+# from tools.packagemanager import ProblemManager
 
 
 @app.errorhandler(404)
@@ -214,6 +215,77 @@ def contest_page(contest_url, number):
             form=problem_form)
 
 
+@app.route('/download/submission/<submission_id>')
+@login_required
+def download_submission(submission_id):
+    submission = Submission.query.filter_by(id=submission_id).first_or_404()
+    if submission.user != current_user:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    source = submission.source
+    download_folder = app.config['SUBMISSIONS_DOWNLOAD_PATH']
+    filename = str(submission_id).zfill(6) + '.' + submission.language
+    path = os.path.join(download_folder, filename)
+    open(path, 'w').write(source)
+    return send_from_directory(download_folder, filename, as_attachment=True)
+
+
+@app.route('/contests/<contest_url>/<number>/send', methods=['POST'])
+@login_required
+def send(contest_url, number):
+    contest = get_contest_by_url(contest_url)
+    contest_request = get_contest_request(contest)
+    problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
+    try:
+        if contest_request is None or contest_request.state() != 'In progress':
+            raise ValueError('You are not allowed to send submissions in this contest')
+        if problem.problem_type == 'Programming':
+            problem_form = FileProblemForm()
+            if not problem_form.validate_on_submit():
+                raise ValueError('Form is not valid')
+            language = problem_form.language.data
+            source = problem_form.source.data.read().decode('utf-8')
+            current_time = datetime.utcnow().replace(microsecond=0)
+            submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
+                language=language, status='In queue', score=0, source=source)
+            current_user.active_language = language
+            db.session.add(submission)
+            db.session.commit()
+            producer.send('judge', value={'submission_id': submission.id})
+            flash('Your solution has been sent', category='alert-success')
+    except ValueError as error:
+        flash('Submission error: ' + str(error), category='alert-danger')
+    return redirect(url_for('contest_page', contest_url=contest_url, number=number))
+
+
+@app.route('/contests/<contest_url>/start')
+@login_required
+def start_contest(contest_url):
+    contest = get_contest_by_url(contest_url)
+    contest_request = get_contest_request(contest)
+    if contest_request is not None:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    contest_request = ContestRequest(contest=contest, user=current_user, 
+        start_time=datetime.utcnow().replace(microsecond=0))
+    db.session.commit()
+    return redirect(url_for('contest_page', contest_url=contest_url, number=1))
+
+
+@app.route('/contests/<contest_url>/finish')
+@login_required
+def finish_contest(contest_url):
+    contest = get_contest_by_url(contest_url)
+    contest_request = get_contest_request(contest)
+    if contest_request is None or contest_request.state() in ['Not started', 'Finished']:
+        flash('Forbidden operation', category='alert-danger')
+        return redirect(url_for('contests_page'))
+    current_time = datetime.utcnow().replace(microsecond=0)
+    contest_request.finish_time = current_time
+    db.session.commit()
+    return redirect(url_for('contest_page', contest_url=contest_url, number=1))
+
+
 def contest_admin(func):
     @wraps(func)
     def decorated_view(contest_url, *args, **kwargs):
@@ -239,7 +311,7 @@ def contest_admin_info(contest_url):
         db.session.commit()
         flash('Contest info has been saved', category='alert-success')
     return render_template('contest_admin_info.html',
-        title=contest.name, contest_url=contest_url, contest=contest, info_form=info_form)
+        title=contest.name, contest_url=contest_url, contest=contest, form=info_form)
 
 
 @app.route('/contests/<contest_url>/admin/problems')
@@ -278,97 +350,24 @@ def contest_admin_notifications(contest_url):
         title=contest.name, contest_url=contest_url, contest=contest)
 
 
-@app.route('/contests/<contest_url>/admin/newproblem')
+@app.route('/contests/<contest_url>/admin/newproblem', methods=['GET', 'POST'])
 @login_required
 @contest_admin
 def contest_admin_newproblem(contest_url):
     contest = get_contest_by_url(contest_url)
+    upload_package_form = UploadPackageForm()
+    if upload_package_form.validate_on_submit():
+        new_problem = Problem(
+            contest=contest, problem_type='Programming', number=contest.problems.count() + 1, status='Pending')
+        db.session.add(new_problem)
+        db.session.flush()
+        upload_folder = app.config['PROBLEMS_UPLOAD_PATH']
+        filename = str(new_problem.id).zfill(6) + '.zip'
+        path = os.path.join(upload_folder, filename)
+        upload_package_form.package.data.save(path)
+        db.session.commit()
+        producer.send('package', value={'problem_id': new_problem.id})
+        flash('Your package has been uploaded, check the status of the problem', category='alert-info')
+        return redirect(url_for('contest_admin_problems', contest_url=contest_url))
     return render_template('contest_admin_newproblem.html',
-        title='New problem', contest_url=contest_url, contest=contest)
-
-
-def judge_submisssion(submission):
-    producer.send('judge', value={
-        'submission': {
-            'id': submission.id,
-            'language': submission.language,
-            'source': submission.source
-        },
-        'problem': {
-            'id': submission.problem.id,
-            'max_score': submission.problem.max_score,
-            'time_limit_ms': 1000,
-            'memory_limit_kb': 262144
-        }
-    })
-
-
-@app.route('/download/submission/<submission_id>')
-@login_required
-def download_submission(submission_id):
-    submission = Submission.query.filter_by(id=submission_id).first_or_404()
-    if submission.user != current_user:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
-    source = submission.source
-    download_folder = app.config['SUBMISSIONS_DOWNLOAD_PATH']
-    filename = str(submission_id).zfill(6) + '.' + submission.language
-    path = os.path.join(download_folder, filename)
-    open(path, 'w').write(source)
-    return send_from_directory(download_folder, filename, as_attachment=True)
-
-
-@app.route('/contests/<contest_url>/<number>/send', methods=['POST'])
-@login_required
-def send(contest_url, number):
-    contest = get_contest_by_url(contest_url)
-    contest_request = get_contest_request(contest)
-    problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
-    try:
-        if contest_request is None or contest_request.state() != 'In progress':
-            raise ValueError('You are not allowed to send submissions in this contest')
-        if problem.problem_type == 'Programming':
-            problem_form = FileProblemForm()
-            if not problem_form.validate_on_submit():
-                raise ValueError('Form is not valid')
-            language = problem_form.language.data
-            source = problem_form.source.data.read().decode('utf-8')
-            current_time = datetime.utcnow().replace(microsecond=0)
-            submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
-                language=language, status='In queue', score=0, source=source)
-            current_user.active_language = language
-            db.session.add(submission)
-            db.session.commit()
-            judge_submisssion(submission)
-            flash('Your solution has been sent', category='alert-success')
-    except ValueError as error:
-        flash('Submission error: ' + str(error), category='alert-danger')
-    return redirect(url_for('contest_page', contest_url=contest_url, number=number))
-
-
-@app.route('/contests/<contest_url>/start')
-@login_required
-def start_contest(contest_url):
-    contest = get_contest_by_url(contest_url)
-    contest_request = get_contest_request(contest)
-    if contest_request is not None:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
-    contest_request = ContestRequest(contest=contest, user=current_user, 
-        start_time=datetime.utcnow().replace(microsecond=0))
-    db.session.commit()
-    return redirect(url_for('contest_page', contest_url=contest_url, number=1))
-
-
-@app.route('/contests/<contest_url>/finish')
-@login_required
-def finish_contest(contest_url):
-    contest = get_contest_by_url(contest_url)
-    contest_request = get_contest_request(contest)
-    if contest_request is None or contest_request.state() in ['Not started', 'Finished']:
-        flash('Forbidden operation', category='alert-danger')
-        return redirect(url_for('contests_page'))
-    current_time = datetime.utcnow().replace(microsecond=0)
-    contest_request.finish_time = current_time
-    db.session.commit()
-    return redirect(url_for('contest_page', contest_url=contest_url, number=1))
+        title='New problem', contest_url=contest_url, contest=contest, form=upload_package_form)

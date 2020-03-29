@@ -85,17 +85,16 @@ class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     contest_id = db.Column(db.Integer, db.ForeignKey('contest.id'))
 
-    name = db.Column(db.String(64), default='')
     problem_type = db.Column(db.String(16))
+    status = db.Column(db.String(16), default='')
     number = db.Column(db.Integer)
-    statement = db.Column(db.Text)
     max_score = db.Column(db.Integer, default=100)
     max_submissions = db.Column(db.Integer, default=50)
 
     submissions = db.relationship('Submission', backref='problem', lazy='dynamic')
 
     def __repr__(self):
-        return '<PROBLEM {}>'.format(self.name)
+        return '<PROBLEM {}>'.format(self.id)
 
     def last_submission(self, user):
         return self.submissions.filter_by(user=user).order_by(desc(Submission.time)).first()
@@ -152,9 +151,9 @@ class Submission(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     time = db.Column(db.DateTime)
     language = db.Column(db.String(16))
+    source = db.Column(db.Text)
     status = db.Column(db.String(16))
     score = db.Column(db.Integer)
-    source = db.Column(db.Text)
     details = db.Column(db.Text, default='{}')
 
     def __repr__(self):

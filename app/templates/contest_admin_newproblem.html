@@ -2,11 +2,35 @@
 
 {% block contest_content %}
 <form action="" method="POST" enctype="multipart/form-data">
-    <div class="pb-3">
-        <h3>Добавить задачу</h3>
+    {{ form.hidden_tag() }}
+    <div class="d-flex flex-wrap pb-3">
+        <div class="py-1 mr-auto my-auto">
+            <h3>Добавить задачу</h3>
+        </div>
+        <div class="py-1 mx-2 my-auto">
+            <a href="/contests/{{ contest_url }}/admin/problems">
+                Назад к задачам
+                <span class="fa fa-arrow-right"></span>
+            </a>
+        </div>
     </div>
     <div class="pb-3">
         <p>Чтобы добавить задачу, загрузите её пакет, построенный на платформе polygon.codeforces.com.</p>
     </div>
+    <div class="d-flex flex-wrap pb-2">
+        {{ form.package(id="fileUpload", hidden="") }}
+        <label for="fileUpload" class="btn btn-primary btn-shadow mr-3 my-auto">
+            Выберите файл
+        </label>
+        <label class="my-auto" id="fileUploadLabel">
+            Файл не выбран
+        </label>
+    </div>
+    <div class="pb-2">
+        <button type="submit" id="submit" class="btn btn-success btn-shadow" disabled>
+            Загрузить пакет
+        </button>
+    </div>
 </form>
+<script src="/static/js/submit_file.js"></script>
 {% endblock %}

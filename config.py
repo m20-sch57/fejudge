@@ -1,6 +1,9 @@
 import os
 
 
+basedir = os.path.dirname(__file__)
+
+
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'h438d95hakfjd90b'
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
@@ -9,7 +12,7 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'fejudge.system@gmail.com'
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
     KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
-    DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(os.getcwd(), 'data')
+    DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(basedir, 'data')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -17,6 +20,7 @@ class Config(object):
     AVATARS_SAVE_PATH = os.path.join(DATA_DIR, 'avatars')
     SUBMISSIONS_LOG_PATH = os.path.join(DATA_DIR, 'logs', 'submissions')
     SUBMISSIONS_DOWNLOAD_PATH = os.path.join(DATA_DIR, 'download', 'submissions')
+    PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
 
-    MAX_CONTENT_LENGTH = 1024 * 256
+    MAX_CONTENT_LENGTH = 1024 * 65536
