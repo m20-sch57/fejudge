@@ -17,16 +17,17 @@ services:
     libsbox:
         build:
             context: ./tools
-            dockerfile: docker-files/Dockerfile_libsbox
+            dockerfile: libsbox/Dockerfile
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
             - submission:/tools/invoker/submission
+            - problem:/tools/packagebuilder/problem
             - data:/tools/invoker/data
     invoker:
         build: 
             context: ./tools
-            dockerfile: docker-files/Dockerfile_invoker
+            dockerfile: invoker/Dockerfile
         environment: 
             KAFKA_SERVER: kafka:9092
         volumes:
@@ -36,11 +37,12 @@ services:
     packagebuilder:
         build:
             context: ./tools
-            dockerfile: docker-files/Dockerfile_packagebuilder
+            dockerfile: packagebuilder/Dockerfile
         environment: 
             KAFKA_SERVER: kafka:9092
         volumes:
             - libsboxd:/etc/libsboxd
+            - problem:/tools/packagebuilder/problem
             - data:/tools/packagebuilder/data
     app:
         build: .
@@ -54,4 +56,5 @@ services:
 volumes:
     libsboxd:
     submission:
+    problem:
     data:

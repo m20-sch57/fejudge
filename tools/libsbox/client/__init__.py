@@ -58,3 +58,50 @@ class Libsbox:
             ]
         }
 
+    @staticmethod
+    def gen_source_filename(filename, language):
+        return '{}.{}'.format(filename, language)
+
+    @staticmethod
+    def get_compile_argv(filename, language, output):
+        if language == 'cpp':
+            return ['g++-9', filename, '-o', output, '-std=c++17', '-Wall', '-Wextra', '-O2']
+        else:
+            return ['cp', filename, output]
+
+    @staticmethod
+    def get_run_argv(filename, language, additional_argv=[]):
+        argv = []
+        if language == 'cpp':
+            argv = ['./' + filename]
+        elif language == 'py':
+            argv = ['python3', filename]
+        else:
+            argv = ['cp', filename, 'output.txt']
+        argv.extend(additional_argv)
+        return argv
+
+    @staticmethod
+    def parse_execution_status(response, obj):
+        task_response = response['tasks'][0]
+        task_obj = obj['tasks'][0]
+        if task_response['time_usage_ms'] >= task_obj['time_limit_ms']:
+            return 'TL'
+        if task_response['wall_time_usage_ms'] >= task_obj['wall_time_limit_ms']:
+            return 'IL'
+        if task_response['memory_limit_hit'] or task_response['oom_killed']:
+            return 'ML'
+        if task_response['exit_code'] != 0:
+            return 'RE'
+        return 'OK'
+
+    @staticmethod
+    def parse_checker_status(checker_response):
+        exit_code = checker_response['tasks'][0]['exit_code']
+        if exit_code == 0:
+            return 'OK'
+        if exit_code == 1:
+            return 'WA'
+        if exit_code == 2:
+            return 'PE'
+        return 'FAIL'

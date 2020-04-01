@@ -9,11 +9,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from kafka import KafkaConsumer
 
-import constants
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 from libsbox.client import Libsbox
 from packagemanager import ProblemManager
-from submission import SubmissionManager
 from config import Config
 from models import Base, Submission
 
@@ -28,29 +26,16 @@ def write_file(path, data=''):
     fout.close()
 
 
-def parse_execution_status(response, obj):
-    task_response = response['tasks'][0]
-    task_obj = obj['tasks'][0]
-    if task_response['time_usage_ms'] >= task_obj['time_limit_ms']:
-        return 'TL'
-    if task_response['wall_time_usage_ms'] >= task_obj['wall_time_limit_ms']:
-        return 'IL'
-    if task_response['memory_limit_hit'] or task_response['oom_killed']:
-        return 'ML'
-    if task_response['exit_code'] != 0:
-        return 'RE'
-    return 'OK'
+def write_logs(submission_id, message):
+    fout = open(os.path.join(Config.SUBMISSIONS_LOG_PATH, str(submission_id).zfill(6) + '.txt'), 'a')
+    fout.write(message)
+    fout.close()
 
 
-def parse_checker_status(response):
-    exit_code = response['tasks'][0]['exit_code']
-    if exit_code == 0:
-        return 'OK'
-    if exit_code == 1:
-        return 'WA'
-    if exit_code == 2:
-        return 'PE'
-    return 'FAIL'
+def clear_submission_dir(items_to_stay=[]):
+    for item in os.listdir(Config.SUBMISSION_DIR):
+        if item not in items_to_stay:
+            os.remove(os.path.join(Config.SUBMISSION_DIR, item))
 
 
 def calc_test_maxscore(problem_maxscore, tests_cnt, test_number):
@@ -61,38 +46,50 @@ def calc_test_maxscore(problem_maxscore, tests_cnt, test_number):
         return problem_maxscore // tests_cnt
 
 
-def run_on_test(test_number, submission_manager, problem_manager):
-    submission_manager.clear_data(items_to_stay=['participant.out'])
-    shutil.copyfile(problem_manager.test_input_file(test_number), submission_manager.input_file)
-    write_file(submission_manager.output_file)
-    write_file(submission_manager.error_file)
+def run_on_test(test_number, submission, problem_manager):
+    clear_submission_dir(items_to_stay=[Config.PARTICIPANT_BINARY_RELPATH])
+    shutil.copyfile(problem_manager.test_input_path(test_number), Config.INPUT_PATH)
+    write_file(Config.OUTPUT_PATH)
+    write_file(Config.ERROR_PATH)
     submission_object = libsbox.build_object(
-        argv=submission_manager.run_argv,
+        argv=libsbox.get_run_argv(
+            filename=Config.PARTICIPANT_BINARY_RELPATH,
+            language=submission.language
+        ),
         work_dir=Config.SUBMISSION_DIR,
         time_limit_ms=problem_manager.time_limit_ms,
         memory_limit_kb=problem_manager.memory_limit_kb,
-        stdin='input.txt',
-        stdout='output.txt',
-        stderr='error.txt'
+        stdin=Config.INPUT_RELPATH,
+        stdout=Config.OUTPUT_RELPATH,
+        stderr=Config.ERROR_RELPATH
     )
     submission_response = json.loads(libsbox.send(submission_object))
-    test_status = parse_execution_status(submission_response, submission_object)
-    shutil.copyfile(problem_manager.checker_binary, submission_manager.checker_binary)
-    shutil.copyfile(problem_manager.test_input_file(test_number), submission_manager.input_file)
-    shutil.copyfile(problem_manager.test_output_file(test_number), submission_manager.answer_file)
-    write_file(submission_manager.result_file)
-    os.chmod(submission_manager.checker_binary, 0o777)
-    os.chmod(submission_manager.result_file, 0o777)
+    test_status = libsbox.parse_execution_status(submission_response, submission_object)
+    shutil.copyfile(problem_manager.checker_binary_path, Config.CHECKER_BINARY_PATH)
+    shutil.copyfile(problem_manager.test_input_path(test_number), Config.INPUT_PATH)
+    shutil.copyfile(problem_manager.test_output_path(test_number), Config.ANSWER_PATH)
+    write_file(Config.RESULT_PATH)
+    os.chmod(Config.CHECKER_BINARY_PATH, 0o777)
+    os.chmod(Config.RESULT_PATH, 0o777)
     checker_object = libsbox.build_object(
-        argv=submission_manager.checker_argv,
+        argv=libsbox.get_run_argv(
+            filename=Config.CHECKER_BINARY_RELPATH,
+            language=problem_manager.checker_language,
+            additional_argv=[
+                Config.INPUT_RELPATH,
+                Config.OUTPUT_RELPATH,
+                Config.ANSWER_RELPATH,
+                Config.RESULT_RELPATH
+            ]
+        ),
         work_dir=Config.SUBMISSION_DIR,
         time_limit_ms=Config.CHECKER_TIME_LIMIT_MS,
         memory_limit_kb=Config.CHECKER_MEMORY_LIMIT_KB
     )
     checker_response = json.loads(libsbox.send(checker_object))
-    checker_status = parse_execution_status(checker_response, checker_object)
+    checker_status = libsbox.parse_execution_status(checker_response, checker_object)
     test_status = 'FAIL' if checker_status not in ['OK', 'RE'] else test_status
-    test_status = parse_checker_status(checker_response) if test_status == 'OK' else test_status
+    test_status = libsbox.parse_checker_status(checker_response) if test_status == 'OK' else test_status
     submission_task = submission_response['tasks'][0]
     test_details = {
         'status': test_status,
@@ -100,7 +97,7 @@ def run_on_test(test_number, submission_manager, problem_manager):
         'wall_time_usage_s': submission_task['wall_time_usage_ms'] / 1000,
         'memory_usage_kb': submission_task['memory_usage_kb']
     }
-    submission_manager.write_logs((
+    write_logs(submission.id, (
         '===== Test #{}, execution time: {}ms, memory used: {}kb =====\n'
         'Input data:\n{}\n'
         'Solution output data:\n{}\n'
@@ -111,36 +108,44 @@ def run_on_test(test_number, submission_manager, problem_manager):
         test_number,
         submission_task['time_usage_ms'],
         submission_task['memory_usage_kb'],
-        read_file(problem_manager.test_input_file(test_number)),
-        read_file(submission_manager.output_file),
-        read_file(problem_manager.test_output_file(test_number)),
-        read_file(submission_manager.error_file),
+        read_file(problem_manager.test_input_path(test_number)),
+        read_file(Config.OUTPUT_PATH),
+        read_file(problem_manager.test_output_path(test_number)),
+        read_file(Config.ERROR_PATH),
         test_status,
-        read_file(submission_manager.result_file)
+        read_file(Config.RESULT_PATH)
     ))
     return (test_status, test_details)
 
 
-def compile(submission_manager):
-    submission_manager.clear_data()
-    write_file(submission_manager.participant_source, submission_manager.submission.source)
-    write_file(submission_manager.participant_binary)
-    write_file(submission_manager.error_file)
-    os.chmod(submission_manager.participant_binary, 0o777)
+def compile(submission):
+    clear_submission_dir()
+    participant_source_relpath = libsbox.gen_source_filename(
+        Config.PARTICIPANT_SOURCE_RELPATH, submission.language)
+    participant_source_path = libsbox.gen_source_filename(
+        Config.PARTICIPANT_SOURCE_PATH, submission.language)
+    write_file(participant_source_path, submission.source)
+    write_file(Config.PARTICIPANT_BINARY_PATH)
+    write_file(Config.ERROR_PATH)
+    os.chmod(Config.PARTICIPANT_BINARY_PATH, 0o777)
     compile_object = libsbox.build_object(
-        argv=submission_manager.compile_argv,
+        argv=libsbox.get_compile_argv(
+            filename=participant_source_relpath,
+            language=submission.language,
+            output=Config.PARTICIPANT_BINARY_RELPATH
+        ),
         work_dir=Config.SUBMISSION_DIR,
         time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
         memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
         max_threads=10,
-        stdout='error.txt',
+        stdout=Config.ERROR_RELPATH,
         stderr='@_stdout'
     )
     compile_response = json.loads(libsbox.send(compile_object))
-    compile_status = 'OK' if compile_response['tasks'][0]['exit_code'] == 0 else 'CE'
-    compile_details = read_file(submission_manager.error_file)
+    compile_status = libsbox.parse_execution_status(compile_response, compile_object)
+    compile_details = read_file(Config.ERROR_PATH)
     compile_task = compile_response['tasks'][0]
-    submission_manager.write_logs(
+    write_logs(submission.id,
         'Compilation code: {}\nCompilation output:\n{}\n\n'.format(
             compile_task['exit_code'],
             compile_details
@@ -155,28 +160,27 @@ def evaluate(submission_id):
     if submission is None:
         print('Cannot find submission', submission_id, flush=True)
         return
-    submission_manager = SubmissionManager(submission)
     problem_manager = ProblemManager(submission.problem_id)
-    submission_manager.write_logs(
+    write_logs(submission_id,
         'Started judging at {}\n\nProblem ID: {}\nSubmission ID: {}\nLanguage: {}\n'.format(
             datetime.datetime.today().replace(microsecond=0),
-            submission_manager.problem.id,
-            submission_manager.submission.id,
-            submission_manager.submission.language
+            submission.problem_id,
+            submission_id,
+            submission.language
         )
     )
     submission.status = 'Compiling'
     submission.score = 0
     session.commit()
-    compile_status, compile_details = compile(submission_manager)
+    compile_status, compile_details = compile(submission)
     submission_details = {'tests': [], 'compiler': compile_details}
     if compile_status == 'OK':
         submission.status = 'Running'
         session.commit()
-        for test_number in range(1, problem_manager.number_of_tests() + 1):
-            test_status, test_details = run_on_test(test_number, submission_manager, problem_manager)
+        for test_number in range(1, problem_manager.test_count + 1):
+            test_status, test_details = run_on_test(test_number, submission, problem_manager)
             test_maxscore = calc_test_maxscore(
-                submission.problem.max_score, problem_manager.number_of_tests(), test_number) # TODO: valuer
+                submission.problem.max_score, problem_manager.test_count, test_number) # TODO: valuer
             test_score = test_maxscore if test_status == 'OK' else 0
             test_details['score'] = test_score
             test_details['maxscore'] = test_maxscore
@@ -187,7 +191,7 @@ def evaluate(submission_id):
         submission.status = 'Compilation error'
     submission.details = json.dumps(submission_details)
     session.commit()
-    submission_manager.write_logs(
+    write_logs(submission_id,
         'Submission status: {}\nSubmission score: {}\n'.format(
             submission.status,
             submission.score

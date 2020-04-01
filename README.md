@@ -17,7 +17,7 @@ These instructions will guide you through the installation process of Fejudge.
 - C++ 17 compiler, with `std::filesystem` support
 - CMake version 3.10 or higher
 - OpenJDK Runtime environment 11.0.4
-- Python 3.6 or higher with `flask`, `flask_avatars`, `flask_sqlalchemy`, `flask_migrate`, `flask_login`, `flask_wtf`, `flask_mail`, `WTForms-Components`, `kafka-python`, `StringGenerator`, `SQLAlchemy`, `xmltodict` - see `requirements.txt`, `tools/invoker/requirements.txt`, `tools/packagebuilder/requirements.txt`
+- Python 3.6 or higher with `flask`, `flask_avatars`, `flask_sqlalchemy`, `flask_migrate`, `flask_login`, `flask_wtf`, `flask_mail`, `WTForms-Components`, `kafka-python`, `StringGenerator`, `SQLAlchemy` - see `requirements.txt`, `tools/invoker/requirements.txt`, `tools/packagebuilder/requirements.txt`
 
 ### Installing
 
