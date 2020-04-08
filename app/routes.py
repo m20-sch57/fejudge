@@ -2,7 +2,6 @@ import os
 import strgen
 
 from functools import wraps
-from urllib.parse import unquote_plus
 from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime, timedelta
@@ -14,7 +13,7 @@ from app.forms import InputProblemForm, FileProblemForm
 from app.forms import AdminInfoForm, UploadPackageForm
 from app.models import User, RestoreToken, Contest, Problem, ContestRequest, Submission
 from app.email import send_verification_code, send_new_password
-# from tools.packagemanager import ProblemManager
+from tools.packagemanager import ProblemManager
 
 
 @app.errorhandler(404)
@@ -22,15 +21,20 @@ def page_not_found(error):
     return render_template('404.html'), 404
 
 
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('500.html'), 500
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return render_template('405.html'), 405
 
 
 @app.errorhandler(413)
 def request_entity_too_large(error):
     return render_template('413.html'), 413
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 
 @app.route('/')
@@ -175,9 +179,8 @@ def change_profile():
     return redirect(url_for('profile_page', username=current_user.username))
 
 
-def get_contest_by_url(contest_url):
-    contest_name = unquote_plus(contest_url)
-    return Contest.query.filter_by(name=contest_name).first_or_404()
+def get_contest_by_id(contest_id):
+    return Contest.query.filter_by(id=contest_id).first_or_404()
 
 
 def get_contest_request(contest):
@@ -191,28 +194,33 @@ def contests_page():
     return render_template('contests.html', title='Contests', active='contests', contests=full_contests)
 
 
-@app.route('/contests/<contest_url>/<number>')
+@app.route('/contests/<contest_id>/<number>/<attr>')
 @login_required
-def contest_page(contest_url, number):
-    contest = get_contest_by_url(contest_url)
+def load_problem(contest_id, number, attr):
+    contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
     problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
+    problem_manager = ProblemManager(problem.id)
     submissions = Submission.query.filter_by(problem=problem, user=current_user).order_by(Submission.time.desc())
     if contest_request is None:
         flash('Forbidden operation', category='alert-danger')
         return redirect(url_for('contests_page'))
+    if attr == 'problem-statement.css':
+        return send_from_directory('static/css', 'problem-statement.css')
+    elif attr != 'main':
+        statement_dir = problem_manager.statements_html_dir['russian']
+        return send_from_directory(statement_dir, attr)
     if contest_request.state() == 'Finished':
         flash('Ваше участие в контесте завершено', category='alert-info')
     if problem.problem_type == 'Programming':
         problem_form = FileProblemForm(language=current_user.active_language)
-        return render_template('contest_problem_prog.html', title=contest.name, contest_url=contest_url,
-            contest=contest, problem=problem, request=contest_request, submissions=submissions, 
-            form=problem_form)
+        return render_template('contest_problem_prog.html', title=contest.name, contest=contest,
+            problem=problem, problem_manager=problem_manager, request=contest_request,
+            submissions=submissions, form=problem_form)
     elif problem.problem_type == 'Test':
         problem_form = InputProblemForm()
-        return render_template('contest_problem_test.html', title=contest.name, contest_url=contest_url,
-            contest=contest, problem=problem, request=contest_request, submissions=submissions, 
-            form=problem_form)
+        return render_template('contest_problem_test.html', title=contest.name, contest=contest,
+            problem=problem, request=contest_request, submissions=submissions, form=problem_form)
 
 
 @app.route('/download/submission/<submission_id>')
@@ -230,10 +238,10 @@ def download_submission(submission_id):
     return send_from_directory(download_folder, filename, as_attachment=True)
 
 
-@app.route('/contests/<contest_url>/<number>/send', methods=['POST'])
+@app.route('/contests/<contest_id>/<number>/main/send', methods=['POST'])
 @login_required
-def send(contest_url, number):
-    contest = get_contest_by_url(contest_url)
+def send(contest_id, number):
+    contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
     problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
     try:
@@ -255,13 +263,13 @@ def send(contest_url, number):
             flash('Your solution has been sent', category='alert-success')
     except ValueError as error:
         flash('Submission error: ' + str(error), category='alert-danger')
-    return redirect(url_for('contest_page', contest_url=contest_url, number=number))
+    return redirect(url_for('load_problem', contest_id=contest.id, number=number, attr='main'))
 
 
-@app.route('/contests/<contest_url>/start')
+@app.route('/contests/<contest_id>/start')
 @login_required
-def start_contest(contest_url):
-    contest = get_contest_by_url(contest_url)
+def start_contest(contest_id):
+    contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
     if contest_request is not None:
         flash('Forbidden operation', category='alert-danger')
@@ -269,13 +277,13 @@ def start_contest(contest_url):
     contest_request = ContestRequest(contest=contest, user=current_user, 
         start_time=datetime.utcnow().replace(microsecond=0))
     db.session.commit()
-    return redirect(url_for('contest_page', contest_url=contest_url, number=1))
+    return redirect(url_for('load_problem', contest_id=contest.id, number=1, attr='main'))
 
 
-@app.route('/contests/<contest_url>/finish')
+@app.route('/contests/<contest_id>/finish')
 @login_required
-def finish_contest(contest_url):
-    contest = get_contest_by_url(contest_url)
+def finish_contest(contest_id):
+    contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
     if contest_request is None or contest_request.state() in ['Not started', 'Finished']:
         flash('Forbidden operation', category='alert-danger')
@@ -283,26 +291,26 @@ def finish_contest(contest_url):
     current_time = datetime.utcnow().replace(microsecond=0)
     contest_request.finish_time = current_time
     db.session.commit()
-    return redirect(url_for('contest_page', contest_url=contest_url, number=1))
+    return redirect(url_for('load_problem', contest_id=contest.id, number=1, attr='main'))
 
 
 def contest_admin(func):
     @wraps(func)
-    def decorated_view(contest_url, *args, **kwargs):
-        contest = get_contest_by_url(contest_url)
+    def decorated_view(contest_id, *args, **kwargs):
+        contest = get_contest_by_id(contest_id)
         if contest.owner != current_user:
             flash('You do not have admin privileges', category='alert-danger')
             return redirect(url_for('contests_page'))
-        return func(contest_url, *args, **kwargs)
+        return func(contest_id, *args, **kwargs)
     return decorated_view
 
 
-@app.route('/contests/<contest_url>/admin', methods=['GET', 'POST'])
-@app.route('/contests/<contest_url>/admin/info', methods=['GET', 'POST'])
+@app.route('/contests/<contest_id>/admin', methods=['GET', 'POST'])
+@app.route('/contests/<contest_id>/admin/info', methods=['GET', 'POST'])
 @login_required
 @contest_admin
-def contest_admin_info(contest_url):
-    contest = get_contest_by_url(contest_url)
+def contest_admin_info(contest_id):
+    contest = get_contest_by_id(contest_id)
     info_form = AdminInfoForm(contest.name, contest_type=contest.contest_type)
     if info_form.validate_on_submit():
         contest.name = info_form.name.data
@@ -310,51 +318,46 @@ def contest_admin_info(contest_url):
         contest.duration = timedelta(minutes=info_form.duration.data)
         db.session.commit()
         flash('Contest info has been saved', category='alert-success')
-    return render_template('contest_admin_info.html',
-        title=contest.name, contest_url=contest_url, contest=contest, form=info_form)
+    return render_template('contest_admin_info.html', title=contest.name, contest=contest, form=info_form)
 
 
-@app.route('/contests/<contest_url>/admin/problems')
+@app.route('/contests/<contest_id>/admin/problems')
 @login_required
 @contest_admin
-def contest_admin_problems(contest_url):
-    contest = get_contest_by_url(contest_url)
-    return render_template('contest_admin_problems.html',
-        title=contest.name, contest_url=contest_url, contest=contest)
+def contest_admin_problems(contest_id):
+    contest = get_contest_by_id(contest_id)
+    return render_template('contest_admin_problems.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_url>/admin/participants')
+@app.route('/contests/<contest_id>/admin/participants')
 @login_required
 @contest_admin
-def contest_admin_participants(contest_url):
-    contest = get_contest_by_url(contest_url)
-    return render_template('contest_admin_participants.html',
-        title=contest.name, contest_url=contest_url, contest=contest)
+def contest_admin_participants(contest_id):
+    contest = get_contest_by_id(contest_id)
+    return render_template('contest_admin_participants.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_url>/admin/submissions')
+@app.route('/contests/<contest_id>/admin/submissions')
 @login_required
 @contest_admin
-def contest_admin_submissions(contest_url):
-    contest = get_contest_by_url(contest_url)
-    return render_template('contest_admin_submissions.html',
-        title=contest.name, contest_url=contest_url, contest=contest)
+def contest_admin_submissions(contest_id):
+    contest = get_contest_by_id(contest_id)
+    return render_template('contest_admin_submissions.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_url>/admin/notifications')
+@app.route('/contests/<contest_id>/admin/notifications')
 @login_required
 @contest_admin
-def contest_admin_notifications(contest_url):
-    contest = get_contest_by_url(contest_url)
-    return render_template('contest_admin_notifications.html',
-        title=contest.name, contest_url=contest_url, contest=contest)
+def contest_admin_notifications(contest_id):
+    contest = get_contest_by_id(contest_id)
+    return render_template('contest_admin_notifications.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_url>/admin/newproblem', methods=['GET', 'POST'])
+@app.route('/contests/<contest_id>/admin/newproblem', methods=['GET', 'POST'])
 @login_required
 @contest_admin
-def contest_admin_newproblem(contest_url):
-    contest = get_contest_by_url(contest_url)
+def contest_admin_newproblem(contest_id):
+    contest = get_contest_by_id(contest_id)
     upload_package_form = UploadPackageForm()
     if upload_package_form.validate_on_submit():
         new_problem = Problem(
@@ -362,12 +365,12 @@ def contest_admin_newproblem(contest_url):
         db.session.add(new_problem)
         db.session.flush()
         upload_folder = app.config['PROBLEMS_UPLOAD_PATH']
-        filename = str(new_problem.id).zfill(6) + '.zip'
+        filename = str(new_problem.id) + '.zip'
         path = os.path.join(upload_folder, filename)
         upload_package_form.package.data.save(path)
         db.session.commit()
         producer.send('package', value={'problem_id': new_problem.id})
         flash('Your package has been uploaded, check the status of the problem', category='alert-info')
-        return redirect(url_for('contest_admin_problems', contest_url=contest_url))
+        return redirect(url_for('contest_admin_problems', contest_id=contest_id))
     return render_template('contest_admin_newproblem.html',
-        title='New problem', contest_url=contest_url, contest=contest, form=upload_package_form)
+        title='New problem', contest=contest, form=upload_package_form)

@@ -75,7 +75,7 @@
         </script>
         {% else %}
         <div class="p-1 my-auto">
-            <a class="text-secondary mx-2 my-auto" href="/contests/{{ contest_url }}/results">
+            <a class="text-secondary mx-2 my-auto" href="/contests/{{ contest.id }}/results">
                 Результаты
             </a>
         </div>
@@ -89,7 +89,7 @@
             "bg-accepted" if any_problem.score(current_user) == any_problem.max_score else 
             "bg-failed" if any_problem.submitted(current_user) else "" %}
             <a class="btn btn-lg problem-bar-item {{ active }} rounded-circle"
-            href="/contests/{{ contest_url }}/{{ any_problem.number }}">
+            href="/contests/{{ contest.id }}/{{ any_problem.number }}/main">
                 {{ any_problem.number }}
             </a>
             {% endwith %}
@@ -116,7 +116,7 @@
                 Вы дейстительно хотите закончить?
             </div>
             <div class="modal-footer">
-                <a class="btn btn-primary btn-shadow" href="/contests/{{ contest_url }}/finish">
+                <a class="btn btn-primary btn-shadow" href="/contests/{{ contest.id }}/finish">
                     Завершить участие
                 </a>
                 <button class="btn btn-shadow" data-dismiss="modal">Отмена</button>

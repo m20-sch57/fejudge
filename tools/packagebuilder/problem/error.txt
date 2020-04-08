@@ -1,7 +1,0 @@
-checker.cpp: In function 'int main(int, char**)':
-checker.cpp:8:54: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long unsigned int' [-Wformat=]
-    8 |     setName("compare ordered sequences of signed int%d numbers", 8 * sizeof(long long));
-      |                                                     ~^           ~~~~~~~~~~~~~~~~~~~~~
-      |                                                      |             |
-      |                                                      int           long unsigned int
-      |                                                     %ld

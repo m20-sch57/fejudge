@@ -15,7 +15,6 @@
         <hr>
         <script src="/static/js/timer.js"></script>
         {% for contest, request in contests %}
-        {% with contest_url=contest.name|urlencode %}
         <div class="d-flex flex-wrap">
             {% if current_user.is_anonymous %}
             <div class="mr-auto my-auto">
@@ -40,21 +39,21 @@
                         <span class="fa fa-clock"></span>
                         {{ contest.duration_in_minutes() }} минут
                     </p>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/admin/participants">
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/admin/participants">
                         <span class="fa fa-users"></span>
                         {{ contest.contest_requests.count() }} участников
                     </a>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/admin/problems">
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/admin/problems">
                         <span class="fa fa-tasks"></span>
                         {{ contest.problems.count() }} задач
                     </a>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/results">
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/results">
                         Результаты
                     </a>
                 </div>
             </div>
             <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/admin">
+                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest.id }}/admin">
                     Подробнее <span class="fa fa-arrow-right"></span>
                 </a>
             </div>
@@ -93,7 +92,7 @@
                     <p class="text-primary mx-3 my-0">
                         Баллы: {{ contest.total_score(current_user) }} / {{ contest.total_maxscore() }}
                     </p>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest_url }}/results">
+                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/results">
                         Текущие результаты
                     </a>
                     <script>
@@ -102,7 +101,7 @@
                 </div>
             </div>
             <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
+                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest.id }}/1/main">
                     Продолжить <span class="fa fa-arrow-right"></span>
                 </a>
             </div>
@@ -114,25 +113,23 @@
                     <p class="text-success mx-3 my-0">
                         Баллы: {{ contest.total_score(current_user) }} / {{ contest.total_maxscore() }}
                     </p>
-                    <a class="text-success mx-3 my-0" href="/contests/{{ contest_url }}/results">
+                    <a class="text-success mx-3 my-0" href="/contests/{{ contest.id }}/results">
                         Результаты
                     </a>
                 </div>
             </div>
             <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-success btn-shadow font-weight-bold" href="/contests/{{ contest_url }}/1">
+                <a class="btn btn-lg btn-success btn-shadow font-weight-bold" href="/contests/{{ contest.id }}/1/main">
                     Просмотр <span class="fa fa-arrow-right"></span>
                 </a>
             </div>
             {% endif %}
         </div>
         <hr>
-        {% endwith %}
         {% endfor %}
     </div>
 </div>
 {% for contest, request in contests %}
-{% with contest_url=contest.name|urlencode %}
 <div class="modal fade" id="start_{{ contest.id }}">
     <div class="modal-lg modal-dialog centered">
         <div class="modal-content">
@@ -150,7 +147,7 @@
                 <p>Приостановить решение задач будет невозможно.<br>Вы уверены, что хотите продолжить?</p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success btn-shadow" href="/contests/{{ contest_url }}/start">
+                <a class="btn btn-success btn-shadow" href="/contests/{{ contest.id }}/start">
                     Участвовать
                 </a>
                 <button class="btn btn-shadow" data-dismiss="modal">
@@ -160,6 +157,5 @@
         </div>
     </div>
 </div>
-{% endwith %}
 {% endfor %}
 {% endblock %}

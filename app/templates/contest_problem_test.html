@@ -24,7 +24,7 @@
         </div>
         {% if problem.number != contest.problems.all()|length %}
         <div class="p-2 my-auto">
-            <a href="/contests/{{ contest_url }}/{{ problem.number+1 }}">
+            <a href="/contests/{{ contest.id }}/{{ problem.number+1 }}">
                 Следующая задача >
             </a>
         </div>

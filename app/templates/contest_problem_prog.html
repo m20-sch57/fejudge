@@ -3,17 +3,22 @@
 {% block contest_content %}
 <div class="d-flex flex-wrap pb-3">
     <div class="py-1 mr-auto">
-        <h3>Задача {{ problem.number }}. Name.</h3>
+        <h3>Задача {{ problem.number }}. {{ problem_manager.names["russian"] }}</h3>
     </div>
     <div class="py-1">
         <h4>Баллы: {{ problem.score(current_user) }}</h4>
     </div>
 </div>
 <div class="pb-4">
-    <p>Statement.</p>
+    <div class="collapse" id="included" addr="/contests/{{ contest.id }}/{{ problem.number }}/problem.html">
+    </div>
+    <a href="#included" data-toggle="collapse" id="collapse">
+        Развернуть условие <span class="fa fa-arrow-down"></span>
+    </a>
+    <script src="/static/js/statement.js"></script>
 </div>
 {% if request.state() == "In progress" %}
-<form action="/contests/{{ contest_url }}/{{ problem.number }}/send"
+<form action="/contests/{{ contest.id }}/{{ problem.number }}/main/send"
 method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div class="pb-3">
@@ -127,8 +132,8 @@ method="POST" enctype="multipart/form-data">
                             <th>Test #</th>
                             <th>Status</th>
                             <th>Time (S)</th>
+                            <th>Real time (S)</th>
                             <th>Memory (KB)</th>
-                            <th>Score</th>
                         </thead>
                         <tbody>
                             {% for test_details in submission.get_details()["tests"] %}
@@ -139,8 +144,8 @@ method="POST" enctype="multipart/form-data">
                                     {{ submission.formatted_test_status(test_details["status"]) }}
                                 </td>
                                 <td>{{ test_details["time_usage_s"] }}</td>
+                                <td>{{ test_details["wall_time_usage_s"] }}</td>
                                 <td>{{ test_details["memory_usage_kb"] }}</td>
-                                <td>{{ test_details["score"] }} ({{ test_details["maxscore"] }})</td>
                             </tr>
                             {% endwith %}
                             {% endfor %}
