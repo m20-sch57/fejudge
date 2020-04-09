@@ -97,6 +97,10 @@ dropArea.addEventListener('drop', eventName => uploadFiles(eventName.dataTransfe
 fileUpload.onchange = function() {
     uploadFiles(this.files);
 }
+submitAvatar.onclick = function() {
+    reset();
+    submitAvatar.form.submit();
+}
 
 changeProfile.onclick = showProfileForm;
 cancelProfile.onclick = hideProfileForm;
