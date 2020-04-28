@@ -41,7 +41,7 @@ def compile_checker(problem_manager):
         stderr='@_stdout'
     )
     if compile_status != 'OK':
-        print('Failed to compile checker', flush=True)
+        print('Failed to compile checker', compile_status, flush=True)
     libsbox.export_file(checker_binary_file, problem_manager.checker_binary_path)
 
 
