@@ -66,8 +66,8 @@ def run_on_test(test_number, binary_file, problem_manager):
             answer_file.internal_path,
             result_file.internal_path
         ],
-        time_limit_ms=Config.CHECKER_TIME_LIMIT_MS,
-        memory_limit_kb=Config.CHECKER_MEMORY_LIMIT_KB
+        time_limit_ms=Config.CHECKER_EXECUTION_TIME_LIMIT_MS,
+        memory_limit_kb=Config.CHECKER_EXECUTION_MEMORY_LIMIT_KB
     )
     checker_exit_code = checker_task['exit_code']
     test_status = participant_status if checker_status in ['OK', 'RE'] else 'FAIL'

@@ -34,8 +34,8 @@ def compile_checker(problem_manager):
     libsbox.import_file(testlib_file)
     error_file = libsbox.create_file('error')
     compile_status, compile_task, checker_binary_file = libsbox.compile(checker_source_file,
-        time_limit_ms=Config.CHECKER_COMPILATION_TIME_LIMIT_MS,
-        memory_limit_kb=Config.CHECKER_COMPILATION_MEMORY_LIMIT_KB,
+        time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
+        memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
         max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
@@ -53,8 +53,8 @@ def prepare_and_generate_tests(problem_manager):
     libsbox.import_file(main_solution_source_file)
     error_file = libsbox.create_file('error')
     compile_status, compile_task, main_solution_binary_file = libsbox.compile(main_solution_source_file,
-        time_limit_ms=Config.SOLUTION_COMPILATION_TIME_LIMIT_MS,
-        memory_limit_kb=Config.SOLUTION_COMPILATION_MEMORY_LIMIT_KB,
+        time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
+        memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
         max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
@@ -70,8 +70,8 @@ def prepare_and_generate_tests(problem_manager):
         libsbox.import_file(executable_source_file)
         error_file = libsbox.create_file('error')
         compile_status, compile_task, executable_binary_file = libsbox.compile(executable_source_file,
-            time_limit_ms=Config.EXECUTABLE_COMPILATION_TIME_LIMIT_MS,
-            memory_limit_kb=Config.EXECUTABLE_COMPILATION_MEMORY_LIMIT_KB,
+            time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
+            memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
             max_threads=10,
             stdout=error_file.internal_path,
             stderr='@_stdout'
@@ -91,8 +91,8 @@ def prepare_and_generate_tests(problem_manager):
             additional_argv = test_info['additional_argv']
             executable = next(filter(lambda elem: elem.internal_path == program_name, executables_bin))
             generator_status, generator_task = libsbox.run(executable, additional_argv=additional_argv,
-                time_limit_ms=problem_manager.time_limit_ms,
-                memory_limit_kb=problem_manager.memory_limit_kb,
+                time_limit_ms=Config.GENERATOR_EXECUTION_TIME_LIMIT_MS,
+                memory_limit_kb=Config.GENERATOR_EXECUTION_MEMORY_LIMIT_KB,
                 stdout=input_file.internal_path,
                 stderr=error_file.internal_path
             )
