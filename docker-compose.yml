@@ -21,8 +21,8 @@ services:
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
-            - libsbox:/tools/invoker/libsbox
-            - libsbox:/tools/packagebuilder/libsbox
+            - container:/tools/invoker/container
+            - container:/tools/packagebuilder/container
             - data:/tools/invoker/data
     invoker:
         build: 
@@ -32,7 +32,7 @@ services:
             KAFKA_SERVER: kafka:9092
         volumes:
             - libsboxd:/etc/libsboxd
-            - libsbox:/tools/invoker/libsbox
+            - container:/tools/invoker/container
             - data:/tools/invoker/data
     packagebuilder:
         build:
@@ -42,7 +42,7 @@ services:
             KAFKA_SERVER: kafka:9092
         volumes:
             - libsboxd:/etc/libsboxd
-            - libsbox:/tools/packagebuilder/libsbox
+            - container:/tools/packagebuilder/container
             - data:/tools/packagebuilder/data
     app:
         build: .
@@ -55,5 +55,5 @@ services:
             - data:/fejudge/data
 volumes:
     libsboxd:
-    libsbox:
+    container:
     data:
