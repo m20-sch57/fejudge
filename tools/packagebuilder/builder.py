@@ -5,7 +5,7 @@ import json
 from zipfile import ZipFile
 from kafka import KafkaConsumer
 
-sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from libsbox.client import File, Libsbox
 from packagemanager import ProblemManager
 from config import Config
@@ -128,17 +128,18 @@ def build_package(problem_id):
     print('Finished building package for problem', problem_id, flush=True)
 
 
-libsbox = Libsbox()
-consumer = KafkaConsumer(
-    'package',
-    bootstrap_servers=[Config.KAFKA_SERVER],
-    auto_offset_reset='earliest',
-    session_timeout_ms=300000, # maximum time to build one package
-    max_poll_records=1,
-    group_id='my-group',
-    value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-    api_version=(0, 10)
-)
+if __name__ == "__main__":
+    libsbox = Libsbox()
+    consumer = KafkaConsumer(
+        'package',
+        bootstrap_servers=[Config.KAFKA_SERVER],
+        auto_offset_reset='earliest',
+        session_timeout_ms=300000, # maximum time to build one package
+        max_poll_records=1,
+        group_id='my-group',
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+        api_version=(0, 10)
+    )
 
-for message in consumer:
-    build_package(message.value['problem_id'])
+    for message in consumer:
+        build_package(message.value['problem_id'])

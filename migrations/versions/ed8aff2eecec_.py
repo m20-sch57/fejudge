@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 204a09a2b978
+Revision ID: ed8aff2eecec
 Revises: 
-Create Date: 2020-03-25 22:19:19.654879
+Create Date: 2020-05-26 19:42:21.245117
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '204a09a2b978'
+revision = 'ed8aff2eecec'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -64,6 +64,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('contest_id', sa.Integer(), nullable=True),
     sa.Column('problem_type', sa.String(length=16), nullable=True),
+    sa.Column('status', sa.String(length=16), nullable=True),
     sa.Column('number', sa.Integer(), nullable=True),
     sa.Column('max_score', sa.Integer(), nullable=True),
     sa.Column('max_submissions', sa.Integer(), nullable=True),
@@ -77,9 +78,9 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('time', sa.DateTime(), nullable=True),
     sa.Column('language', sa.String(length=16), nullable=True),
+    sa.Column('source', sa.Text(), nullable=True),
     sa.Column('status', sa.String(length=16), nullable=True),
     sa.Column('score', sa.Integer(), nullable=True),
-    sa.Column('source', sa.Text(), nullable=True),
     sa.Column('details', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['contest_id'], ['contest.id'], name=op.f('fk_submission_contest_id_contest')),
     sa.ForeignKeyConstraint(['problem_id'], ['problem.id'], name=op.f('fk_submission_problem_id_problem')),

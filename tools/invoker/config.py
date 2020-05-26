@@ -1,14 +1,10 @@
 import os
 
 
-basedir = os.path.dirname(__file__)
-
-
 class Config(object):
     KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
-    DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(basedir, 'data')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
+    DATA_DIR = os.environ.get('DATA_DIR')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.abspath(os.path.join(DATA_DIR, 'database.db'))
 
     SUBMISSIONS_LOG_PATH = os.path.join(DATA_DIR, 'logs', 'submissions')
 

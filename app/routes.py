@@ -13,7 +13,6 @@ from app.forms import InputProblemForm, FileProblemForm
 from app.forms import AdminInfoForm, UploadPackageForm
 from app.models import User, RestoreToken, Contest, Problem, ContestRequest, Submission
 from app.email import send_verification_code, send_new_password
-from tools.packagemanager import ProblemManager
 
 
 @app.errorhandler(404)
@@ -197,6 +196,7 @@ def contests_page():
 @app.route('/contests/<contest_id>/<number>/<attr>')
 @login_required
 def load_problem(contest_id, number, attr):
+    from tools.packagemanager import ProblemManager
     contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
     problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()

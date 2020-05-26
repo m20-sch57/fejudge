@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from kafka import KafkaConsumer
 
-sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from libsbox.client import File, Libsbox
 from packagemanager import ProblemManager
 from config import Config
@@ -169,21 +169,21 @@ def evaluate(submission_id):
     print('Finished evaluating submission', submission_id, flush=True)
 
 
-engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-Base.metadata.create_all(engine)
-session = Session(bind=engine)
+if __name__ == "__main__":
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+    Base.metadata.create_all(engine)
+    session = Session(bind=engine)
+    libsbox = Libsbox()
+    consumer = KafkaConsumer(
+        'judge',
+        bootstrap_servers=[Config.KAFKA_SERVER],
+        auto_offset_reset='earliest',
+        session_timeout_ms=120000, # maximum time to judge one submission
+        max_poll_records=1,
+        group_id='my-group',
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+        api_version=(0, 10)
+    )
 
-libsbox = Libsbox()
-consumer = KafkaConsumer(
-    'judge',
-    bootstrap_servers=[Config.KAFKA_SERVER],
-    auto_offset_reset='earliest',
-    session_timeout_ms=120000, # maximum time to judge one submission
-    max_poll_records=1,
-    group_id='my-group',
-    value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-    api_version=(0, 10)
-)
-
-for message in consumer:
-    evaluate(message.value['submission_id'])
+    for message in consumer:
+        evaluate(message.value['submission_id'])

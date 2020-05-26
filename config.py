@@ -13,8 +13,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
     KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
     DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(basedir, 'data')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.abspath(os.path.join(DATA_DIR, 'database.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     AVATARS_SAVE_PATH = os.path.join(DATA_DIR, 'avatars')

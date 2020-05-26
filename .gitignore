@@ -2,8 +2,9 @@
 data/*
 !data/avatars/user.png
 
-# Temporary files from libsbox
-container/
+# Temporary files which are created
+tmp/
+sandbox/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -21,29 +21,32 @@ services:
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
-            - container:/tools/invoker/container
-            - container:/tools/packagebuilder/container
-            - data:/tools/invoker/data
+            - sandbox:/sandbox
+            - data:/data
     invoker:
         build: 
             context: ./tools
             dockerfile: invoker/Dockerfile
         environment: 
             KAFKA_SERVER: kafka:9092
+            SANDBOX_DIR: /sandbox
+            DATA_DIR: /data
         volumes:
             - libsboxd:/etc/libsboxd
-            - container:/tools/invoker/container
-            - data:/tools/invoker/data
+            - sandbox:/sandbox
+            - data:/data
     packagebuilder:
         build:
             context: ./tools
             dockerfile: packagebuilder/Dockerfile
         environment: 
             KAFKA_SERVER: kafka:9092
+            SANDBOX_DIR: /sandbox
+            DATA_DIR: /data
         volumes:
             - libsboxd:/etc/libsboxd
-            - container:/tools/packagebuilder/container
-            - data:/tools/packagebuilder/data
+            - sandbox:/sandbox
+            - data:/data
     app:
         build: .
         ports: 
@@ -51,11 +54,12 @@ services:
         environment:
             KAFKA_SERVER: kafka:9092
             MAIL_PASSWORD: Fedroadmin
+            DATA_DIR: /fejudge/data
         volumes:
             - data:/fejudge/data
 volumes:
     libsboxd:
-    container:
+    sandbox:
     data:
         driver: local
         driver_opts:
