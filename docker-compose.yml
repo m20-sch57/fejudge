@@ -57,3 +57,8 @@ volumes:
     libsboxd:
     container:
     data:
+        driver: local
+        driver_opts:
+            type: none
+            device: $PWD/data
+            o: bind
