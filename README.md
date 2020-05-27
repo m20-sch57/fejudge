@@ -43,6 +43,7 @@ sudo ./run.sh
 ```
 
 To stop correctly, run `sudo ./stop.sh`.
+
 To start in docker, run `docker-compose up` in the project directory.
 
 ## Documentation
