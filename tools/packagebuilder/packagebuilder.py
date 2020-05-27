@@ -1,9 +1,11 @@
 import os
 import sys
 import json
+import asyncio
 
 from zipfile import ZipFile
-from kafka import KafkaConsumer
+from nats.aio.client import Client as NATS
+from stan.aio.client import Client as STAN
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from libsbox.client import File, Libsbox
@@ -116,7 +118,7 @@ def prepare_and_generate_tests(problem_manager):
             libsbox.import_file(output_file)
 
 
-def build_package(problem_id):
+def build_package(problem_id): # TODO: error handler
     print('Started building package for problem', problem_id, flush=True)
     success = extract_archive(problem_id)
     if not success:
@@ -128,18 +130,22 @@ def build_package(problem_id):
     print('Finished building package for problem', problem_id, flush=True)
 
 
+async def run(loop):
+    nc = NATS()
+    sc = STAN()
+
+    async def message_handler(msg):
+        obj = json.loads(msg.data.decode('utf-8'))
+        build_package(obj['problem_id'])
+
+    await nc.connect(servers=[Config.NATS_SERVER], loop=loop, max_reconnect_attempts=2)
+    await sc.connect('test-cluster', 'packagebuilder1', nats=nc)
+    await sc.subscribe('packagebuilding', queue='worker', cb=message_handler, ack_wait=300, max_inflight=1)
+
+
 if __name__ == "__main__":
     libsbox = Libsbox()
-    consumer = KafkaConsumer(
-        'package',
-        bootstrap_servers=[Config.KAFKA_SERVER],
-        auto_offset_reset='earliest',
-        session_timeout_ms=300000, # maximum time to build one package
-        max_poll_records=1,
-        group_id='my-group',
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-        api_version=(0, 10)
-    )
 
-    for message in consumer:
-        build_package(message.value['problem_id'])
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run(loop))
+    loop.run_forever()

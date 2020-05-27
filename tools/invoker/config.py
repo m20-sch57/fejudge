@@ -2,9 +2,9 @@ import os
 
 
 class Config(object):
-    KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
+    NATS_SERVER = os.environ.get('NATS_SERVER') or 'nats://localhost:4222'
     DATA_DIR = os.environ.get('DATA_DIR')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.abspath(os.path.join(DATA_DIR, 'database.db'))
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
 
     SUBMISSIONS_LOG_PATH = os.path.join(DATA_DIR, 'logs', 'submissions')
 

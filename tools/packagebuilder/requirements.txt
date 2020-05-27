@@ -1,1 +1,2 @@
-kafka-python==1.4.7
+asyncio-nats-client==0.10.0
+asyncio-nats-streaming==0.4.0

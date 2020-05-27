@@ -6,4 +6,4 @@ RUN pip3 install -r packagebuilder/requirements.txt
 COPY . /tools
 WORKDIR /tools/packagebuilder
 
-ENTRYPOINT [ "python3", "builder.py" ]
+ENTRYPOINT [ "python3", "packagebuilder.py" ]

@@ -1,19 +1,9 @@
 version: '3.0'
 services:
-    zookeeper:
-        image: wurstmeister/zookeeper
+    nats:
+        image: nats-streaming
         ports:
-            - 2181:2181
-    kafka:
-        image: wurstmeister/kafka
-        ports:
-            - 9092:9092
-        environment:
-            KAFKA_ADVERTISED_HOST_NAME: kafka
-            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-            KAFKA_CREATE_TOPICS: judge:1:1,packages:1:1
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+            - 4222:4222
     libsbox:
         build:
             context: ./tools
@@ -24,39 +14,45 @@ services:
             - sandbox:/sandbox
             - data:/data
     invoker:
-        build: 
+        build:
             context: ./tools
             dockerfile: invoker/Dockerfile
-        environment: 
-            KAFKA_SERVER: kafka:9092
+        environment:
+            NATS_SERVER: nats://nats:4222
             SANDBOX_DIR: /sandbox
             DATA_DIR: /data
         volumes:
             - libsboxd:/etc/libsboxd
             - sandbox:/sandbox
             - data:/data
+        depends_on:
+            - nats
     packagebuilder:
         build:
             context: ./tools
             dockerfile: packagebuilder/Dockerfile
-        environment: 
-            KAFKA_SERVER: kafka:9092
+        environment:
+            NATS_SERVER: nats://nats:4222
             SANDBOX_DIR: /sandbox
             DATA_DIR: /data
         volumes:
             - libsboxd:/etc/libsboxd
             - sandbox:/sandbox
             - data:/data
+        depends_on:
+            - nats
     app:
         build: .
-        ports: 
+        ports:
             - 3013:3013
         environment:
-            KAFKA_SERVER: kafka:9092
+            NATS_SERVER: nats://nats:4222
             MAIL_PASSWORD: Fedroadmin
             DATA_DIR: /fejudge/data
         volumes:
             - data:/fejudge/data
+        depends_on:
+            - nats
 volumes:
     libsboxd:
     sandbox:

@@ -11,9 +11,10 @@ class Config(object):
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') or True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'fejudge.system@gmail.com'
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
-    KAFKA_SERVER = os.environ.get('KAFKA_SERVER') or 'localhost:9092'
+    NATS_SERVER = os.environ.get('NATS_SERVER') or 'nats://localhost:4222'
+
     DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(basedir, 'data')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.abspath(os.path.join(DATA_DIR, 'database.db'))
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     AVATARS_SAVE_PATH = os.path.join(DATA_DIR, 'avatars')

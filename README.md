@@ -23,33 +23,26 @@ These instructions will guide you through the installation process of Fejudge.
 - C++ 17 compiler, with `std::filesystem` support
 - CMake version 3.10 or higher
 - OpenJDK Runtime environment 11.0.4
-- Python 3.6 or higher with `flask`, `flask_avatars`, `flask_sqlalchemy`, `flask_migrate`, `flask_login`, `flask_wtf`, `flask_mail`, `WTForms-Components`, `kafka-python`, `StringGenerator`, `SQLAlchemy` - see `requirements.txt`, `tools/invoker/requirements.txt`, `tools/packagebuilder/requirements.txt`
+- Python 3.6 or higher with `flask`, `flask_avatars`, `flask_sqlalchemy`, `flask_migrate`, `flask_login`, `flask_wtf`, `flask_mail`, `WTForms-Components`, `asyncio-nats-client`, `asyncio-nats-streaming`, `StringGenerator`, `SQLAlchemy` - see `requirements.txt`, `tools/invoker/requirements.txt`, `tools/packagebuilder/requirements.txt`
 
 ### Installing
 
-1. Run main server
+1. Download and install [NATS Streaming](https://nats.io/download/nats-io/nats-streaming-server)
+2. Compile and install [libsbox](https://github.com/Forestryks/libsbox), located in `Fejudge/tools/libsbox/daemon`
+3. Create and upgrade database
 ```
-python3 run.py
+flask db upgrade
 ```
-2. Download kafka binaries from [here](https://kafka.apache.org/downloads) and extract it
-3. Run kafka servers
+4. Initialize all data
 ```
-./run_kafka.sh <PathToKafkaBinaries>
+python3 init.py
 ```
-4. Set up [libsbox](https://github.com/Forestryks/libsbox), located in `Fejudge/tools/libsbox/daemon`
-5. Assign environment variable `DATA_DIR` to where data is located
+5. Run main script
 ```
-export DATA_DIR=./data
-```
-6. Run invoker in order to judge solutions
-```
-sudo -E python3 tools/invoker/invoker.py
-```
-7. Run package builder in order to add problem packages
-```
-sudo -E python3 tools/packagebuilder/builder.py
+sudo ./run.sh
 ```
 
+To stop correctly, run `sudo ./stop.sh`.
 To start in docker, run `docker-compose up` in the project directory.
 
 ## Documentation

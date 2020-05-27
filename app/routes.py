@@ -6,7 +6,7 @@ from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime, timedelta
 
-from app import app, db, producer, avatars
+from app import app, db, avatars, submit_data
 from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
@@ -259,7 +259,7 @@ def send(contest_id, number):
             current_user.active_language = language
             db.session.add(submission)
             db.session.commit()
-            producer.send('judge', value={'submission_id': submission.id})
+            submit_data(group='judging', obj={'submission_id': submission.id})
             flash('Your solution has been sent', category='alert-success')
     except ValueError as error:
         flash('Submission error: ' + str(error), category='alert-danger')
@@ -369,7 +369,7 @@ def contest_admin_newproblem(contest_id):
         path = os.path.join(upload_folder, filename)
         upload_package_form.package.data.save(path)
         db.session.commit()
-        producer.send('package', value={'problem_id': new_problem.id})
+        submit_data(group='packagebuilding', obj={'problem_id': new_problem.id})
         flash('Your package has been uploaded, check the status of the problem', category='alert-info')
         return redirect(url_for('contest_admin_problems', contest_id=contest_id))
     return render_template('contest_admin_newproblem.html',

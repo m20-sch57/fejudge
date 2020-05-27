@@ -3,10 +3,12 @@ import sys
 import json
 import time
 import datetime
+import asyncio
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from kafka import KafkaConsumer
+from nats.aio.client import Client as NATS
+from stan.aio.client import Client as STAN
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from libsbox.client import File, Libsbox
@@ -169,21 +171,25 @@ def evaluate(submission_id):
     print('Finished evaluating submission', submission_id, flush=True)
 
 
+async def run(loop):
+    nc = NATS()
+    sc = STAN()
+
+    async def message_handler(msg):
+        obj = json.loads(msg.data.decode('utf-8'))
+        evaluate(obj['submission_id'])
+
+    await nc.connect(servers=[Config.NATS_SERVER], loop=loop, max_reconnect_attempts=2)
+    await sc.connect('test-cluster', 'invoker1', nats=nc)
+    await sc.subscribe('judging', queue='worker', cb=message_handler, ack_wait=60, max_inflight=1)
+
+
 if __name__ == "__main__":
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     Base.metadata.create_all(engine)
     session = Session(bind=engine)
     libsbox = Libsbox()
-    consumer = KafkaConsumer(
-        'judge',
-        bootstrap_servers=[Config.KAFKA_SERVER],
-        auto_offset_reset='earliest',
-        session_timeout_ms=120000, # maximum time to judge one submission
-        max_poll_records=1,
-        group_id='my-group',
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-        api_version=(0, 10)
-    )
 
-    for message in consumer:
-        evaluate(message.value['submission_id'])
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run(loop))
+    loop.run_forever()
