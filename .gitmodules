@@ -1,3 +1,0 @@
-[submodule "invoker/libsbox"]
-	path = invoker/libsbox
-	url = https://github.com/Forestryks/libsbox.git
