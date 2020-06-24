@@ -27,7 +27,7 @@ These instructions will guide you through the installation process of Fejudge.
 
 ### Installing
 
-1. Download and install [NATS Streaming](https://nats.io/download/nats-io/nats-streaming-server)
+1. Download and install [NATS Server](https://docs.nats.io/nats-server/installation)
 2. Compile and install [libsbox](https://github.com/Forestryks/libsbox), located in `./invoker/libsbox`
 3. Create and upgrade database
 ```
