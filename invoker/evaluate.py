@@ -1,16 +1,9 @@
-import os
-import sys
 import json
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from pynats import NATSClient
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from libsbox.client import File, Libsbox
-from packagemanager import ProblemManager
+from libsbox_client import File, libsbox
+from problem_manage import ProblemManager
+from models import Submission
 from config import Config
-from models import Base, Submission
 
 
 # def write_logs(submission_id, message):
@@ -119,11 +112,11 @@ def compile(submission):
     # )
 
 
-def evaluate(submission_id):
-    print('Started evaluating submission', submission_id, flush=True)
+def evaluate(submission_id, session):
+    print('Started evaluating submission {}'.format(submission_id), flush=True)
     submission = session.query(Submission).filter_by(id=submission_id).first()
     if submission is None:
-        print('Cannot find submission', submission_id, flush=True)
+        print('Cannot find submission {}'.format(submission_id), flush=True)
         return
     problem_manager = ProblemManager(submission.problem_id)
     # write_logs(submission_id,
@@ -164,21 +157,4 @@ def evaluate(submission_id):
     #         submission.score
     #     )
     # )
-    print('Finished evaluating submission', submission_id, flush=True)
-
-
-def message_handler(msg):
-    obj = json.loads(msg.payload.decode('utf-8'))
-    evaluate(obj['submission_id'])
-
-
-if __name__ == "__main__":
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-    Base.metadata.create_all(engine)
-    session = Session(bind=engine)
-    libsbox = Libsbox()
-
-    nats = NATSClient(Config.NATS_SERVER, name='invoker1')
-    nats.connect()
-    nats.subscribe('judging', queue='worker', callback=message_handler)
-    nats.wait()
+    print('Finished evaluating submission {}'.format(submission_id), flush=True)

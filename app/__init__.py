@@ -1,5 +1,4 @@
 import json
-import asyncio
 
 from flask import Flask
 from flask_avatars import Avatars
@@ -8,22 +7,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
-from nats.aio.client import Client as NATS, NatsError
-from stan.aio.client import Client as STAN
+from pynats import NATSClient
 from config import Config
 
 
-async def connect_to_nats():
-    await nc.connect(servers=[Config.NATS_SERVER], loop=loop, max_reconnect_attempts=2)
-    await sc.connect('test-cluster', 'producer1', nats=nc)
-
-
-async def submit_to_nats(group, obj):
-    await sc.publish(group, json.dumps(obj).encode('utf-8'))
-
-
-def submit_data(group, obj):
-    loop.run_until_complete(submit_to_nats(group, obj))
+def submit(group, obj):
+    nats.connect()
+    nats.publish(group, payload=json.dumps(obj).encode('utf-8'))
+    nats.close()
 
 
 naming_convention = {
@@ -41,14 +32,11 @@ db = SQLAlchemy(app, metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 mail = Mail(app)
 
-nc = NATS()
-sc = STAN()
-loop = asyncio.get_event_loop()
-
+nats = NATSClient(Config.NATS_SERVER, name='producer1')
 try:
-    loop.run_until_complete(connect_to_nats())
-except NatsError as e:
-    print(e)
+    nats.connect()
+except ConnectionError as e:
+    print('Failed connecting to nats:', e, flush=True)
 
 avatars = Avatars(app)
 login = LoginManager(app)

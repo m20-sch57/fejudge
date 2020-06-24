@@ -1,27 +1,15 @@
 #!/bin/bash
 
+# Before running, specify MAIL_USERNAME and MAIL_PASSWORD of smtp server
+
 export FLASK_APP=app
+export FLASK_ENV=development
+export FLASK_DEBUG=false
 export DATA_DIR=$PWD/data
-export SANDBOX_DIR=$PWD/sandbox
 
-if ! [ -d 'tmp' ]; then
-    mkdir tmp
+if ! [ -d 'logs' ]; then
+    mkdir logs
 fi
 
-sudo libsboxd start &
-nats-streaming-server &
-
-if ! [ -f 'tmp/invoker.pid' ]; then
-    sudo -E python3 tools/invoker/invoker.py \&> tmp/invoker.log &
-    echo $! > 'tmp/invoker.pid'
-else
-    echo 'tmp/invoker.pid exists, failed to start'
-fi
-if ! [ -f 'tmp/packagebuilder.pid' ]; then
-    sudo -E python3 tools/packagebuilder/packagebuilder.py \&> tmp/packagebuilder.log &
-    echo $! > 'tmp/packagebuilder.pid'
-else
-    echo 'tmp/packagebuilder.pid exists, failed to start'
-fi
-
-python3 run.py
+nats-server -l logs/nats.log &
+python3 -m flask run --host=0.0.0.0 --port=3013

@@ -28,7 +28,6 @@ def clear_database(session):
 
 
 clear_database(db.session)
-clear_folder(Config.SUBMISSIONS_LOG_PATH)
 clear_folder(Config.SUBMISSIONS_DOWNLOAD_PATH)
 clear_folder(Config.PROBLEMS_UPLOAD_PATH)
 clear_folder(Config.PROBLEMS_PATH)

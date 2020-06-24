@@ -2,8 +2,8 @@
 data/*
 !data/avatars/user.png
 
-# Temporary files which are created
-tmp/
+# Temporary files and logs
+logs/
 sandbox/
 
 # Byte-compiled / optimized / DLL files

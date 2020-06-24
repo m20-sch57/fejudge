@@ -23,12 +23,12 @@ These instructions will guide you through the installation process of Fejudge.
 - C++ 17 compiler, with `std::filesystem` support
 - CMake version 3.10 or higher
 - OpenJDK Runtime environment 11.0.4
-- Python 3.6 or higher with `flask`, `flask_avatars`, `flask_sqlalchemy`, `flask_migrate`, `flask_login`, `flask_wtf`, `flask_mail`, `WTForms-Components`, `asyncio-nats-client`, `asyncio-nats-streaming`, `StringGenerator`, `SQLAlchemy` - see `requirements.txt`, `tools/invoker/requirements.txt`, `tools/packagebuilder/requirements.txt`
+- Python 3.6 or higher with `Flask`, `Flask-Avatars`, `Flask-Login`, `Flask-Mail`, `Flask-Migrate`, `Flask-SQLAlchemy`, `Flask-WTF`, `WTForms-Components`, `SQLAlchemy`, `nats-python`, `StringGenerator` - see `requirements.txt`
 
 ### Installing
 
 1. Download and install [NATS Streaming](https://nats.io/download/nats-io/nats-streaming-server)
-2. Compile and install [libsbox](https://github.com/Forestryks/libsbox), located in `Fejudge/tools/libsbox/daemon`
+2. Compile and install [libsbox](https://github.com/Forestryks/libsbox), located in `./invoker/libsbox`
 3. Create and upgrade database
 ```
 flask db upgrade
@@ -39,12 +39,15 @@ python3 init.py
 ```
 5. Run main script
 ```
-sudo ./run.sh
+./run.sh
+```
+6. Run invoker
+```
+cd invoker/
+sudo -E ./run.sh
 ```
 
-To stop correctly, run `sudo ./stop.sh`.
-
-To start in docker, run `docker-compose up` in the project directory.
+<!-- To start in docker, run `docker-compose up` in the project directory. -->
 
 ## Documentation
 

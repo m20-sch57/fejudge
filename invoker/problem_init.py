@@ -1,13 +1,8 @@
 import os
-import sys
-import json
 
 from zipfile import ZipFile
-from pynats import NATSClient
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from libsbox.client import File, Libsbox
-from packagemanager import ProblemManager
+from libsbox_client import File, libsbox
+from problem_manage import ProblemManager
 from config import Config
 
 
@@ -41,7 +36,7 @@ def compile_checker(problem_manager):
         stderr='@_stdout'
     )
     if compile_status != 'OK':
-        print('Failed to compile checker', compile_status, flush=True)
+        print('Failed to compile checker verdict={}'.format(compile_status), flush=True)
     libsbox.export_file(checker_binary_file, problem_manager.checker_binary_path)
 
 
@@ -77,7 +72,7 @@ def prepare_and_generate_tests(problem_manager):
             stderr='@_stdout'
         )
         if compile_status != 'OK':
-            print('Failed to compile executable', executable_source_file.internal_path, flush=True)
+            print('Failed to compile executable {}'.format(executable_source_file.internal_path), flush=True)
         executables_bin.append(executable_binary_file)
     for test_info in problem_manager.tests_to_generate:
         test_number = test_info['test_number']
@@ -97,7 +92,7 @@ def prepare_and_generate_tests(problem_manager):
                 stderr=error_file.internal_path
             )
             if generator_status != 'OK':
-                print('Failed to generate input for test #', test_number, generator_status)
+                print('Failed to generate input for test #{} verdict={}'.format(test_number, generator_status), flush=True)
             libsbox.export_file(input_file, input_file.external_path)
         else:
             libsbox.import_file(input_file)
@@ -110,33 +105,19 @@ def prepare_and_generate_tests(problem_manager):
                 stderr=error_file.internal_path
             )
             if solution_status != 'OK':
-                print('Failed to generate output for test #', test_number, solution_status)
+                print('Failed to generate output for test #{} verdict={}'.format(test_number, solution_status), flush=True)
             libsbox.export_file(output_file, output_file.external_path)
         else:
             libsbox.import_file(output_file)
 
 
-def build_package(problem_id): # TODO: error handler
-    print('Started building package for problem', problem_id, flush=True)
+def init(problem_id): # TODO: error handler
+    print('Started initializing problem {}'.format(problem_id), flush=True)
     success = extract_archive(problem_id)
     if not success:
-        print('Cannot find archive for problem', problem_id, flush=True)
+        print('Cannot find archive for problem {}'.format(problem_id), flush=True)
         return
     problem_manager = ProblemManager(problem_id)
     compile_checker(problem_manager)
     prepare_and_generate_tests(problem_manager)
-    print('Finished building package for problem', problem_id, flush=True)
-
-
-def message_handler(msg):
-    obj = json.loads(msg.payload.decode('utf-8'))
-    build_package(obj['problem_id'])
-
-
-if __name__ == "__main__":
-    libsbox = Libsbox()
-
-    nats = NATSClient(Config.NATS_SERVER, name='packagebuilder1')
-    nats.connect()
-    nats.subscribe('packagebuilding', queue='worker', callback=message_handler)
-    nats.wait()
+    print('Finished building package for problem {}'.format(problem_id), flush=True)

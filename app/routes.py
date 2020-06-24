@@ -6,7 +6,7 @@ from flask import render_template, redirect, url_for, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime, timedelta
 
-from app import app, db, avatars, submit_data
+from app import app, db, avatars, submit
 from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 from app.forms import InputProblemForm, FileProblemForm
@@ -196,7 +196,7 @@ def contests_page():
 @app.route('/contests/<contest_id>/<number>/<attr>')
 @login_required
 def load_problem(contest_id, number, attr):
-    from tools.packagemanager import ProblemManager
+    from invoker.problem_manage import ProblemManager
     contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
     problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
@@ -259,7 +259,10 @@ def send(contest_id, number):
             current_user.active_language = language
             db.session.add(submission)
             db.session.commit()
-            submit_data(group='judging', obj={'submission_id': submission.id})
+            submit(group='invokers', obj={
+                'type': 'evaluate',
+                'submission_id': submission.id
+            })
             flash('Your solution has been sent', category='alert-success')
     except ValueError as error:
         flash('Submission error: ' + str(error), category='alert-danger')
@@ -369,7 +372,10 @@ def contest_admin_newproblem(contest_id):
         path = os.path.join(upload_folder, filename)
         upload_package_form.package.data.save(path)
         db.session.commit()
-        submit_data(group='packagebuilding', obj={'problem_id': new_problem.id})
+        submit(group='invokers', obj={
+            'type': 'problem_init',
+            'problem_id': new_problem.id,
+        })
         flash('Your package has been uploaded, check the status of the problem', category='alert-info')
         return redirect(url_for('contest_admin_problems', contest_id=contest_id))
     return render_template('contest_admin_newproblem.html',
