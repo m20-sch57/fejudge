@@ -1,43 +1,26 @@
 version: '3.0'
 services:
     nats:
-        image: nats-streaming
+        image: nats
         ports:
             - 4222:4222
     libsbox:
         build:
-            context: ./tools
-            dockerfile: libsbox/Dockerfile
+            context: invoker/libsbox/
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
-            - sandbox:/sandbox
+            - sandbox:/invoker/sandbox
             - data:/data
     invoker:
         build:
-            context: ./tools
-            dockerfile: invoker/Dockerfile
+            context: invoker/
         environment:
             NATS_SERVER: nats://nats:4222
-            SANDBOX_DIR: /sandbox
             DATA_DIR: /data
         volumes:
             - libsboxd:/etc/libsboxd
-            - sandbox:/sandbox
-            - data:/data
-        depends_on:
-            - nats
-    packagebuilder:
-        build:
-            context: ./tools
-            dockerfile: packagebuilder/Dockerfile
-        environment:
-            NATS_SERVER: nats://nats:4222
-            SANDBOX_DIR: /sandbox
-            DATA_DIR: /data
-        volumes:
-            - libsboxd:/etc/libsboxd
-            - sandbox:/sandbox
+            - sandbox:/invoker/sandbox
             - data:/data
         depends_on:
             - nats
@@ -46,11 +29,15 @@ services:
         ports:
             - 3013:3013
         environment:
+            MAIL_USERNAME: fejudge.system@gmail.com
+            MAIL_PASSWORD: secret # You will never guess!
+            FLASK_APP: app
+            FLASK_ENV: development
+            FLASK_DEBUG: 0
             NATS_SERVER: nats://nats:4222
-            MAIL_PASSWORD: Fedroadmin
-            DATA_DIR: /fejudge/data
+            DATA_DIR: /data
         volumes:
-            - data:/fejudge/data
+            - data:/data
         depends_on:
             - nats
 volumes:
