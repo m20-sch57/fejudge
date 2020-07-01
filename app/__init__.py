@@ -41,7 +41,7 @@ except ConnectionError as e:
 avatars = Avatars(app)
 login = LoginManager(app)
 login.login_view = 'login'
-login.login_message_category = 'alert-info'
+login.login_message_category = 'info auto-dismiss'
 
 
 from app import routes, models

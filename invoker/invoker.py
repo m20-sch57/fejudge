@@ -27,4 +27,4 @@ if __name__ == "__main__":
     nats = NATSClient(Config.NATS_SERVER, name=Config.INVOKER_NAME)
     nats.connect()
     nats.subscribe('invokers', queue='worker', callback=message_handler)
-    nats.wait()
+    nats.wait() # TODO: reconnect

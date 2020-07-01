@@ -4,7 +4,7 @@
 
 export FLASK_APP=app
 export FLASK_ENV=development
-export FLASK_DEBUG=false
+export FLASK_DEBUG=true
 export DATA_DIR=$PWD/data
 
 if ! [ -d 'logs' ]; then

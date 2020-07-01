@@ -1,0 +1,134 @@
+#content {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+}
+
+#statementsBox {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+}
+
+#statementsTitle {
+    position: relative;
+    display: flex;
+    flex-flow: row;
+    height: 80px;
+    border-bottom: 1px solid whitesmoke;
+    z-index: 1;
+}
+
+#statementsTitle.shadow {
+    border-bottom: 1px solid #e9e9e9;
+    box-shadow: 0 0 20px lightgrey;
+}
+
+#goBack {
+    margin: 15px;
+    height: 50px;
+    width: 50px;
+}
+
+#problemInfo {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+#problemName {
+    padding-right: 15px;
+    margin: auto auto auto 0;
+    font-size: 25px;
+}
+
+#timeLimit {
+    padding-right: 20px;
+    margin: auto 0 auto 0;
+    font-size: 20px;
+}
+
+#memoryLimit {
+    padding-right: 20px;
+    margin: auto auto auto 0;
+    font-size: 20px;
+}
+
+#problemScore {
+    padding-right: 15px;
+    margin: auto 0 auto 0;
+    font-size: 20px;
+}
+
+#statementsContent {
+    position: relative;
+    flex-grow: 1;
+}
+
+#statementsContentScrollable {
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+#statementsLoading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    z-index: 256;
+}
+
+#statementsLoadingLabel {
+    margin: auto;
+}
+
+#submitBox {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    border-left: 1px solid whitesmoke;
+    z-index: 2;
+}
+
+#submitTitle {
+    height: 80px;
+    border-bottom: 1px solid whitesmoke;
+}
+
+#submitExpand {
+    margin: 15px;
+    height: 50px;
+    width: 50px;
+}
+
+#navigation {
+    flex-grow: 1;
+    font-size: 18px;
+}
+
+#navigation .action {
+    height: 50px;
+    width: 50px;
+    margin: 15px;
+}
+
+#navigation .action.active {
+    color: white;
+    background-color: rgb(21, 148, 252);
+}
+
+@media (max-width: 750px) {
+    #timeLimit, #memoryLimit {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    #problemScore {
+        display: none;
+    }
+}

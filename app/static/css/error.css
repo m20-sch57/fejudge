@@ -1,0 +1,19 @@
+#content {
+    margin: auto;
+    text-align: center;
+}
+
+#title {
+    font-size: 30px;
+}
+
+#code {
+    margin: 10px;
+    font-size: 150px;
+    font-weight: bold;
+    letter-spacing: 10px;
+}
+
+#goHome {
+    font-size: 22px;
+}

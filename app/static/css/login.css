@@ -1,0 +1,74 @@
+#box {
+    margin-bottom: auto;
+    width: 100%;
+    box-shadow: 0 0 10px lightgrey;
+}
+
+#header {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    padding: 25px;
+}
+
+#title {
+    padding: 5px;
+    margin-right: auto;
+    font-size: 30px;
+}
+
+#register {
+    padding: 5px;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 20px;
+}
+
+#body {
+    padding: 25px;
+}
+
+#label {
+    margin-left: 3px;
+    margin-bottom: 25px;
+    font-size: 20px;
+}
+
+#username, #password {
+    margin-top: 20px;
+}
+
+#footer {
+    display: flex;
+    flex-flow: row;
+    margin-top: 30px;
+}
+
+#submitButton {
+    margin-right: auto;
+}
+
+#forgotPassword {
+    padding: 5px;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 18px;
+}
+
+@media (min-width: 600px) {
+    #box {
+        margin: auto;
+        width: 600px;
+        border-radius: 10px;
+    }
+
+    #header {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    #body {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+}

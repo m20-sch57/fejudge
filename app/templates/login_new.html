@@ -1,0 +1,37 @@
+{% extends "base_new.html" %}
+
+{% block content %}
+<div class="page">
+    <div id="box">
+        <form action="" method="POST">
+            <div class="bg-blue" id="header">
+                <div id="title">
+                    Sign in
+                </div>
+                <a href="/register" class="flat-link hover-underline" id="register">
+                    Sign up
+                </a>
+            </div>
+            <div class="bg-white" id="body">
+                <div id="label">
+                    Please sign in.
+                </div>
+                <div id="username">
+                    <input class="flat-input input-blue" placeholder="Username" name="username" spellcheck="false">
+                </div>
+                <div id="password">
+                    <input type="password" class="flat-input input-blue" placeholder="Password" name="password">
+                </div>
+                <div id="footer">
+                    <button type="submit" class="btn-normal btn-blue" id="submitButton">
+                        Sign in
+                    </button>
+                    <a href="/restorePassword" class="flat-link hover-underline" id="forgotPassword">
+                        Forgot password?
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

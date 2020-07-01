@@ -1,0 +1,44 @@
+{% extends "base_new.html" %}
+
+{% block content %}
+<div class="page">
+    <div id="content">
+        <div class="bg-grey" id="header">
+            <div id="title">
+                Contests
+            </div>
+            <a href="/logout" class="flat-link hover-underline" id="logout">
+                Log out
+            </a>
+        </div>
+        <div class="bg-white" id="body">
+            {% for contest, request in contests %}
+            <a href="/contests/{{ contest.id }}" class="contest-row">
+                <div class="contest-label">
+                    {{ contest.name }}
+                </div>
+                <div class="contest-details">
+                    {% if request == None or request.state() == 'Not started' %}
+                    <div class="contest-status not-started">
+                        Not started yet
+                    </div>
+                    {% elif request.state() == 'In progress' %}
+                    <div class="contest-status in-progress">
+                        Time remaining:
+                        <span name="timer">
+                            {{ request.time_remaining().total_seconds() }}
+                        </span>
+                    </div>
+                    {% elif request.state() == 'Finished' %}
+                    <div class="contest-status finished">
+                        Finished
+                    </div>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="/static/js/timer.js"></script>
+{% endblock %}

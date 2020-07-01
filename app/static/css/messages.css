@@ -1,0 +1,66 @@
+#messages {
+    position: absolute;
+    display: flex;
+    flex-flow: column;
+    bottom: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+}
+
+#messages .message {
+    display: flex;
+    flex-flow: row;
+    padding: 10px 15px 10px 15px;
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px lightgrey;
+}
+
+#messages .message.info {
+    background-color: lightblue;
+}
+
+#messages .message.failure {
+    background-color: coral;
+}
+
+#messages .message.warning {
+    background-color: gold;
+}
+
+#messages .message.success {
+    background-color: lightgreen;
+}
+
+#messages .message .text {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#messages .message .close {
+    flex-shrink: 0;
+    padding: 0;
+    margin-left: auto;
+    height: 20px;
+    width: 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    font-size: 19px;
+    line-height: 19px;
+}
+
+#messages .message .close:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#messages .message .close:active {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 600px) {
+    #messages {
+        width: 300px;
+    }
+}

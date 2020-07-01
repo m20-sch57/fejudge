@@ -13,17 +13,18 @@ class ProblemManager:
         tree = ET.parse(self.xml_path)
         root = tree.getroot()
 
-        self.names = dict()
+        self.names_dict = dict()
         for child in root.find('names'):
-            self.names[child.attrib['language']] = child.attrib['value']
-        self.statements_html_dir = dict()
-        self.statements_pdf_dir = dict()
+            self.names_dict[child.attrib['language']] = child.attrib['value']
+
+        self.html_dir_dict = dict()
+        self.pdf_dir_dict = dict()
         for child in root.find('statements'):
-            statements_dir = os.path.abspath(os.path.dirname(self.build_path(child.attrib['path'])))
+            curdir = os.path.abspath(os.path.dirname(self.build_path(child.attrib['path'])))
             if child.attrib['type'] == 'text/html':
-                self.statements_html_dir[child.attrib['language']] = statements_dir
+                self.html_dir_dict[child.attrib['language']] = curdir
             elif child.attrib['type'] == 'application/pdf':
-                self.statements_pdf_dir[child.attrib['language']] = statements_dir
+                self.pdf_dir_dict[child.attrib['language']] = curdir
 
         testset = root.find('judging')[0]
         self.time_limit_ms = int(testset.find('time-limit').text)
@@ -65,6 +66,14 @@ class ProblemManager:
                 test_info['additional_argv'] = argv[1:]
             self.tests_to_generate.append(test_info)
 
+    def problem_name(self, language='english'):
+        return self.select_language(self.names_dict, language)
+
+    def html_dir(self, language='english'):
+        return self.select_language(self.html_dir_dict, language)
+
+    def pdf_dir(self, language='english'):
+        return self.select_language(self.pdf_dir_dict, language)
 
     def build_path(self, relpath):
         return os.path.join(self.package_path, relpath)
@@ -74,6 +83,10 @@ class ProblemManager:
 
     def test_output_path(self, test_number):
         return self.output_path_pattern % test_number
+
+    @staticmethod
+    def select_language(dictionary, language):
+        return dictionary[language] if language in dictionary.keys() else next(iter(dictionary.values()))
 
     @staticmethod
     def match_language(language):

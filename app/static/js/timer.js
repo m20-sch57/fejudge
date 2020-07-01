@@ -1,3 +1,5 @@
+'use strict'
+
 function repr(time) {
     let seconds = time % 60;
     time -= seconds, time /= 60;
@@ -10,8 +12,8 @@ function repr(time) {
     return `${hours}:${minutes}:${seconds}`;
 }
 
-function start_timer(timer_id, time_delta, onfinish = () => {}) {
-    let timer = document.getElementById(timer_id);
+function start_timer(time_delta, onfinish = () => {}) {
+    let timer = this;
     let time = Number(timer.innerText);
     timer.innerText = repr(time);
     setInterval(function() {
@@ -25,3 +27,5 @@ function start_timer(timer_id, time_delta, onfinish = () => {}) {
         }
     }, 1000);
 }
+
+document.getElementsByName("timer").forEach((it) => start_timer.call(it, -1));

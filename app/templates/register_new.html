@@ -1,0 +1,45 @@
+{% extends "base_new.html" %}
+
+{% block content %}
+<div class="page">
+    <div id="box">
+        <form action="" method="POST">
+            <div class="bg-green" id="header">
+                <div id="title">
+                    Sign up
+                </div>
+                <a href="/login" class="flat-link hover-underline" id="login">
+                    Sign in
+                </a>
+            </div>
+            <div class="bg-white" id="body">
+                <div id="label">
+                    Please fill in all fields.
+                </div>
+                <div id="username">
+                    <input class="flat-input input-green" placeholder="Username" name="username" spellcheck="false" id="usernameInput">
+                </div>
+                <div id="usernameHint"></div>
+                <div id="email">
+                    <input class="flat-input input-green" placeholder="Email" name="email" spellcheck="false" id="emailInput">
+                </div>
+                <div id="emailHint"></div>
+                <div id="password">
+                    <input type="password" class="flat-input input-green" placeholder="Password" name="password" id="passwordInput">
+                </div>
+                <div id="passwordHint"></div>
+                <div id="confirmPassword">
+                    <input type="password" class="flat-input input-green" placeholder="Confirm password" name="password2" id="confirmPasswordInput">
+                </div>
+                <div id="confirmPasswordHint"></div>
+                <div id="footer">
+                    <button type="button" class="btn-normal btn-green" id="submitButton">
+                        Sign up
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/static/js/register.js"></script>
+{% endblock %}

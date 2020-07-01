@@ -1,29 +1,51 @@
 .problem-statement {
-    margin: 0 auto 2em auto;
+    margin: 0.5em auto 2em auto;
+    line-height: 1.5em;
+    max-width: 1024px;
 }
 
-/* .problem-statement .epigraph {
+.problem-statement .epigraph {
     margin-left: 67%;
     width: 33%;
-}
-
-.problem-statement .epigraph-text {
 }
 
 .problem-statement .epigraph-source {
     border-top: 1px solid #888;
     text-align: right;
-} */
+}
+
+.problem-statement p {
+    margin: 0 0 1em 0;
+}
 
 .problem-statement .header {
-    margin-bottom: 1.5em;
-    border: 1px solid #888;
-    border-radius: 8px;
-    background-color: #EEE;
+    display: none;
 }
 
 .problem-statement .header .title {
-    display: none;
+    font-size: 150%;
+    margin-bottom: 0.25em;
+}
+
+.problem-statement .header .title {
+    font-size: 150%;
+    font-family: arial;
+}
+
+.problem-statement ul {
+    list-style: disc;
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+.problem-statement ol {
+    list-style: decimal;
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+
+.problem-statement li {
+    line-height: 1.5em;
 }
 
 .problem-statement .property-title {
@@ -35,11 +57,7 @@
 }
 
 .problem-statement .time-limit, .problem-statement .memory-limit, .problem-statement .input-file, .problem-statement .output-file {
-    padding: 8px;
-}
-
-.problem-statement .time-limit, .problem-statement .memory-limit, .problem-statement .input-file {
-    border-bottom: 1px solid #888;
+    margin: 0 auto;
 }
 
 .problem-statement .legend {
@@ -47,42 +65,52 @@
 }
 
 .problem-statement .section-title {
-    font-size: 150%;
+    font-family: arial;
+    font-size: 160%;
+    margin-top: 1em;
+    margin-bottom: 0.75em;
+}
+
+.problem-statement .output-specification {
+    margin-bottom: 1em;
 }
 
 .problem-statement .sample-tests .input {
-    border: 1px solid #888;
-    border-radius: 8px 8px 0 0;
-}
-
-.problem-statement .sample-tests .output {
-    border: 1px solid #888;
-    border-radius: 0 0 8px 8px;
-}
-
-.problem-statement .sample-tests .output {
-    margin-bottom: 1em;
-    position: relative;
-    top: -1px;
-}
-
-.problem-statement .sample-tests pre {
-    padding: 8px;
-    margin: 0;
-}
-
-.problem-statement .sample-tests .title {
-    font-size: 110%;
-    padding: 8px;
-    border-bottom: 1px solid #888;
-    background-color: #DDD;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .problem-statement .sample-tests .input .title {
-    border-radius: 8px 8px 0 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
-/* .problem-statement .tex-formula {
+.problem-statement .sample-tests .output {
+    margin-bottom: 1.5em;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.problem-statement .sample-tests .output pre {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.problem-statement .sample-tests pre {
+    font-size: 120%;
+    line-height: 1.25em;
+    padding: 10px;
+    margin: 0;
+    border: 1px solid whitesmoke;
+}
+
+.problem-statement .sample-tests .title {
+    font-size: 120%;
+    padding: 8px 10px 8px 10px;
+    background-color: whitesmoke;
+}
+
+.problem-statement .tex-formula {
     vertical-align: middle;
     margin: 0;
     border:medium none;
@@ -136,9 +164,6 @@
     font-size: 200%;
 }
 
-.problem-statement .tex-font-style-rm {
-}
-
 .problem-statement .tex-font-style-sf {
     font-family: arial;
 }
@@ -152,18 +177,12 @@
     font-family: courier new;
 }
 
-.problem-statement .tex-font-style-md {
-}
-
 .problem-statement .tex-font-style-bf {
     font-weight: bold;
 }
 
 .problem-statement .tex-font-style-underline {
     text-decoration: underline;
-}
-
-.problem-statement .tex-font-style-up {
 }
 
 .problem-statement .tex-font-style-it {
@@ -181,4 +200,4 @@
 .problem-statement .tex-graphics {
     max-width: 75%;
     display: block;
-} */
+}

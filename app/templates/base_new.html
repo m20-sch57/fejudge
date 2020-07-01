@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/animations.css">
+    <link rel="stylesheet" href="/static/css/messages.css">
+    <link rel="stylesheet" href="/static/css/{{ page }}.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+
+    <title>Fejudge</title>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    {% if page not in ['contests', 'problem'] %}
+    <footer>
+        <p>&copy; 2020 Fedro Corporation. All rights reserved.</p>
+    </footer>
+    {% endif %}
+    <div id="messages">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% for category, message in messages %}
+        <div class="message {{ category }}">
+            <div class="text">{{ message }}</div>
+            <button class="close">&times;</button>
+        </div>
+        {% endfor %}
+        {% endwith %}
+    </div>
+    <script src="/static/js/messages.js"></script>
+</body>

@@ -1,0 +1,61 @@
+{% extends "base_new.html" %}
+
+{% block content %}
+<div class="page">
+    <div id="content">
+        <div class="bg-white" id="statementsBox">
+            <div id="statementsTitle">
+                <a href="/contests" class="btn-icon btn-white" id="goBack">
+                    <span class="fa fa-arrow-left"></span>
+                </a>
+                <div id="problemInfo">
+                    <div id="problemName">
+                        {{ problem_manager.problem_name() }}
+                    </div>
+                    <div id="timeLimit">
+                        <span class="fa fa-clock"></span>
+                        {{ (problem_manager.time_limit_ms / 1000) | round(2) }} sec
+                    </div>
+                    <div id="memoryLimit">
+                        <span class="fa fa-microchip"></span>
+                        {{ problem_manager.memory_limit_kb // 1024 }} MB
+                    </div>
+                    <div id="problemScore">
+                        Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
+                    </div>
+                </div>
+            </div>
+            <div id="statementsContent">
+                <div id="statementsContentScrollable">
+                    <div href="/contests/{{ contest.id }}/{{ problem.number }}/problem.html" id="statementsLoadedContent"></div>
+                </div>
+                <div class="bg-white" id="statementsLoading">
+                    <div id="statementsLoadingLabel">
+                        <div class="lds-ring">
+                            <div></div><div></div><div></div><div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="submitBox">
+            <div class="bg-white" id="submitTitle">
+                <button class="btn-icon btn-green" id="submitExpand">
+                    <span class="fa fa-paper-plane"></span>
+                </button>
+            </div>
+            <div class="bg-whitesmoke" id="navigation">
+                {% for any_problem in contest.problems %}
+                {% with class = "active" if any_problem.number == problem.number else "btn-white" %}
+                <a href="/contests/{{ contest.id }}/{{ any_problem.number }}/problem" class="btn-icon action {{ class }}">
+                    <span>{{ any_problem.number }}</span>
+                </a>
+                {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/static/js/problem.js"></script>
+{% endblock %}

@@ -1,0 +1,154 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    display: flex;
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+    margin: 0;
+    background-color: whitesmoke;
+    font-family: 'Open Sans', sans-serif;
+}
+
+input {
+    width: 100%;
+    outline: none;
+}
+
+button {
+    outline: none;
+}
+
+footer {
+    text-align: center;
+    color: grey;
+}
+
+/* Common classes */
+
+.page {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.flat-link {
+    color: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+}
+
+.flat-link.hover-underline:hover {
+    text-decoration: underline;
+}
+
+.link-blue {
+    color: black;
+}
+
+.link-blue:hover {
+    color: deepskyblue;
+}
+
+.flat-input {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: none;
+    border-bottom: 1px solid grey;
+    font-size: 20px;
+}
+
+.input-blue:focus {
+    border-color: lightblue;
+}
+
+.input-green:focus {
+    border-color: lightgreen;
+}
+
+.input-error {
+    border-color: red !important;
+}
+
+.btn-normal {
+    display: inline-block;
+    padding: 10px 20px 10px 20px;
+    color: rgba(0, 0, 0, 0.7);
+    border-width: 0;
+    border-radius: 25px;
+    font-size: 20px;
+    line-height: 30px;
+    text-decoration: none;
+}
+
+.btn-normal:hover {
+    box-shadow: 0 2px 15px lightgrey;
+}
+
+.btn-icon {
+    display: flex;
+    flex-shrink: 0;
+    color: rgba(0, 0, 0, 0.7);
+    border-width: 0;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0 0 5px lightgrey;
+    cursor: pointer;
+}
+
+.btn-icon span {
+    margin: auto;
+}
+
+.btn-icon:hover {
+    box-shadow: 0 0 20px lightgrey;
+}
+
+.btn-blue {
+    background-color: lightblue;
+}
+
+.btn-blue:active {
+    background-color: rgb(125, 188, 209);
+}
+
+.btn-green {
+    background-color: lightgreen;
+}
+
+.btn-green:active {
+    background-color: rgb(104, 214, 104);
+}
+
+.btn-white {
+    background-color: white;
+}
+
+.btn-white:active {
+    background-color: whitesmoke;
+}
+
+.bg-blue {
+    background-color: lightblue;
+}
+
+.bg-green {
+    background-color: lightgreen;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.bg-whitesmoke {
+    background-color: whitesmoke;
+}
+
+.bg-grey {
+    background-color: lightgrey;
+}
