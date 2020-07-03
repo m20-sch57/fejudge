@@ -12,24 +12,24 @@
             </a>
         </div>
         <div class="bg-white" id="body">
-            {% for contest, request in contests %}
+            {% for contest, contest_request in contests %}
             <a href="/contests/{{ contest.id }}" class="contest-row">
                 <div class="contest-label">
                     {{ contest.name }}
                 </div>
                 <div class="contest-details">
-                    {% if request == None or request.state() == 'Not started' %}
+                    {% if contest_request == None or contest_request.state() == 'Not started' %}
                     <div class="contest-status not-started">
                         Not started yet
                     </div>
-                    {% elif request.state() == 'In progress' %}
+                    {% elif contest_request.state() == 'In progress' %}
                     <div class="contest-status in-progress">
                         Time remaining:
-                        <span name="timer">
-                            {{ request.time_remaining().total_seconds() }}
+                        <span name="timer" format="full">
+                            {{ contest_request.time_remaining().total_seconds() }}
                         </span>
                     </div>
-                    {% elif request.state() == 'Finished' %}
+                    {% elif contest_request.state() == 'Finished' %}
                     <div class="contest-status finished">
                         Finished
                     </div>

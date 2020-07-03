@@ -12,13 +12,15 @@
                     <div id="problemName">
                         {{ problem_manager.problem_name() }}
                     </div>
-                    <div id="timeLimit">
-                        <span class="fa fa-clock"></span>
-                        {{ (problem_manager.time_limit_ms / 1000) | round(2) }} sec
-                    </div>
-                    <div id="memoryLimit">
-                        <span class="fa fa-microchip"></span>
-                        {{ problem_manager.memory_limit_kb // 1024 }} MB
+                    <div id="problemLimits">
+                        <div id="timeLimit">
+                            <span class="fa fa-clock"></span>
+                            {{ (problem_manager.time_limit_ms / 1000) | round(2) }} sec
+                        </div>
+                        <div id="memoryLimit">
+                            <span class="fa fa-microchip"></span>
+                            {{ problem_manager.memory_limit_kb // 1024 }} MB
+                        </div>
                     </div>
                     <div id="problemScore">
                         Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
@@ -38,13 +40,28 @@
                 </div>
             </div>
         </div>
-        <div id="submitBox">
-            <div class="bg-white" id="submitTitle">
+        <div class="bg-white hidden" id="submitBox">
+            <div id="submitTitle">
+                <div id="submitLabel">
+                    Submit
+                </div>
+                <div id="submitScore">
+                    Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
+                </div>
+            </div>
+            <div id="submitContent">
+                <button class="btn-icon" id="submitCollapse">
+                    <span class="fa fa-arrow-right"></span>
+                </button>
+            </div>
+        </div>
+        <div class="bg-white" id="rightBox">
+            <div id="submitSection">
                 <button class="btn-icon btn-green" id="submitExpand">
                     <span class="fa fa-paper-plane"></span>
                 </button>
             </div>
-            <div class="bg-whitesmoke" id="navigation">
+            <div id="problemNavigation">
                 {% for any_problem in contest.problems %}
                 {% with class = "active" if any_problem.number == problem.number else "btn-white" %}
                 <a href="/contests/{{ contest.id }}/{{ any_problem.number }}/problem" class="btn-icon action {{ class }}">
@@ -53,9 +70,24 @@
                 {% endwith %}
                 {% endfor %}
             </div>
+            <div id="infoSection">
+                <div id="timeRemaining">
+                    Time left:<br>
+                    <span id="contestTimer" name="timer" format="minutes">
+                        {{ contest_request.time_remaining().total_seconds() }}
+                    </span>
+                </div>
+                <button class="btn-icon btn-blue" id="viewContestInfo">
+                    <span class="fa fa-info"></span>
+                </button>
+                <button class="btn-icon btn-green" id="viewContestMessages">
+                    <span class="fa fa-comment-alt"></span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/static/js/timer.js"></script>
 <script src="/static/js/problem.js"></script>
 {% endblock %}

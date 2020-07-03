@@ -11,12 +11,10 @@
 }
 
 #statementsTitle {
-    position: relative;
     display: flex;
     flex-flow: row;
     height: 80px;
     border-bottom: 1px solid whitesmoke;
-    z-index: 1;
 }
 
 #statementsTitle.shadow {
@@ -39,9 +37,15 @@
 }
 
 #problemName {
-    padding-right: 15px;
+    padding-right: 20px;
     margin: auto auto auto 0;
     font-size: 25px;
+}
+
+#problemLimits {
+    display: flex;
+    flex-flow: row;
+    margin: 0 auto 0 0;
 }
 
 #timeLimit {
@@ -52,7 +56,7 @@
 
 #memoryLimit {
     padding-right: 20px;
-    margin: auto auto auto 0;
+    margin: auto 0 auto 0;
     font-size: 20px;
 }
 
@@ -69,7 +73,7 @@
 
 #statementsContentScrollable {
     padding: 20px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #statementsLoading {
@@ -82,43 +86,157 @@
     z-index: 256;
 }
 
+#statementsBox.collapsed {
+    flex-basis: 50%;
+}
+
 #statementsLoadingLabel {
     margin: auto;
 }
 
+#statementsBox.collapsed #problemScore {
+    display: none;
+}
+
+#statementsBox.collapsed #problemLimits {
+    margin-right: 0;
+}
+
 #submitBox {
-    position: relative;
     display: flex;
     flex-flow: column;
+    flex-grow: 1;
+    flex-basis: 50%;
     border-left: 1px solid whitesmoke;
-    z-index: 2;
 }
 
 #submitTitle {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    padding: 10px;
+    height: 80px;
+    border-bottom: 1px solid whitesmoke;
+}
+
+#submitLabel {
+    padding-left: 10px;
+    padding-right: 20px;
+    margin: auto auto auto 0;
+    font-size: 25px;
+}
+
+#submitScore {
+    padding-right: 10px;
+    margin: auto 0 auto 0;
+    font-size: 20px;
+}
+
+#submitContent {
+    position: relative;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#submitCollapse {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 80px;
+    width: 80px;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    font-size: 25px;
+    box-shadow: 0 0 15px lightgrey;
+}
+
+#submitCollapse:hover {
+    background-color: whitesmoke;
+}
+
+#submitCollapse:active {
+    background-color: #eee;
+}
+
+#submitCollapse span {
+    padding-left: 30px;
+}
+
+#submitBox.hidden {
+    display: none;
+}
+
+#rightBox {
+    display: flex;
+    flex-flow: column;
+    border-left: 1px solid whitesmoke;
+}
+
+#submitSection {
+    display: flex;
     height: 80px;
     border-bottom: 1px solid whitesmoke;
 }
 
 #submitExpand {
-    margin: 15px;
+    margin: auto;
     height: 50px;
     width: 50px;
+    font-size: 16px;
 }
 
-#navigation {
+#submitExpand span {
+    padding-right: 2px;
+}
+
+#problemNavigation {
     flex-grow: 1;
-    font-size: 18px;
+    font-size: 20px;
+    overflow-y: auto;
 }
 
-#navigation .action {
+#problemNavigation .action {
     height: 50px;
     width: 50px;
     margin: 15px;
 }
 
-#navigation .action.active {
+#problemNavigation .action.active {
     color: white;
     background-color: rgb(21, 148, 252);
+    box-shadow: 0 0 10px lightgrey;
+}
+
+#infoSection {
+    display: flex;
+    flex-flow: column;
+    border-top: 1px solid whitesmoke;
+    text-align: center;
+}
+
+#timeRemaining {
+    margin: 15px auto 15px auto;
+    color: dimgrey;
+    font-size: 14px;
+}
+
+#contestTimer {
+    color: black;
+    font-size: 20px;
+    line-height: 35px;
+}
+
+#viewContestInfo, #viewContestMessages {
+    height: 50px;
+    width: 50px;
+    margin: 0 auto 15px auto;
+    font-size: 16px;
+}
+
+@media (max-width: 1000px) {
+    #statementsBox.collapsed {
+        display: none;
+    }
 }
 
 @media (max-width: 750px) {

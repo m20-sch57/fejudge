@@ -254,11 +254,13 @@ def participation_required(func):
 @participation_required
 def contest_problem(contest_id, number):
     contest = get_contest_by_id(contest_id)
+    contest_request = get_contest_request(contest)
     problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
     from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
     if problem.problem_type == 'Programming':
-        return render_template('problem.html', page='problem', contest=contest, problem=problem, problem_manager=problem_manager)
+        return render_template('problem.html', page='problem', contest=contest,
+            contest_request=contest_request, problem=problem, problem_manager=problem_manager)
     else:
         pass
 
