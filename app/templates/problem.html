@@ -30,6 +30,11 @@
             <div id="statementsContent">
                 <div id="statementsContentScrollable">
                     <div href="/contests/{{ contest.id }}/{{ problem.number }}/problem.html" id="statementsLoadedContent"></div>
+                    <script type="text/x-mathjax-config">
+                        MathJax.Hub.Config({
+                            messageStyle: "none"
+                        });
+                    </script>
                 </div>
                 <div class="bg-white" id="statementsLoading">
                     <div id="statementsLoadingLabel">
@@ -40,20 +45,25 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white hidden" id="submitBox">
-            <div id="submitTitle">
-                <div id="submitLabel">
-                    Submit
+        <div class="collapsed" id="extraBox">
+            <div id="submitBox">
+                <div class="bg-green" id="submitTitle">
+                    <div id="submitLabel">
+                        Submit
+                    </div>
+                    <div id="submitScore">
+                        Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
+                    </div>
                 </div>
-                <div id="submitScore">
-                    Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
+                <div class="bg-palegreen" id="submitContent">
                 </div>
             </div>
-            <div id="submitContent">
-                <button class="btn-icon" id="submitCollapse">
-                    <span class="fa fa-arrow-right"></span>
-                </button>
+            <div class="bg-paleblue" id="contestInfoBox">
+                KEK
             </div>
+            <button class="btn-icon" id="extraBoxCollapse">
+                <span class="fa fa-arrow-right"></span>
+            </button>
         </div>
         <div class="bg-white" id="rightBox">
             <div id="submitSection">

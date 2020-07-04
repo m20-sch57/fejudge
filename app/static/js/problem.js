@@ -20,14 +20,33 @@ function updateStatementsShadow() {
     }
 }
 
-function expandSubmit() {
-    $("#submitBox").removeClass("hidden");
-    $("#statementsBox").addClass("collapsed")
+function extraBoxCollapse() {
+    extraBoxExpanded = false;
+    currentBox = "";
+    $("#extraBox").addClass("collapsed");
+    $("#statementsBox").removeClass("collapsed");
 }
 
-function collapseSubmit() {
-    $("#submitBox").addClass("hidden");
-    $("#statementsBox").removeClass("collapsed")
+function hideBoxes() {
+    boxes.forEach((it) => it.css("display", "none"));
+}
+
+function expandBox(box) {
+    extraBoxExpanded = true;
+    currentBox = box;
+    hideBoxes();
+    $("#extraBox").removeClass("collapsed");
+    $("#statementsBox").addClass("collapsed");
+    $(box).css("display", "");
+}
+
+function buttonPressed(box) {
+    if (box == currentBox) {
+        extraBoxCollapse();
+    }
+    else {
+        expandBox(box);
+    }
 }
 
 window.onresize = resize;
@@ -37,6 +56,11 @@ window.onload = function() {
     () => setTimeout(hideLoading, 1500));
 }
 
+let extraBoxExpanded = false;
+let boxes = [$("#submitBox"), $("#contestInfoBox")];
+let currentBox = "";
+
 $("#statementsContentScrollable").scroll(updateStatementsShadow);
-$("#submitExpand").click(expandSubmit);
-$("#submitCollapse").click(collapseSubmit);
+$("#extraBoxCollapse").click(extraBoxCollapse);
+$("#submitExpand").click(() => buttonPressed("#submitBox"));
+$("#viewContestInfo").click(() => buttonPressed("#contestInfoBox"));

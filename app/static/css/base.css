@@ -137,8 +137,16 @@ footer {
     background-color: lightblue;
 }
 
+.bg-paleblue {
+    background-color: rgb(241, 247, 255);
+}
+
 .bg-green {
     background-color: lightgreen;
+}
+
+.bg-palegreen {
+    background-color: rgb(248, 255, 248);
 }
 
 .bg-white {
