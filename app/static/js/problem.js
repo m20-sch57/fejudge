@@ -7,10 +7,6 @@ function resize() {
     $("#problemNavigation").css("height", `${height}px`);
 }
 
-function hideLoading() {
-    $("#statementsLoading").css("display", "none");
-}
-
 function updateStatementsShadow() {
     if ($("#statementsContentScrollable").scrollTop() == 0) {
         $("#statementsTitle").removeClass("shadow");
@@ -52,8 +48,7 @@ function buttonPressed(box) {
 window.onresize = resize;
 window.onload = function() {
     resize();
-    $("#statementsLoadedContent").load($("#statementsLoadedContent").attr("href"),
-    () => setTimeout(hideLoading, 1500));
+    $("#statementsLoadedContent").load($("#statementsLoadedContent").attr("href"));
 }
 
 let extraBoxExpanded = false;
