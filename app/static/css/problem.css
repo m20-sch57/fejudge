@@ -251,7 +251,7 @@
     flex-flow: row;
     padding: 10px 20px;
     height: 80px;
-    border-bottom: 1px solid lightgreen;
+    border-bottom: 1px solid lightblue;
     box-shadow: 0 0 10px lightgrey;
     z-index: 1;
 }
