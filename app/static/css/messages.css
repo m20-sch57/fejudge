@@ -14,7 +14,13 @@
     margin-top: 10px;
     background-color: white;
     border-radius: 20px;
+    opacity: 1;
     box-shadow: 0 0 10px lightgrey;
+    transition: opacity 300ms linear;
+}
+
+#messages .message.hidden {
+    display: none;
 }
 
 #messages .message.info {

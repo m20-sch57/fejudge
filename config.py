@@ -9,6 +9,9 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'surprise!'
     MAX_CONTENT_LENGTH = 1024 * 65536
 
+    # Max submission size
+    MAX_SUBMISSION_SIZE = 1024 * 1024
+
     # Mail server
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
     MAIL_PORT = os.environ.get('MAIL_PORT') or 587

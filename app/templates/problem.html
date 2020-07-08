@@ -48,21 +48,87 @@
                 </div>
             </div>
         </div>
-        <div class="collapsed" id="extraBox">
+        <div class="bg-white collapsed" id="extraBox">
             <div id="submitBox">
                 <div class="bg-green" id="submitTitle">
-                    <div id="submitLabel">
+                    <div id="submitText">
                         Submit
                     </div>
                     <div id="submitScore">
                         Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
                     </div>
                 </div>
-                <div class="bg-palegreen" id="submitContent">
+                <div id="submitContent">
+                    <div id="submitForm">
+                        <div id="taskRow">
+                            <div id="taskLabel">
+                                Select task:
+                            </div>
+                            <select class="select-small select-white" id="taskSelect">
+                                <option value="1">Task 1: Metro</option>
+                                <option value="2">Task 2: Alice and Hairdresser</option>
+                            </select>
+                        </div>
+                        <div id="languageRow">
+                            <div id="languageLabel">
+                                Select language:
+                            </div>
+                            <select class="select-small select-white" id="languageSelect">
+                                <option value="1">GNU C++ 9.2.0</option>
+                                <option value="2">Python 3.8</option>
+                            </select>
+                        </div>
+                        <div id="chooseFileRow">
+                            <div id="chooseFileLabel">
+                                Choose file:
+                            </div>
+                            <input type="file" id="chooseFileInput">
+                            <label for="chooseFileInput" class="btn-small btn-blue" id="chooseFileButton">
+                                Choose file
+                            </label>
+                            <div id="chooseFileName">
+                            </div>
+                        </div>
+                        <div id="submitFileRow">
+                            <div id="submitFileLabel">
+                                Submit:
+                            </div>
+                            <button class="btn-small btn-green" id="submitFileButton">
+                                Submit it!
+                            </button>
+                            <div id="submitLoading" style="display: none;">
+                                <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                            </div>
+                            <div id="submitSuccess" style="display: none;">
+                                <span class="fa fa-check"></span>
+                                Submitted
+                            </div>
+                            <div id="submitFail" style="display: none;">
+                                <!-- <span class="fa fa-times"></span> -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-paleblue" id="contestInfoBox">
-                KEK
+            <div id="contestInfoBox">
+                <div class="bg-blue" id="contestInfoTitle">
+                    <div id="contestInfoLabel">
+                        Contest information
+                    </div>
+                </div>
+                <div id="contestInfoContent">
+                    Information here
+                </div>
+            </div>
+            <div id="contestMessagesBox">
+                <div class="bg-yellow" id="contestMessagesTitle">
+                    <div id="contestMessagesLabel">
+                        Contest messages
+                    </div>
+                </div>
+                <div id="contestMessagesContent">
+                    Messages here
+                </div>
             </div>
             <button class="btn-icon" id="extraBoxCollapse">
                 <span class="fa fa-arrow-right"></span>
@@ -93,7 +159,7 @@
                 <button class="btn-icon btn-blue" id="viewContestInfo">
                     <span class="fa fa-info"></span>
                 </button>
-                <button class="btn-icon btn-green" id="viewContestMessages">
+                <button class="btn-icon btn-yellow" id="viewContestMessages">
                     <span class="fa fa-comment-alt"></span>
                 </button>
             </div>
