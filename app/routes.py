@@ -268,7 +268,7 @@ def contest_problem(contest_id, number):
 @app.route('/contests/<contest_id>/<number>/submit', methods=['POST'])
 @login_required
 @participation_required
-def submit(contest_id, number):
+def submit_problem(contest_id, number):
     source_blob = request.files['sourceFile'].read()
     if len(source_blob) > app.config['MAX_SUBMISSION_SIZE']:
         abort(413)
