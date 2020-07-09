@@ -10,7 +10,6 @@
     flex-flow: column;
     flex-grow: 1;
     flex-basis: 50%;
-    transition: all 80ms ease-out;
 }
 
 #statementsTitle {
@@ -76,6 +75,7 @@
 
 #statementsContentScrollable {
     padding: 20px;
+    max-height: 0;
     overflow: auto;
 }
 
@@ -106,7 +106,6 @@
     flex-flow: column;
     flex-grow: 1;
     flex-basis: 50%;
-    transition: all 80ms ease-out;
     z-index: 1;
 }
 
@@ -212,7 +211,7 @@
 }
 
 #chooseFileButton, #submitFileButton {
-    width: 135px;
+    width: 130px;
     text-align: center;
 }
 
@@ -229,13 +228,11 @@
 
 #submitSuccess {
     color: forestgreen;
-    font-weight: bold;
     transition: opacity 300ms linear;
 }
 
 #submitFail {
     color: red;
-    font-weight: bold;
     transition: opacity 300ms linear;
 }
 
@@ -343,6 +340,7 @@
 #problemNavigation {
     flex-grow: 1;
     font-size: 20px;
+    height: 0;
     overflow-y: auto;
 }
 

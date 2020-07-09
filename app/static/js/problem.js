@@ -2,6 +2,7 @@
 
 const contestId = location.href.toString().split("/").slice(-3, -1)[0];
 const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
+const boxes = [$("#submitBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
 
 function resize() {
     let statementsHeight = $(window).outerHeight() - $("#statementsTitle").outerHeight();
@@ -21,30 +22,35 @@ function updateStatementsShadow() {
     }
 }
 
-function extraBoxCollapse() {
-    extraBoxExpanded = false;
-    currentBox = "";
-    hideBoxes();
-    $("#extraBox").addClass("collapsed");
-    $("#statementsBox").removeClass("collapsed");
-}
-
 function hideBoxes() {
     boxes.forEach((it) => it.css("display", "none"));
 }
 
-function expandBox(box) {
-    extraBoxExpanded = true;
-    currentBox = box;
+function expandBox(box, animate = true) {
     hideBoxes();
-    $("#extraBox").removeClass("collapsed");
-    $("#statementsBox").addClass("collapsed");
-    $(box).css("display", "");
+    localStorage.setItem("currentBox", box);
+    if (animate) {
+        $("#extraBox").css("transition", "all 60ms ease-out");
+        $("#statementsBox").css("transition", "all 60ms ease-out");
+    }
+    else {
+        $("#extraBox").css("transition", "none");
+        $("#statementsBox").css("transition", "none");
+    }
+    if (box === "") {
+        $("#extraBox").addClass("collapsed");
+        $("#statementsBox").removeClass("collapsed");
+    }
+    else {
+        $("#extraBox").removeClass("collapsed");
+        $("#statementsBox").addClass("collapsed");
+        $(box).css("display", "");
+    }
 }
 
 function navButtonPressed(box) {
-    if (box == currentBox) {
-        extraBoxCollapse();
+    if (box === localStorage.getItem("currentBox")) {
+        expandBox("");
     }
     else {
         expandBox(box);
@@ -55,6 +61,24 @@ function hideSubmitStatus() {
     $("#submitLoading").css("display", "none");
     $("#submitSuccess").css("display", "none");
     $("#submitFail").css("display", "none");
+}
+
+function hideSubmitStatusDelay(element) {
+    setTimeout(() => $(element).css("opacity", 0), 5000);
+}
+
+function showSubmitSuccess() {
+    hideSubmitStatus();
+    $("#submitSuccess").css("display", "");
+    $("#submitSuccess").css("opacity", 1);
+}
+
+function showSubmitFail(message) {
+    hideSubmitStatus();
+    $("#submitFail").css("display", "");
+    $("#submitFail").css("opacity", 1);
+    $("#submitFileButton").removeAttr("disabled");
+    $("#submitFail").text(message);
 }
 
 function resetFileInput() {
@@ -74,56 +98,44 @@ function uploadFile(file) {
     }
 }
 
-function handleSubmitErrors(response) {
-    if (response.status === 413) {
-        throw Error("file size > 1 MB");
-    }
-    else if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
-}
-
-function submitFile(file) {
+async function submitFile(file) {
     hideSubmitStatus();
     $("#submitFileButton").attr("disabled", "");
     $("#submitLoading").css("display", "");
     let formData = new FormData();
     formData.append("sourceFile", file);
-    fetch(`/contests/${contestId}/${problemNumber}/submit`, {
-        method: "POST",
-        body: formData
-    }).then(
-        handleSubmitErrors
-    ).then(() => {
-        hideSubmitStatus();
-        $("#submitSuccess").css("display", "");
-        $("#submitSuccess").css("opacity", 1);
-        setTimeout(() => $("#submitSuccess").css("opacity", 0), 5000);
-    }).catch((error) => {
-        hideSubmitStatus();
-        $("#submitFail").css("display", "");
-        $("#submitFail").css("opacity", 1);
-        $("#submitFileButton").removeAttr("disabled");
-        $("#submitFail").text(error);
-        setTimeout(() => $("#submitFail").css("opacity", 0), 5000);
-    }).finally(
-        resetFileInput
-    );
+    try {
+        let response = await fetch(`/contests/${contestId}/${problemNumber}/submit`, {
+            method: "POST",
+            body: formData
+        });
+        if (response.ok) {
+            showSubmitSuccess();
+            hideSubmitStatusDelay("#submitSuccess");
+        }
+        else {
+            let message = response.statusText;
+            if (response.status === 413) message = "File size is > 1 MB";
+            showSubmitFail(message);
+            hideSubmitStatusDelay("#submitFail");
+        }
+        resetFileInput();
+    }
+    catch {
+        showSubmitFail("Unable to submit");
+    }
 }
 
 window.onresize = resize;
 window.onload = resize;
 
-let extraBoxExpanded = false;
-let boxes = [$("#submitBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
-let currentBox = "";
-
 $("#statementsContentScrollable").scroll(updateStatementsShadow);
 $("#statementsLoadedContent").load($("#statementsLoadedContent").attr("href"));
 
-hideBoxes();
-$("#extraBoxCollapse").click(extraBoxCollapse);
+if (localStorage.getItem("currentBox") !== "#submitBox") localStorage.setItem("currentBox", "");
+expandBox(localStorage.getItem("currentBox"), false);
+
+$("#extraBoxCollapse").click(() => expandBox(""));
 $("#submitExpand").click(() => navButtonPressed("#submitBox"));
 $("#viewContestInfo").click(() => navButtonPressed("#contestInfoBox"));
 $("#viewContestMessages").click(() => navButtonPressed("#contestMessagesBox"));
