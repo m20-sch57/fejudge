@@ -76,7 +76,7 @@
 
 #statementsContentScrollable {
     padding: 20px;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 #statementsLoading {

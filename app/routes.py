@@ -6,7 +6,8 @@ from flask import render_template, redirect, abort, url_for, request, flash, sen
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime, timedelta
 
-from app import app, db, avatars, submit
+from app import app, db, avatars
+from app import submit_to_queue
 # from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 # from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 # from app.forms import InputProblemForm, FileProblemForm
@@ -343,7 +344,7 @@ def problem_resource(contest_id, number, resource):
 #             current_user.active_language = language
 #             db.session.add(submission)
 #             db.session.commit()
-#             submit(group='invokers', obj={
+#             submit_to_queue(group='invokers', obj={
 #                 'type': 'evaluate',
 #                 'submission_id': submission.id
 #             })
@@ -442,7 +443,7 @@ def contest_admin_newproblem(contest_id):
         path = os.path.join(upload_folder, filename)
         upload_package_form.package.data.save(path)
         db.session.commit()
-        submit(group='invokers', obj={
+        submit_to_queue(group='invokers', obj={
             'type': 'problem_init',
             'problem_id': new_problem.id,
         })

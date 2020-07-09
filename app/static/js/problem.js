@@ -4,10 +4,12 @@ const contestId = location.href.toString().split("/").slice(-3, -1)[0];
 const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
 
 function resize() {
-    let height = $(window).height() - $("#statementsTitle").outerHeight();
-    $("#statementsContentScrollable").css("height", `${height}px`);
-    height = $(window).height() - $("#submitSection").outerHeight() - $("#infoSection").outerHeight();
-    $("#problemNavigation").css("height", `${height}px`);
+    let statementsHeight = $(window).outerHeight() - $("#statementsTitle").outerHeight();
+    let statementsWidth = $(window).outerWidth() - $("#rightBox").outerWidth();
+    let navHeight = $(window).height() - $("#submitSection").outerHeight() - $("#infoSection").outerHeight();
+    $("#statementsContentScrollable").css("max-height", `${statementsHeight}px`);
+    $("#statementsContentScrollable").css("max-width", `${statementsWidth}px`);
+    $("#problemNavigation").css("height", `${navHeight}px`);
 }
 
 function updateStatementsShadow() {

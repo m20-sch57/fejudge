@@ -11,7 +11,7 @@ from pynats import NATSClient
 from config import Config
 
 
-def submit(group, obj):
+def submit_to_queue(group, obj):
     nats.connect()
     nats.publish(group, payload=json.dumps(obj).encode('utf-8'))
     nats.close()
