@@ -1,5 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy as sa
+import json
 
 
 Base = declarative_base()
@@ -8,6 +9,7 @@ Base = declarative_base()
 class Problem(Base):
     __tablename__ = 'problem'
     id = sa.Column(sa.Integer, primary_key=True)
+    names = sa.Column(sa.Text, default='{}')
     max_score = sa.Column(sa.Integer, default=100)
     max_submissions = sa.Column(sa.Integer, default=50)
 
@@ -15,6 +17,9 @@ class Problem(Base):
 
     def __repr__(self):
         return '<PROBLEM {}>'.format(self.id)
+
+    def set_names(self, names_dict):
+        self.names = json.dumps(names_dict)
 
 
 class Submission(Base):

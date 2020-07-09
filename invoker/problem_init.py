@@ -3,6 +3,7 @@ import os
 from zipfile import ZipFile
 from libsbox_client import File, libsbox
 from problem_manage import ProblemManager
+from models import Problem
 from config import Config
 
 
@@ -111,7 +112,7 @@ def prepare_and_generate_tests(problem_manager):
             libsbox.import_file(output_file)
 
 
-def init(problem_id): # TODO: error handler
+def init(problem_id, session): # TODO: error handler
     print('Started initializing problem {}'.format(problem_id), flush=True)
     success = extract_archive(problem_id)
     if not success:
@@ -120,4 +121,7 @@ def init(problem_id): # TODO: error handler
     problem_manager = ProblemManager(problem_id)
     compile_checker(problem_manager)
     prepare_and_generate_tests(problem_manager)
+    problem = session.query(Problem).filter_by(id=problem_id).first()
+    problem.set_names(problem_manager.names_dict)
+    session.commit()
     print('Finished building package for problem {}'.format(problem_id), flush=True)

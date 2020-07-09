@@ -57,6 +57,10 @@ function navButtonPressed(box) {
     }
 }
 
+function selectProblem(problemNumber) {
+    $("#taskSelect").val(problemNumber);
+}
+
 function hideSubmitStatus() {
     $("#submitLoading").css("display", "none");
     $("#submitSuccess").css("display", "none");
@@ -139,6 +143,8 @@ $("#extraBoxCollapse").click(() => expandBox(""));
 $("#submitExpand").click(() => navButtonPressed("#submitBox"));
 $("#viewContestInfo").click(() => navButtonPressed("#contestInfoBox"));
 $("#viewContestMessages").click(() => navButtonPressed("#contestMessagesBox"));
+
+selectProblem(problemNumber);
 
 resetFileInput();
 $("#chooseFileInput").change(function () {

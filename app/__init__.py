@@ -36,7 +36,7 @@ nats = NATSClient(Config.NATS_SERVER, name='producer1')
 try:
     nats.connect()
 except ConnectionError as e:
-    print('Failed connecting to nats:', e, flush=True)
+    print('Failed connecting to NATS:', e, flush=True)
 
 avatars = Avatars(app)
 login = LoginManager(app)

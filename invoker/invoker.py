@@ -14,7 +14,7 @@ def message_handler(msg):
     if obj['type'] == 'evaluate':
         evaluate(obj['submission_id'], session)
     elif obj['type'] == 'problem_init':
-        init(obj['problem_id'])
+        init(obj['problem_id'], session)
     else:
         print('Unsupported type of query: {}'.format(obj['type']), flush=True)
 

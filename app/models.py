@@ -88,6 +88,7 @@ class Problem(db.Model):
     problem_type = db.Column(db.String(16))
     status = db.Column(db.String(16), default='')
     number = db.Column(db.Integer)
+    names = db.Column(db.Text, default='{}')
     max_score = db.Column(db.Integer, default=100)
     max_submissions = db.Column(db.Integer, default=50)
 
@@ -95,6 +96,12 @@ class Problem(db.Model):
 
     def __repr__(self):
         return '<PROBLEM {}>'.format(self.id)
+
+    def get_name(self, language='english'):
+        names_dict = json.loads(self.names)
+        if language in names_dict.keys():
+            return names_dict[language]
+        return next(iter(names_dict.values()))
 
     def last_submission(self, user):
         return self.submissions.filter_by(user=user).order_by(desc(Submission.time)).first()
@@ -182,8 +189,8 @@ class Submission(db.Model):
     def get_details(self):
         return json.loads(self.details)
 
-    def set_details(self, details):
-        self.details = json.dumps(details)
+    # def set_details(self, details):
+    #     self.details = json.dumps(details)
 
 
 @login.user_loader
