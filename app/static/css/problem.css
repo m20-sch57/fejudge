@@ -169,21 +169,18 @@
 }
 
 #submitText {
-    padding-right: 20px;
     margin: auto auto auto 0;
     font-size: 25px;
 }
 
-#submitScore {
-    padding-right: 10px;
-    margin: auto 0 auto 0;
-    font-size: 20px;
-}
-
 #submitContent {
     flex-grow: 1;
-    padding: 30px 20px;
+    overflow: auto;
     box-shadow: 0 0 15px -5px lightgrey;
+}
+
+#submitForm {
+    padding: 30px 20px 15px 20px;
 }
 
 #taskRow, #languageRow, #chooseFileRow, #submitFileRow {
@@ -234,6 +231,26 @@
 #submitFail {
     color: red;
     transition: opacity 300ms linear;
+}
+
+#submissions {
+    padding: 20px;
+    border-top: 1px solid whitesmoke;
+    overflow-x: auto;
+}
+
+#submissionsTable {
+    width: 100%;
+    font-size: 16px;
+}
+
+#submissionsTable th {
+    padding: 20px 5px;
+}
+
+#submissionsTable td {
+    padding: 10px 5px;
+    text-align: center;
 }
 
 #contestInfoBox {
@@ -400,6 +417,10 @@
 
 @media (max-width: 550px) {
     #chooseFileLabel, #submitFileLabel {
+        display: none;
+    }
+
+    #submissionsTable .language {
         display: none;
     }
 }

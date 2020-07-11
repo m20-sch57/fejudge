@@ -51,8 +51,14 @@ footer {
 }
 
 .flat-link {
+    display: inline-block;
+    padding: 0;
+    border-width: 0;
     color: rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    font-size: inherit;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .flat-link.hover-underline:hover {
@@ -60,10 +66,6 @@ footer {
 }
 
 .link-blue {
-    color: black;
-}
-
-.link-blue:hover {
     color: deepskyblue;
 }
 

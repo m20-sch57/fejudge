@@ -52,10 +52,7 @@
             <div id="submitBox">
                 <div class="bg-green" id="submitTitle">
                     <div id="submitText">
-                        Submit
-                    </div>
-                    <div id="submitScore">
-                        Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
+                        Submit solution
                     </div>
                 </div>
                 <div id="submitContent">
@@ -107,9 +104,39 @@
                                 Submitted
                             </div>
                             <div id="submitFail" style="display: none;">
-                                <!-- <span class="fa fa-times"></span> -->
                             </div>
                         </div>
+                    </div>
+                    <div id="submissions">
+                        <table id="submissionsTable">
+                        <thead>
+                            <th class="id">ID</th>
+                            <th class="language">Language</th>
+                            <th class="status">Status</th>
+                            <th class="score">Score</th>
+                            <th class="details">Details</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="id">11</td>
+                                <td class="language">GNU C++ 9.2.0</td>
+                                <td class="status">OK</td>
+                                <td class="score">100</td>
+                                <td class="details">
+                                    <button class="flat-link link-blue">Details</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="id">10</td>
+                                <td class="language">GNU C++ 9.2.0</td>
+                                <td class="status">In queue</td>
+                                <td class="score">&mdash;</td>
+                                <td class="details">
+                                    <button class="flat-link link-blue">Details</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

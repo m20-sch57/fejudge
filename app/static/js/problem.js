@@ -5,11 +5,13 @@ const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
 const boxes = [$("#submitBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
 
 function resize() {
-    let statementsHeight = $(window).outerHeight() - $("#statementsTitle").outerHeight();
-    let statementsWidth = $(window).outerWidth() - $("#rightBox").outerWidth();
+    let height = $(window).height() - $("#statementsTitle").outerHeight();
+    let width = $(window).width() - $("#rightBox").outerWidth();
     let navHeight = $(window).height() - $("#submitSection").outerHeight() - $("#infoSection").outerHeight();
-    $("#statementsContentScrollable").css("max-height", `${statementsHeight}px`);
-    $("#statementsContentScrollable").css("max-width", `${statementsWidth}px`);
+    $("#statementsContentScrollable").css("max-height", `${height}px`);
+    $("#statementsContentScrollable").css("max-width", `${width}px`);
+    $("#submitContent").css("max-height", `${height}px`);
+    $("#submitContent").css("max-width", `${width}px`);
     $("#problemNavigation").css("height", `${navHeight}px`);
 }
 
@@ -57,8 +59,8 @@ function navButtonPressed(box) {
     }
 }
 
-function selectProblem(problemNumber) {
-    $("#taskSelect").val(problemNumber);
+function goToProblem(problemNumber) {
+    window.location.replace(`/contests/${contestId}/${problemNumber}/problem`);
 }
 
 function hideSubmitStatus() {
@@ -119,7 +121,7 @@ async function submitFile(file) {
         }
         else {
             let message = response.statusText;
-            if (response.status === 413) message = "File size is > 1 MB";
+            if (response.status === 413) message = "File size > 1 MB";
             showSubmitFail(message);
             hideSubmitStatusDelay("#submitFail");
         }
@@ -144,7 +146,10 @@ $("#submitExpand").click(() => navButtonPressed("#submitBox"));
 $("#viewContestInfo").click(() => navButtonPressed("#contestInfoBox"));
 $("#viewContestMessages").click(() => navButtonPressed("#contestMessagesBox"));
 
-selectProblem(problemNumber);
+$("#taskSelect").val(problemNumber);
+$("#taskSelect").change(function () {
+    goToProblem(this.value);
+});
 
 resetFileInput();
 $("#chooseFileInput").change(function () {
