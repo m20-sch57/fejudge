@@ -218,3 +218,19 @@ footer {
 .bg-grey {
     background-color: lightgrey;
 }
+
+.col-blue {
+    color: deepskyblue;
+}
+
+.col-green {
+    color: forestgreen;
+}
+
+.col-red {
+    color: red;
+}
+
+.col-grey {
+    color: grey;
+}

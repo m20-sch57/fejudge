@@ -64,15 +64,3 @@
 .contest-status {
     font-size: 18px;
 }
-
-.contest-status.not-started {
-    color: grey;
-}
-
-.contest-status.in-progress {
-    color: deepskyblue;
-}
-
-.contest-status.finished {
-    color: forestgreen;
-}

@@ -25,7 +25,7 @@ function updateStatementsShadow() {
 }
 
 function hideBoxes() {
-    boxes.forEach((it) => it.css("display", "none"));
+    boxes.forEach((it) => it.hide());
 }
 
 function expandBox(box, animate = true) {
@@ -46,7 +46,7 @@ function expandBox(box, animate = true) {
     else {
         $("#extraBox").removeClass("collapsed");
         $("#statementsBox").addClass("collapsed");
-        $(box).css("display", "");
+        $(box).show();
     }
 }
 
@@ -64,9 +64,9 @@ function goToProblem(problemNumber) {
 }
 
 function hideSubmitStatus() {
-    $("#submitLoading").css("display", "none");
-    $("#submitSuccess").css("display", "none");
-    $("#submitFail").css("display", "none");
+    $("#submitLoading").hide();
+    $("#submitSuccess").hide();
+    $("#submitFail").hide();
 }
 
 function hideSubmitStatusDelay(element) {
@@ -75,14 +75,14 @@ function hideSubmitStatusDelay(element) {
 
 function showSubmitSuccess() {
     hideSubmitStatus();
-    $("#submitSuccess").css("display", "");
     $("#submitSuccess").css("opacity", 1);
+    $("#submitSuccess").show();
 }
 
 function showSubmitFail(message) {
     hideSubmitStatus();
-    $("#submitFail").css("display", "");
     $("#submitFail").css("opacity", 1);
+    $("#submitFail").show();
     $("#submitFileButton").removeAttr("disabled");
     $("#submitFail").text(message);
 }
@@ -107,7 +107,7 @@ function uploadFile(file) {
 async function submitFile(file) {
     hideSubmitStatus();
     $("#submitFileButton").attr("disabled", "");
-    $("#submitLoading").css("display", "");
+    $("#submitLoading").show();
     let formData = new FormData();
     formData.append("sourceFile", file);
     try {
@@ -129,6 +129,16 @@ async function submitFile(file) {
     }
     catch {
         showSubmitFail("Unable to submit");
+    }
+}
+
+function showSubmissionsTable() {
+    $("#submissionsLoading").hide();
+    if ($("#submissionsTable tbody").children().length == 0) {
+        $("#submissionsNone").show();
+    }
+    else {
+        $("#submissionsTable").show();
     }
 }
 
@@ -156,3 +166,5 @@ $("#chooseFileInput").change(function () {
     uploadFile(this.files[0])
 });
 $("#submitFileButton").click(() => submitFile($("#chooseFileInput").get(0).files[0]));
+
+setTimeout(showSubmissionsTable, 100);

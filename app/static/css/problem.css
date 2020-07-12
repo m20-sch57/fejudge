@@ -224,12 +224,10 @@
 }
 
 #submitSuccess {
-    color: forestgreen;
     transition: opacity 300ms linear;
 }
 
 #submitFail {
-    color: red;
     transition: opacity 300ms linear;
 }
 
@@ -239,18 +237,53 @@
     overflow-x: auto;
 }
 
+#submissionsLoading {
+    display: flex;
+    margin: 25px;
+}
+
+#submissionsLoadingLabel {
+    margin: auto;
+}
+
+#submissionsNone {
+    margin: 40px;
+    font-size: 20px;
+    text-align: center;
+}
+
 #submissionsTable {
     width: 100%;
     font-size: 16px;
 }
 
+#submissionsTable tr {
+    vertical-align: middle;
+}
+
 #submissionsTable th {
-    padding: 20px 5px;
+    height: 60px;
 }
 
 #submissionsTable td {
-    padding: 10px 5px;
+    height: 40px;
     text-align: center;
+}
+
+#submissionsTable .status {
+    min-width: 120px;
+}
+
+#submissionsTable .status span {
+    vertical-align: middle;
+}
+
+#submissionsTable .score {
+    min-width: 80px;
+}
+
+#submissionsTable .hidden {
+    visibility: hidden;
 }
 
 #contestInfoBox {

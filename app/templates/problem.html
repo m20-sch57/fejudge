@@ -99,16 +99,26 @@
                             <div id="submitLoading" style="display: none;">
                                 <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                             </div>
-                            <div id="submitSuccess" style="display: none;">
+                            <div class="col-green" id="submitSuccess" style="display: none;">
                                 <span class="fa fa-check"></span>
                                 Submitted
                             </div>
-                            <div id="submitFail" style="display: none;">
+                            <div class="col-red" id="submitFail" style="display: none;">
                             </div>
                         </div>
                     </div>
                     <div id="submissions">
-                        <table id="submissionsTable">
+                        <div id="submissionsLoading">
+                            <div id="submissionsLoadingLabel">
+                                <div class="lds-ring">
+                                    <div></div><div></div><div></div><div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="submissionsNone" style="display: none;">
+                            No submissions yet.
+                        </div>
+                        <table id="submissionsTable" style="display: none;">
                         <thead>
                             <th class="id">ID</th>
                             <th class="language">Language</th>
@@ -118,10 +128,19 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td class="id">13</td>
+                                <td class="language">GNU C++ 9.2.0</td>
+                                <td class="status col-green">OK</td>
+                                <td class="score">100</td>
+                                <td class="details">
+                                    <button class="flat-link link-blue">Details</button>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="id">11</td>
                                 <td class="language">GNU C++ 9.2.0</td>
-                                <td class="status">OK</td>
-                                <td class="score">100</td>
+                                <td class="status col-red">Partial</td>
+                                <td class="score">60</td>
                                 <td class="details">
                                     <button class="flat-link link-blue">Details</button>
                                 </td>
@@ -129,9 +148,12 @@
                             <tr>
                                 <td class="id">10</td>
                                 <td class="language">GNU C++ 9.2.0</td>
-                                <td class="status">In queue</td>
+                                <td class="status col-grey">
+                                    <span class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></span>
+                                    <span>Running</span>
+                                </td>
                                 <td class="score">&mdash;</td>
-                                <td class="details">
+                                <td class="details hidden">
                                     <button class="flat-link link-blue">Details</button>
                                 </td>
                             </tr>

@@ -19,18 +19,18 @@
                 </div>
                 <div class="contest-details">
                     {% if contest_request == None or contest_request.state() == 'Not started' %}
-                    <div class="contest-status not-started">
+                    <div class="contest-status col-grey">
                         Not started yet
                     </div>
                     {% elif contest_request.state() == 'In progress' %}
-                    <div class="contest-status in-progress">
+                    <div class="contest-status col-blue">
                         Time remaining:
                         <span name="timer" format="full">
                             {{ contest_request.time_remaining().total_seconds() }}
                         </span>
                     </div>
                     {% elif contest_request.state() == 'Finished' %}
-                    <div class="contest-status finished">
+                    <div class="contest-status col-green">
                         Finished
                     </div>
                     {% endif %}

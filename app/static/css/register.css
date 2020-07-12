@@ -38,10 +38,6 @@
     margin-top: 20px;
 }
 
-#usernameHint, #emailHint, #passwordHint, #confirmPasswordHint {
-    color: red;
-}
-
 #footer {
     display: flex;
     flex-flow: row;
@@ -69,4 +65,3 @@
         border-bottom-right-radius: 10px;
     }
 }
-
