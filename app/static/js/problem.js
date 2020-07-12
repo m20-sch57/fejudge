@@ -167,4 +167,4 @@ $("#chooseFileInput").change(function () {
 });
 $("#submitFileButton").click(() => submitFile($("#chooseFileInput").get(0).files[0]));
 
-setTimeout(showSubmissionsTable, 100);
+setTimeout(showSubmissionsTable, 500);

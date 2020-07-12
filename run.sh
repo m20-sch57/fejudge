@@ -12,4 +12,4 @@ if ! [ -d 'logs' ]; then
 fi
 
 nats-server -l logs/nats.log &
-python3 -m flask run --host=0.0.0.0 --port=3013
+python3 run.py

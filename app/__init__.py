@@ -1,6 +1,7 @@
 import json
 
 from flask import Flask
+from flask_socketio import SocketIO
 from flask_avatars import Avatars
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
@@ -27,16 +28,11 @@ naming_convention = {
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
+socketio = SocketIO(app)
 db = SQLAlchemy(app, metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
-mail = Mail(app)
-
 nats = NATSClient(Config.NATS_SERVER, name='producer1')
-try:
-    nats.connect()
-except ConnectionError as e:
-    print('Failed connecting to NATS:', e, flush=True)
+mail = Mail(app)
 
 avatars = Avatars(app)
 login = LoginManager(app)
