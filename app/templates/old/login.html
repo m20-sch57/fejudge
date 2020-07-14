@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="container-fluid window">
+    <div class="container">
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="pb-5">
+                <h1>Вход в систему</h1>
+            </div>
+            <div class="pb-4">
+                <div class="form-group row">
+                    <div class="col-lg-2">
+                        {{ form.username.label(class="col-form-label") }}
+                    </div>
+                    <div class="col-lg-10">
+                        {{ form.username(class="form-control", placeholder="Username") }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-2">
+                        {{ form.password.label(class="col-form-label") }}
+                    </div>
+                    <div class="col-lg-10">
+                        {{ form.password(class="form-control", placeholder="Password") }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap pb-1">
+                <div class="py-1 mr-4 my-auto">
+                    <button type="submit" class="btn btn-primary btn-shadow">
+                        Войти в систему
+                    </button>
+                </div>
+                <div class="py-1 mr-auto my-auto">
+                    <a href="/register">Нет аккаунта? Зарегистрируйся!</a>
+                </div>
+                <div class="py-1 my-auto">
+                    <a href="/restorePassword">Восстановление пароля</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

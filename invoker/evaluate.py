@@ -112,7 +112,7 @@ def compile(submission):
     # )
 
 
-def evaluate(submission_id, session):
+def evaluate(submission_id, session, sio):
     print('Started evaluating submission {}'.format(submission_id), flush=True)
     submission = session.query(Submission).filter_by(id=submission_id).first()
     if submission is None:
@@ -127,14 +127,16 @@ def evaluate(submission_id, session):
     #         submission.language
     #     )
     # )
-    submission.status = 'Compiling'
+    submission.status = 'compiling'
     submission.score = 0
     session.commit()
+    sio.emit('compiling', submission_id)
     compile_status, compile_details, binary_file = compile(submission)
     submission_details = {'tests': [], 'compiler': compile_details}
     if compile_status == 'OK':
-        submission.status = 'Running'
+        submission.status = 'evaluating'
         session.commit()
+        sio.emit('evaluating', submission_id)
         test_count = problem_manager.test_count
         submission_details['tests'] = [{'status': 'NO'}] * test_count
         current_score = submission.problem.max_score
@@ -145,12 +147,13 @@ def evaluate(submission_id, session):
                 current_score = 0
                 break
         submission.score = current_score
-        submission.status = 'Accepted' if current_score == submission.problem.max_score else 'Partial'
+        submission.status = 'accepted' if current_score == submission.problem.max_score else 'partial'
     else:
         submission.score = 0
-        submission.status = 'Compilation error'
+        submission.status = 'compilation_error'
     submission.details = json.dumps(submission_details)
     session.commit()
+    sio.emit('completed', submission_id)
     # write_logs(submission_id,
     #     'Submission status: {}\nSubmission score: {}\n'.format(
     #         submission.status,

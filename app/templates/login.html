@@ -1,42 +1,34 @@
 {% extends "base.html" %}
 
-{% block app_content %}
-<div class="container-fluid window">
-    <div class="container">
+{% block content %}
+<div class="page">
+    <div id="box">
         <form action="" method="POST">
-            {{ form.hidden_tag() }}
-            <div class="pb-5">
-                <h1>Вход в систему</h1>
-            </div>
-            <div class="pb-4">
-                <div class="form-group row">
-                    <div class="col-lg-2">
-                        {{ form.username.label(class="col-form-label") }}
-                    </div>
-                    <div class="col-lg-10">
-                        {{ form.username(class="form-control", placeholder="Username") }}
-                    </div>
+            <div class="bg-blue" id="header">
+                <div id="title">
+                    Sign in
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-2">
-                        {{ form.password.label(class="col-form-label") }}
-                    </div>
-                    <div class="col-lg-10">
-                        {{ form.password(class="form-control", placeholder="Password") }}
-                    </div>
-                </div>
+                <a href="/register" class="flat-link hover-underline" id="register">
+                    Sign up
+                </a>
             </div>
-            <div class="d-flex flex-wrap pb-1">
-                <div class="py-1 mr-4 my-auto">
-                    <button type="submit" class="btn btn-primary btn-shadow">
-                        Войти в систему
+            <div class="bg-white" id="body">
+                <div id="label">
+                    Please sign in.
+                </div>
+                <div id="username">
+                    <input class="flat-input input-blue" placeholder="Username" name="username" spellcheck="false">
+                </div>
+                <div id="password">
+                    <input type="password" class="flat-input input-blue" placeholder="Password" name="password">
+                </div>
+                <div id="footer">
+                    <button type="submit" class="btn-normal btn-blue" id="submitButton">
+                        Sign in
                     </button>
-                </div>
-                <div class="py-1 mr-auto my-auto">
-                    <a href="/register">Нет аккаунта? Зарегистрируйся!</a>
-                </div>
-                <div class="py-1 my-auto">
-                    <a href="/restorePassword">Восстановление пароля</a>
+                    <a href="/restorePassword" class="flat-link hover-underline" id="forgotPassword">
+                        Forgot password?
+                    </a>
                 </div>
             </div>
         </form>

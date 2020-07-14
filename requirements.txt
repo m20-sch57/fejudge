@@ -1,12 +1,8 @@
 Flask==1.1.1
 Flask-SocketIO==4.3.1
-Flask-Avatars==0.2.2
 Flask-Login==0.4.1
-Flask-Mail==0.9.1
 Flask-Migrate==2.5.2
 Flask-SQLAlchemy==2.4.1
-Flask-WTF==0.14.2
-WTForms-Components==0.10.4
 SQLAlchemy==1.3.10
 eventlet==0.25.2
 nats-python==0.7.0

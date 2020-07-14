@@ -8,6 +8,9 @@ class Config(object):
     # Identity
     INVOKER_NAME = os.environ.get('INVOKER_NAME') or 'invoker'
 
+    # Socketio server
+    SOCKETIO_SERVER = os.environ.get('SOCKETIO_SERVER') or 'http://localhost:3013'
+
     # NATS server
     NATS_SERVER = os.environ.get('NATS_SERVER') or 'nats://localhost:4222'
 

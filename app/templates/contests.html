@@ -1,161 +1,44 @@
 {% extends "base.html" %}
 
-{% block app_content %}
-<div class="container-fluid window">
-    <div class="container">
-        <div class="d-flex flex-wrap pb-3">
-            <h1 class="mr-auto my-auto">Контесты</h1>
-            <div class="d-flex flex-wrap">
-                <h4 class="mr-2 my-auto">Категория:</h4>
-                <select class="form-control btn-shadow w-auto h-auto m-1">
-                    <option selected value="common">Общие</option>
-                </select>
+{% block content %}
+<div class="page">
+    <div id="content">
+        <div class="bg-grey" id="header">
+            <div id="title">
+                Contests
             </div>
+            <a href="/logout" class="flat-link hover-underline" id="logout">
+                Log out
+            </a>
         </div>
-        <hr>
-        <script src="/static/js/timer.js"></script>
-        {% for contest, request in contests %}
-        <div class="d-flex flex-wrap">
-            {% if current_user.is_anonymous %}
-            <div class="mr-auto my-auto">
-                <label class="h4 mb-3">{{ contest.name }}</label>
-                <div class="d-flex flex-wrap">
-                    <p class="text-secondary mx-3 my-0">
-                        Вы не вошли в систему
-                    </p>
+        <div class="bg-white" id="body">
+            {% for contest, contest_request in contests %}
+            <a href="/contests/{{ contest.id }}" class="contest-row">
+                <div class="contest-label">
+                    {{ contest.name }}
                 </div>
-            </div>
-            <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-secondary btn-shadow font-weight-bold" href="/login">
-                    Войти в систему <span class="fa fa-arrow-right"></span>
-                </a>
-            </div>
-            {% elif contest.owner == current_user %}
-            <div class="mr-auto my-auto">
-                <label class="h4 mb-3">{{ contest.name }}</label>
-                <div class="d-flex flex-wrap">
-                    <p class="text-primary mx-3 my-0">Админ</p>
-                    <p class="text-primary mx-3 my-0">
-                        <span class="fa fa-clock"></span>
-                        {{ contest.duration_in_minutes() }} минут
-                    </p>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/admin/participants">
-                        <span class="fa fa-users"></span>
-                        {{ contest.contest_requests.count() }} участников
-                    </a>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/admin/problems">
-                        <span class="fa fa-tasks"></span>
-                        {{ contest.problems.count() }} задач
-                    </a>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/results">
-                        Результаты
-                    </a>
-                </div>
-            </div>
-            <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest.id }}/admin">
-                    Подробнее <span class="fa fa-arrow-right"></span>
-                </a>
-            </div>
-            {% elif request == None %}
-            <div class="mr-auto my-auto">
-                <label class="h4 mb-3">{{ contest.name }}</label>
-                <div class="d-flex flex-wrap">
-                    <p class="text-secondary mx-3 my-0">До начала</p>
-                    <p class="text-secondary mx-3 my-0">
-                        <span class="fa fa-clock"></span>
-                        {{ contest.duration_in_minutes() }} минут
-                    </p>
-                    <p class="text-secondary mx-3 my-0">
-                        <span class="fa fa-tasks"></span>
-                        {{ contest.problems.count() }} задач
-                    </p>
-                </div>
-            </div>
-            <div class="py-2 ml-auto my-auto">
-                <button type="button" class="btn btn-lg btn-secondary btn-shadow font-weight-bold"
-                data-toggle="modal" data-target="#start_{{ contest.id }}">
-                    Участвовать <span class="fa fa-arrow-right"></span>
-                </button>
-            </div>
-            {% elif request.state() == "In progress" %}
-            <div class="mr-auto my-auto">
-                <label class="h4 mb-3">{{ contest.name }}</label>
-                <div class="d-flex flex-wrap">
-                    <p class="text-primary mx-3 my-0">В процессе</p>
-                    <p class="text-primary mx-3 my-0">
-                        <span class="fa fa-clock"></span>
-                        <span id="timer_{{ contest.id }}">
-                            {{ request.time_remaining().total_seconds() }}
+                <div class="contest-details">
+                    {% if contest_request == None or contest_request.state() == 'Not started' %}
+                    <div class="contest-status col-grey">
+                        Not started yet
+                    </div>
+                    {% elif contest_request.state() == 'In progress' %}
+                    <div class="contest-status col-blue">
+                        Time remaining:
+                        <span name="timer" format="full">
+                            {{ contest_request.time_remaining().total_seconds() }}
                         </span>
-                    </p>
-                    <p class="text-primary mx-3 my-0">
-                        Баллы: {{ contest.total_score(current_user) }} / {{ contest.total_maxscore() }}
-                    </p>
-                    <a class="text-primary mx-3 my-0" href="/contests/{{ contest.id }}/results">
-                        Текущие результаты
-                    </a>
-                    <script>
-                        start_timer("timer_{{ contest.id }}", -1);
-                    </script>
+                    </div>
+                    {% elif contest_request.state() == 'Finished' %}
+                    <div class="contest-status col-green">
+                        Finished
+                    </div>
+                    {% endif %}
                 </div>
-            </div>
-            <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-info btn-shadow font-weight-bold" href="/contests/{{ contest.id }}/1/main">
-                    Продолжить <span class="fa fa-arrow-right"></span>
-                </a>
-            </div>
-            {% else %}
-            <div class="mr-auto my-auto">
-                <label class="h4 mb-3">{{ contest.name }}</label>
-                <div class="d-flex flex-wrap">
-                    <p class="text-success mx-3 my-0">Завершён</p>
-                    <p class="text-success mx-3 my-0">
-                        Баллы: {{ contest.total_score(current_user) }} / {{ contest.total_maxscore() }}
-                    </p>
-                    <a class="text-success mx-3 my-0" href="/contests/{{ contest.id }}/results">
-                        Результаты
-                    </a>
-                </div>
-            </div>
-            <div class="py-2 ml-auto my-auto">
-                <a class="btn btn-lg btn-success btn-shadow font-weight-bold" href="/contests/{{ contest.id }}/1/main">
-                    Просмотр <span class="fa fa-arrow-right"></span>
-                </a>
-            </div>
-            {% endif %}
-        </div>
-        <hr>
-        {% endfor %}
-    </div>
-</div>
-{% for contest, request in contests %}
-<div class="modal fade" id="start_{{ contest.id }}">
-    <div class="modal-lg modal-dialog centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Начать контест</h5>
-                <button class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Информация о контесте:</p>
-                <ul>
-                    <li>Название: {{ contest.name }}</li>
-                    <li>Продолжительность: {{ contest.duration_in_minutes() }} минут</li>
-                    <li>Количество задач: {{ contest.problems.count() }}</li>
-                </ul>
-                <p>Приостановить решение задач будет невозможно.<br>Вы уверены, что хотите продолжить?</p>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-success btn-shadow" href="/contests/{{ contest.id }}/start">
-                    Участвовать
-                </a>
-                <button class="btn btn-shadow" data-dismiss="modal">
-                    Отмена
-                </button>
-            </div>
+            </a>
+            {% endfor %}
         </div>
     </div>
 </div>
-{% endfor %}
+<script src="/static/js/timer.js"></script>
 {% endblock %}

@@ -40,4 +40,4 @@ login.login_view = 'login'
 login.login_message_category = 'info auto-dismiss'
 
 
-from app import routes, models
+from app import routes, events, models

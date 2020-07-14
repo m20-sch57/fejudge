@@ -1,19 +1,18 @@
 import os
-# import strgen
 
 from functools import wraps
 from flask import render_template, redirect, abort, url_for, request, flash, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from app import app, db, avatars
+from app import app, db, socketio
 from app import submit_to_queue
 # from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 # from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 # from app.forms import InputProblemForm, FileProblemForm
-from app.forms import AdminInfoForm, UploadPackageForm
-from app.models import User, RestoreToken, Contest, Problem, ContestRequest, Submission
-from app.email import send_verification_code, send_new_password
+from app.forms import UploadPackageForm
+from app.models import User, Contest, Problem, ContestRequest, Submission
+# from app.email import send_verification_code, send_new_password
 
 
 @app.errorhandler(403)
@@ -37,7 +36,7 @@ def request_entity_too_large(error):
 
 
 @app.errorhandler(500)
-def internal_error(error):
+def internal_server_error(error):
     db.session.rollback()
     return render_template('error.html', page='error', message='Oops! Internal server error.', code=500), 500
 
@@ -61,7 +60,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user)
         return redirect(url_for('contests_page'))
-    return render_template('login_new.html', page='login')
+    return render_template('login.html', page='login')
 
 
 @app.route('/logout')
@@ -98,7 +97,7 @@ def register():
         db.session.commit()
         flash('You have successfully registered', category='success auto-dismiss')
         return redirect(url_for('login'))
-    return render_template('register_new.html', page='register')
+    return render_template('register.html', page='register')
 
 
 # @app.route('/restorePassword', methods=['GET', 'POST'])
@@ -206,11 +205,15 @@ def get_contest_request(contest):
     return ContestRequest.query.filter_by(contest_id=contest.id, user_id=current_user.id).first()
 
 
+def get_problem_by_number(contest, number):
+    return Problem.query.filter_by(contest=contest, number=number).first_or_404()
+
+
 @app.route('/contests')
 @login_required
 def contests_page():
     contests = [(contest, get_contest_request(contest)) for contest in Contest.query.all()]
-    return render_template('contests_new.html', page='contests', contests=contests)
+    return render_template('contests.html', page='contests', contests=contests)
 
 
 @app.route('/contests/<contest_id>')
@@ -234,7 +237,7 @@ def participate(contest_id):
         flash('You are already participating in the contest', category='failure')
         return redirect(url_for('contests_page'))
     contest_request = ContestRequest(contest=contest, user=current_user, 
-        start_time=datetime.utcnow().replace(microsecond=0))
+        start_time=datetime.utcnow())
     db.session.commit()
     return redirect(url_for('contest_problem', contest_id=contest.id, number=1))
 
@@ -256,7 +259,7 @@ def participation_required(func):
 def contest_problem(contest_id, number):
     contest = get_contest_by_id(contest_id)
     contest_request = get_contest_request(contest)
-    problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
+    problem = get_problem_by_number(contest, number)
     from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
     if problem.problem_type == 'Programming':
@@ -270,10 +273,29 @@ def contest_problem(contest_id, number):
 @login_required
 @participation_required
 def submit_problem(contest_id, number):
+    contest = get_contest_by_id(contest_id)
+    contest_request = get_contest_request(contest)
+    problem = get_problem_by_number(contest, number)
     source_blob = request.files['sourceFile'].read()
     if len(source_blob) > app.config['MAX_SUBMISSION_SIZE']:
         abort(413)
-    return 'Something'
+    try:
+        source_code = source_blob.decode('utf-8')
+    except UnicodeDecodeError:
+        abort(400)
+    language = request.form['language']
+    current_time = datetime.utcnow().replace(microsecond=0)
+    submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
+        language=language, status='in_queue', score=0, source=source_code)
+    current_user.active_language = language
+    db.session.add(submission)
+    db.session.commit()
+    submit_to_queue(group='invokers', obj={
+        'type': 'evaluate',
+        'submission_id': submission.id
+    })
+    socketio.emit('new_submission', submission.id, room=submission.user.id)
+    return ''
 
 
 @app.route('/contests/<contest_id>/<number>/<resource>')
@@ -281,7 +303,7 @@ def submit_problem(contest_id, number):
 @participation_required
 def problem_resource(contest_id, number, resource):
     contest = get_contest_by_id(contest_id)
-    problem = Problem.query.filter_by(contest=contest, number=number).first_or_404()
+    problem = get_problem_by_number(contest, number)
     from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
     submissions = Submission.query.filter_by(problem=problem, user=current_user).order_by(Submission.time.desc())
@@ -379,52 +401,52 @@ def contest_admin(func):
     return decorated_view
 
 
-@app.route('/contests/<contest_id>/admin', methods=['GET', 'POST'])
-@app.route('/contests/<contest_id>/admin/info', methods=['GET', 'POST'])
-@login_required
-@contest_admin
-def contest_admin_info(contest_id):
-    contest = get_contest_by_id(contest_id)
-    info_form = AdminInfoForm(contest.name, contest_type=contest.contest_type)
-    if info_form.validate_on_submit():
-        contest.name = info_form.name.data
-        contest.contest_type = info_form.contest_type.data
-        contest.duration = timedelta(minutes=info_form.duration.data)
-        db.session.commit()
-        flash('Contest info has been saved', category='alert-success')
-    return render_template('contest_admin_info.html', title=contest.name, contest=contest, form=info_form)
+# @app.route('/contests/<contest_id>/admin', methods=['GET', 'POST'])
+# @app.route('/contests/<contest_id>/admin/info', methods=['GET', 'POST'])
+# @login_required
+# @contest_admin
+# def contest_admin_info(contest_id):
+#     contest = get_contest_by_id(contest_id)
+#     info_form = AdminInfoForm(contest.name, contest_type=contest.contest_type)
+#     if info_form.validate_on_submit():
+#         contest.name = info_form.name.data
+#         contest.contest_type = info_form.contest_type.data
+#         contest.duration = timedelta(minutes=info_form.duration.data)
+#         db.session.commit()
+#         flash('Contest info has been saved', category='alert-success')
+#     return render_template('contest_admin_info.html', title=contest.name, contest=contest, form=info_form)
 
 
-@app.route('/contests/<contest_id>/admin/problems')
-@login_required
-@contest_admin
-def contest_admin_problems(contest_id):
-    contest = get_contest_by_id(contest_id)
-    return render_template('contest_admin_problems.html', title=contest.name, contest=contest)
+# @app.route('/contests/<contest_id>/admin/problems')
+# @login_required
+# @contest_admin
+# def contest_admin_problems(contest_id):
+#     contest = get_contest_by_id(contest_id)
+#     return render_template('contest_admin_problems.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_id>/admin/participants')
-@login_required
-@contest_admin
-def contest_admin_participants(contest_id):
-    contest = get_contest_by_id(contest_id)
-    return render_template('contest_admin_participants.html', title=contest.name, contest=contest)
+# @app.route('/contests/<contest_id>/admin/participants')
+# @login_required
+# @contest_admin
+# def contest_admin_participants(contest_id):
+#     contest = get_contest_by_id(contest_id)
+#     return render_template('contest_admin_participants.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_id>/admin/submissions')
-@login_required
-@contest_admin
-def contest_admin_submissions(contest_id):
-    contest = get_contest_by_id(contest_id)
-    return render_template('contest_admin_submissions.html', title=contest.name, contest=contest)
+# @app.route('/contests/<contest_id>/admin/submissions')
+# @login_required
+# @contest_admin
+# def contest_admin_submissions(contest_id):
+#     contest = get_contest_by_id(contest_id)
+#     return render_template('contest_admin_submissions.html', title=contest.name, contest=contest)
 
 
-@app.route('/contests/<contest_id>/admin/notifications')
-@login_required
-@contest_admin
-def contest_admin_notifications(contest_id):
-    contest = get_contest_by_id(contest_id)
-    return render_template('contest_admin_notifications.html', title=contest.name, contest=contest)
+# @app.route('/contests/<contest_id>/admin/notifications')
+# @login_required
+# @contest_admin
+# def contest_admin_notifications(contest_id):
+#     contest = get_contest_by_id(contest_id)
+#     return render_template('contest_admin_notifications.html', title=contest.name, contest=contest)
 
 
 @app.route('/contests/<contest_id>/admin/newproblem', methods=['GET', 'POST'])
@@ -448,6 +470,6 @@ def contest_admin_newproblem(contest_id):
             'problem_id': new_problem.id,
         })
         flash('Your package has been uploaded, check the status of the problem', category='alert-info')
-        return redirect(url_for('contest_admin_problems', contest_id=contest_id))
-    return render_template('contest_admin_newproblem.html',
+        return redirect(url_for('contest_admin_newproblem', contest_id=contest_id))
+    return render_template('old/contest_admin_newproblem.html',
         title='New problem', contest=contest, form=upload_package_form)

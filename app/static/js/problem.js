@@ -3,6 +3,7 @@
 const contestId = location.href.toString().split("/").slice(-3, -1)[0];
 const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
 const boxes = [$("#submitBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
+const socket = io.connect(window.location.origin);
 
 function resize() {
     let height = $(window).height() - $("#statementsTitle").outerHeight();
@@ -109,6 +110,7 @@ async function submitFile(file) {
     $("#submitFileButton").attr("disabled", "");
     $("#submitLoading").show();
     let formData = new FormData();
+    formData.append("language", $("#languageSelect").val());
     formData.append("sourceFile", file);
     try {
         let response = await fetch(`/contests/${contestId}/${problemNumber}/submit`, {
@@ -122,6 +124,7 @@ async function submitFile(file) {
         else {
             let message = response.statusText;
             if (response.status === 413) message = "File size > 1 MB";
+            if (response.status === 400) message = "Incorrect data";
             showSubmitFail(message);
             hideSubmitStatusDelay("#submitFail");
         }
@@ -145,6 +148,12 @@ function showSubmissionsTable() {
 window.onresize = resize;
 window.onload = resize;
 
+socket.on("connect", () => socket.emit("join"));
+socket.on("new_submission", (submissionId) => console.log(`New submission ${submissionId}`));
+socket.on("compiling", (submissionId) => console.log(`Compiling ${submissionId}`));
+socket.on("evaluating", (submissionId) => console.log(`Evaluating ${submissionId}`));
+socket.on("completed", (submissionId) => console.log(`Completed ${submissionId}`));
+
 $("#statementsContentScrollable").scroll(updateStatementsShadow);
 $("#statementsLoadedContent").load($("#statementsLoadedContent").attr("href"));
 
@@ -167,4 +176,4 @@ $("#chooseFileInput").change(function () {
 });
 $("#submitFileButton").click(() => submitFile($("#chooseFileInput").get(0).files[0]));
 
-setTimeout(showSubmissionsTable, 500);
+showSubmissionsTable();

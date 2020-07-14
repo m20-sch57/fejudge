@@ -7,7 +7,7 @@ LANGUAGE_MATCHING = {
 STATUS_MATCHING = {
     'In queue': 'В очереди',
     'Compiling': 'Компилирование...',
-    'Running': 'Тестирование...',
+    'Evaluating': 'Тестирование...',
     'Partial': 'Неполное решение',
     'Accepted': 'OK',
     'Compilation error': 'Ошибка компиляции',
