@@ -205,7 +205,7 @@
                 <div id="timeRemaining">
                     Time left:<br>
                     <span id="contestTimer" name="timer" format="minutes">
-                        {{ contest_request.time_remaining().total_seconds() }}
+                        {{ contest_request.time_remaining().total_seconds() | round }}
                     </span>
                 </div>
                 <button class="btn-icon btn-blue" id="viewContestInfo">

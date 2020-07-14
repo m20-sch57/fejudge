@@ -41,12 +41,13 @@ class ProblemManager:
         self.checker_language = self.match_language(checker_source.attrib['type'])
 
         self.executables = []
-        for child in root.find('files').find('executables'):
-            source = child.find('source')
-            self.executables.append({
-                'path': self.build_path(source.attrib['path']),
-                'language': self.match_language(source.attrib['type'])
-            })
+        if root.find('files').find('executables') is not None:
+            for child in root.find('files').find('executables'):
+                source = child.find('source')
+                self.executables.append({
+                    'path': self.build_path(source.attrib['path']),
+                    'language': self.match_language(source.attrib['type'])
+                })
 
         main_solution_source = root.find('assets').find('solutions').find('.//*[@tag="main"]').find('source')
         self.main_solution_source_path = self.build_path(main_solution_source.attrib['path'])
