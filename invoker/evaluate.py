@@ -151,9 +151,9 @@ def evaluate(submission_id, session, sio):
     else:
         submission.score = 0
         submission.status = 'compilation_error'
-    submission.details = json.dumps(submission_details)
+    submission.set_details(submission_details)
     session.commit()
-    sio.emit('completed', submission_id)
+    sio.emit('completed', (submission_id, submission.status, submission.score))
     # write_logs(submission_id,
     #     'Submission status: {}\nSubmission score: {}\n'.format(
     #         submission.status,

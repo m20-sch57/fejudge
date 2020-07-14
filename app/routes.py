@@ -1,4 +1,5 @@
 import os
+import json
 
 from functools import wraps
 from flask import render_template, redirect, abort, url_for, request, flash, send_from_directory
@@ -7,6 +8,7 @@ from datetime import datetime
 
 from app import app, db, socketio
 from app import submit_to_queue
+from app.events import build_room
 # from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 # from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm
 # from app.forms import InputProblemForm, FileProblemForm
@@ -284,7 +286,9 @@ def submit_problem(contest_id, number):
     except UnicodeDecodeError:
         abort(400)
     language = request.form['language']
-    current_time = datetime.utcnow().replace(microsecond=0)
+    if language not in ['cpp', 'py']: # TODO: adjust for problem
+        abort(400)
+    current_time = datetime.utcnow()
     submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
         language=language, status='in_queue', score=0, source=source_code)
     current_user.active_language = language
@@ -294,8 +298,30 @@ def submit_problem(contest_id, number):
         'type': 'evaluate',
         'submission_id': submission.id
     })
-    socketio.emit('new_submission', submission.id, room=submission.user.id)
+    room = build_room(submission.user.id, submission.problem.id)
+    socketio.emit('new_submission', {
+        'submission_id': submission.id,
+        'submission_language': submission.language
+    }, room=room)
     return ''
+
+
+@app.route('/contests/<contest_id>/<number>/submissions')
+@login_required
+@participation_required
+def problem_submissions(contest_id, number):
+    contest = get_contest_by_id(contest_id)
+    problem = get_problem_by_number(contest, number)
+    submissions = Submission.query.filter_by(problem=problem, user=current_user).order_by(Submission.time.desc())
+    submissions_list = []
+    for submission in submissions:
+        submissions_list.append({
+            'submission_id': submission.id,
+            'submission_language': submission.language,
+            'submission_status': submission.status,
+            'submission_score': submission.score
+        })
+    return json.dumps(submissions_list)
 
 
 @app.route('/contests/<contest_id>/<number>/<resource>')
@@ -306,7 +332,6 @@ def problem_resource(contest_id, number, resource):
     problem = get_problem_by_number(contest, number)
     from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
-    submissions = Submission.query.filter_by(problem=problem, user=current_user).order_by(Submission.time.desc())
     resource_dir = ''
     if resource.endswith('.css'):
         resource_dir = 'static/css'

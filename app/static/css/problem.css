@@ -278,14 +278,6 @@
     vertical-align: middle;
 }
 
-#submissionsTable .score {
-    min-width: 80px;
-}
-
-#submissionsTable .hidden {
-    visibility: hidden;
-}
-
 #contestInfoBox {
     display: flex;
     flex-flow: column;

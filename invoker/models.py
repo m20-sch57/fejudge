@@ -34,3 +34,6 @@ class Submission(Base):
 
     def __repr__(self):
         return '<SUBMISSION ID={} STATUS={} SCORE={}>'.format(self.id, self.status, self.score)
+
+    def set_details(self, details):
+        self.details = json.dumps(details)

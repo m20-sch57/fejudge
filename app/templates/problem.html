@@ -9,6 +9,9 @@
                     <span class="fa fa-arrow-left"></span>
                 </a>
                 <div id="problemInfo">
+                    <div id="problemId" style="display: none;">
+                        {{ problem.id }}
+                    </div>
                     <div id="problemName">
                         {{ problem_manager.problem_name() }}
                     </div>
@@ -23,7 +26,7 @@
                         </div>
                     </div>
                     <div id="problemScore">
-                        Score: {{ problem.score(current_user) }} / {{ problem.max_score }}
+                        {{ problem.max_score }} points
                     </div>
                 </div>
             </div>
@@ -127,36 +130,6 @@
                             <th class="details">Details</th>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="id">13</td>
-                                <td class="language">GNU C++ 9.2.0</td>
-                                <td class="status col-green">OK</td>
-                                <td class="score">100</td>
-                                <td class="details">
-                                    <button class="flat-link link-blue">Details</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="id">11</td>
-                                <td class="language">GNU C++ 9.2.0</td>
-                                <td class="status col-red">Partial</td>
-                                <td class="score">60</td>
-                                <td class="details">
-                                    <button class="flat-link link-blue">Details</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="id">10</td>
-                                <td class="language">GNU C++ 9.2.0</td>
-                                <td class="status col-grey">
-                                    <span class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></span>
-                                    <span>Running</span>
-                                </td>
-                                <td class="score">&mdash;</td>
-                                <td class="details hidden">
-                                    <button class="flat-link link-blue">Details</button>
-                                </td>
-                            </tr>
                         </tbody>
                         </table>
                     </div>
