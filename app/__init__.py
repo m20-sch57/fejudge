@@ -2,12 +2,12 @@ import json
 
 from flask import Flask
 from flask_socketio import SocketIO
-from flask_avatars import Avatars
+# from flask_avatars import Avatars
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_mail import Mail
+# from flask_mail import Mail
 from pynats import NATSClient
 from config import Config
 
@@ -32,9 +32,9 @@ socketio = SocketIO(app)
 db = SQLAlchemy(app, metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 nats = NATSClient(Config.NATS_SERVER, name='producer1')
-mail = Mail(app)
+# mail = Mail(app)
 
-avatars = Avatars(app)
+# avatars = Avatars(app)
 login = LoginManager(app)
 login.login_view = 'login'
 login.login_message_category = 'info auto-dismiss'

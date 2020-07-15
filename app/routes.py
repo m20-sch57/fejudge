@@ -6,8 +6,7 @@ from flask import render_template, redirect, abort, url_for, request, flash, sen
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 
-from app import app, db, socketio
-from app import submit_to_queue
+from app import app, db, socketio, submit_to_queue
 from app.events import build_room
 # from app.forms import LoginForm, RegistrationForm, RestorePasswordForm, VerificationCodeForm
 # from app.forms import EditAvatarForm, EditProfileForm, EditPasswordForm

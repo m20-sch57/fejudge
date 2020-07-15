@@ -113,10 +113,10 @@ def compile(submission):
 
 
 def evaluate(submission_id, session, sio):
-    print('Started evaluating submission {}'.format(submission_id), flush=True)
+    print('Started evaluating submission {}'.format(submission_id))
     submission = session.query(Submission).filter_by(id=submission_id).first()
     if submission is None:
-        print('Cannot find submission {}'.format(submission_id), flush=True)
+        print('Cannot find submission {}'.format(submission_id))
         return
     problem_manager = ProblemManager(submission.problem_id)
     # write_logs(submission_id,
@@ -160,4 +160,4 @@ def evaluate(submission_id, session, sio):
     #         submission.score
     #     )
     # )
-    print('Finished evaluating submission {}'.format(submission_id), flush=True)
+    print('Finished evaluating submission {}'.format(submission_id))

@@ -37,7 +37,7 @@ def compile_checker(problem_manager):
         stderr='@_stdout'
     )
     if compile_status != 'OK':
-        print('Failed to compile checker verdict={}'.format(compile_status), flush=True)
+        print('Failed to compile checker verdict={}'.format(compile_status))
     libsbox.export_file(checker_binary_file, problem_manager.checker_binary_path)
 
 
@@ -56,7 +56,7 @@ def prepare_and_generate_tests(problem_manager):
         stderr='@_stdout'
     )
     if compile_status != 'OK':
-        print('Failed to compile main solution', flush=True)
+        print('Failed to compile main solution')
     executables_bin = []
     for executable in problem_manager.executables:
         executable_source_file = File(
@@ -73,7 +73,7 @@ def prepare_and_generate_tests(problem_manager):
             stderr='@_stdout'
         )
         if compile_status != 'OK':
-            print('Failed to compile executable {}'.format(executable_source_file.internal_path), flush=True)
+            print('Failed to compile executable {}'.format(executable_source_file.internal_path))
         executables_bin.append(executable_binary_file)
     for test_info in problem_manager.tests_to_generate:
         test_number = test_info['test_number']
@@ -93,7 +93,7 @@ def prepare_and_generate_tests(problem_manager):
                 stderr=error_file.internal_path
             )
             if generator_status != 'OK':
-                print('Failed to generate input for test #{} verdict={}'.format(test_number, generator_status), flush=True)
+                print('Failed to generate input for test #{} verdict={}'.format(test_number, generator_status))
             libsbox.export_file(input_file, input_file.external_path)
         else:
             libsbox.import_file(input_file)
@@ -106,17 +106,17 @@ def prepare_and_generate_tests(problem_manager):
                 stderr=error_file.internal_path
             )
             if solution_status != 'OK':
-                print('Failed to generate output for test #{} verdict={}'.format(test_number, solution_status), flush=True)
+                print('Failed to generate output for test #{} verdict={}'.format(test_number, solution_status))
             libsbox.export_file(output_file, output_file.external_path)
         else:
             libsbox.import_file(output_file)
 
 
 def init(problem_id, session): # TODO: error handler
-    print('Started initializing problem {}'.format(problem_id), flush=True)
+    print('Started initializing problem {}'.format(problem_id))
     success = extract_archive(problem_id)
     if not success:
-        print('Cannot find archive for problem {}'.format(problem_id), flush=True)
+        print('Cannot find archive for problem {}'.format(problem_id))
         return
     problem_manager = ProblemManager(problem_id)
     compile_checker(problem_manager)
@@ -124,4 +124,4 @@ def init(problem_id, session): # TODO: error handler
     problem = session.query(Problem).filter_by(id=problem_id).first()
     problem.set_names(problem_manager.names_dict)
     session.commit()
-    print('Finished building package for problem {}'.format(problem_id), flush=True)
+    print('Finished building package for problem {}'.format(problem_id))

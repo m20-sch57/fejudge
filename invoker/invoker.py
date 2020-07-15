@@ -21,17 +21,17 @@ def message_handler(msg):
     elif obj['type'] == 'problem_init':
         init(obj['problem_id'], session)
     else:
-        print('Unsupported type of query: {}'.format(obj['type']), flush=True)
+        print('Unsupported type of query: {}'.format(obj['type']))
 
 
 def connect_to_socketio():
     while True:
         try:
             sio.connect(Config.SOCKETIO_SERVER)
-            print('\nConnected to socketio', flush=True)
+            print('\nConnected to socketio')
             return
         except ConnectionError:
-            print('Connecting to socketio...', end='\r', flush=True)
+            print('Connecting to socketio...', end='\r')
             time.sleep(1)
 
 
@@ -40,10 +40,10 @@ def connect_to_nats():
         try:
             nats.connect()
             nats.subscribe('invokers', queue='worker', callback=message_handler)
-            print('\nConnected to NATS', flush=True)
+            print('\nConnected to NATS')
             nats.wait()
         except (socket.error, NATSError):
-            print('Connecting to NATS...', end='\r', flush=True)
+            print('Connecting to NATS...', end='\r')
             time.sleep(1)
 
 
