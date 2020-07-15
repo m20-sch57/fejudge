@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from pynats import NATSClient
 from pynats.exceptions import NATSError
+from socketio.exceptions import ConnectionError
 from evaluate import evaluate
 from problem_init import init
 from models import Base
@@ -23,13 +24,23 @@ def message_handler(msg):
         print('Unsupported type of query: {}'.format(obj['type']), flush=True)
 
 
-def serve_forever():
+def connect_to_socketio():
+    while True:
+        try:
+            sio.connect(Config.SOCKETIO_SERVER)
+            print('\nConnected to socketio', flush=True)
+            return
+        except ConnectionError:
+            print('Connecting to socketio...', end='\r', flush=True)
+            time.sleep(1)
+
+
+def connect_to_nats():
     while True:
         try:
             nats.connect()
             nats.subscribe('invokers', queue='worker', callback=message_handler)
-            print()
-            print('Connected to NATS', flush=True)
+            print('\nConnected to NATS', flush=True)
             nats.wait()
         except (socket.error, NATSError):
             print('Connecting to NATS...', end='\r', flush=True)
@@ -42,8 +53,7 @@ if __name__ == "__main__":
     session = Session(bind=engine)
 
     sio = socketio.Client()
-    sio.connect(Config.SOCKETIO_SERVER)
-
     nats = NATSClient(Config.NATS_SERVER, name=Config.INVOKER_NAME)
 
-    serve_forever()
+    connect_to_socketio()
+    connect_to_nats()
