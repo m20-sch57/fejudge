@@ -47,7 +47,7 @@ cd invoker/
 sudo -E ./run.sh
 ```
 
-<!-- To start in docker, run `docker-compose up` in the project directory. -->
+To start in docker, run `docker-compose up --build` in the project directory.
 
 ## Documentation
 
