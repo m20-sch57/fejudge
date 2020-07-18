@@ -3,7 +3,7 @@
 const contestId = location.href.toString().split("/").slice(-3, -1)[0];
 const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
 const problemId = $("#problemId").text().trim();
-const boxes = [$("#submitBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
+const boxes = [$("#submitBox"), $("#submissionDetailsBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
 const socket = io.connect(window.location.origin);
 
 function resize() {
@@ -12,8 +12,8 @@ function resize() {
     let navHeight = $(window).height() - $("#submitSection").outerHeight() - $("#infoSection").outerHeight();
     $("#statementsContentScrollable").css("max-height", `${height}px`);
     $("#statementsContentScrollable").css("max-width", `${width}px`);
-    $("#submitContent").css("max-height", `${height}px`);
-    $("#submitContent").css("max-width", `${width}px`);
+    $(".extra-content").css("max-height", `${height}px`);
+    $(".extra-content").css("max-width", `${width}px`);
     $("#problemNavigation").css("height", `${navHeight}px`);
 }
 
@@ -26,12 +26,8 @@ function updateStatementsShadow() {
     }
 }
 
-function hideBoxes() {
-    boxes.forEach((it) => it.hide());
-}
-
 function expandBox(box, animate = true) {
-    hideBoxes();
+    $(localStorage.getItem("currentBox")).hide();
     localStorage.setItem("currentBox", box);
     if (animate) {
         $("#extraBox").css("transition", "all 60ms ease-out");
@@ -150,12 +146,11 @@ function showSubmissionsTable() {
 
 function newSubmissionRow(submissionId) {
     let row = document.createElement("tr");
-    $(row).attr("id", `${submissionId}_row`);
     let cellNames = ["id", "language", "status", "score", "details"];
     for (let name of cellNames) {
         let elem = document.createElement("td");
         $(elem).addClass(name);
-        $(elem).attr("id", `${submissionId}_${name}`);
+        $(elem).attr("id", `submission_${submissionId}_${name}`);
         if (name === "id") $(elem).text(submissionId);
         $(row).append(elem);
     }
@@ -165,24 +160,22 @@ function newSubmissionRow(submissionId) {
 function appendNewSubmission(submissionId) {
     let submissionRow = newSubmissionRow(submissionId);
     $("#submissionsTable tbody").append(submissionRow);
-    showSubmissionsTable();
 }
 
 function prependNewSubmission(submissionId) {
     let submissionRow = newSubmissionRow(submissionId);
     $("#submissionsTable tbody").prepend(submissionRow);
-    showSubmissionsTable();
 }
 
 function inQueue(submissionId, submissionLanguage) {
-    $(`#${submissionId}_language`).text(submissionLanguage);
-    $(`#${submissionId}_status`).text("In queue");
-    $(`#${submissionId}_score`).html("&mdash;");
-    $(`#${submissionId}_details`).html("&mdash;");
+    $(`#submission_${submissionId}_language`).text(submissionLanguage);
+    $(`#submission_${submissionId}_status`).text("In queue");
+    $(`#submission_${submissionId}_score`).html("&mdash;");
+    $(`#submission_${submissionId}_details`).html("&mdash;");
 }
 
 function compiling(submissionId) {
-    let status = $(`#${submissionId}_status`);
+    let status = $(`#submission_${submissionId}_status`);
     status.empty();
     status.addClass("col-grey");
     let spinner = document.createElement("span");
@@ -192,19 +185,19 @@ function compiling(submissionId) {
     }
     status.append(spinner);
     let statusLabel = document.createElement("span");
-    $(statusLabel).attr("id", `${submissionId}_statusLabel`);
+    $(statusLabel).attr("id", `submission_${submissionId}_statusLabel`);
     $(statusLabel).text(" Compiling");
     status.append(statusLabel);
 }
 
 function evaluating(submissionId) {
-    $(`#${submissionId}_statusLabel`).text(" Running");
+    $(`#submission_${submissionId}_statusLabel`).text(" Running");
 }
 
 function completed(submissionId, submissionStatus, submissionScore) {
-    let status = $(`#${submissionId}_status`);
-    let score = $(`#${submissionId}_score`);
-    let details = $(`#${submissionId}_details`);
+    let status = $(`#submission_${submissionId}_status`);
+    let score = $(`#submission_${submissionId}_score`);
+    let details = $(`#submission_${submissionId}_details`);
     status.empty();
     status.removeClass("col-grey");
     if (submissionStatus === "accepted") {
@@ -225,6 +218,10 @@ function completed(submissionId, submissionStatus, submissionScore) {
     $(detailsButton).addClass("flat-link");
     $(detailsButton).addClass("link-blue");
     $(detailsButton).text("Details");
+    $(detailsButton).click(() => {
+        expandBox("#submissionDetailsBox");
+        loadSubmissionDetails(submissionId);
+    });
     details.append(detailsButton);
 }
 
@@ -259,12 +256,51 @@ async function loadSubmissions() {
     showSubmissionsTable();
 }
 
+function appendNewTestDetails(testNumber) {
+    let protocolRow = document.createElement("tr");
+    let cellNames = ["number", "status", "time", "memory"];
+    for (let name of cellNames) {
+        let elem = document.createElement("td");
+        $(elem).addClass(name);
+        $(elem).attr("id", `protocol_${testNumber}_${name}`);
+        if (name === "number") $(elem).text(testNumber);
+        $(protocolRow).append(elem);
+    }
+    $("#submissionProtocolTable tbody").append(protocolRow);
+}
+
+async function loadSubmissionDetails(submissionId) {
+    $("#submissionDetailsId").text(submissionId);
+    $("#submissionProtocol").hide();
+    $("#submissionProtocolTable tbody").empty();
+    let response = await fetch(`/submissions/${submissionId}/details`);
+    let details = await response.json();
+    for (let testNumber = 1; testNumber <= details.protocol.tests.length; ++testNumber) {
+        let testDetails = details.protocol.tests[testNumber - 1];
+        let testStatus = testDetails.status;
+        let testTime = testDetails.time_usage_s;
+        let testMemory = testDetails.memory_usage_kb;
+        appendNewTestDetails(testNumber);
+        $(`#protocol_${testNumber}_status`).text(testStatus);
+        $(`#protocol_${testNumber}_time`).text(testTime);
+        $(`#protocol_${testNumber}_memory`).text(testMemory);
+        if (testStatus === "OK")
+            $(`#protocol_${testNumber}_status`).addClass("col-green");
+        else if (testStatus === "NO")
+            $(`#protocol_${testNumber}_status`).addClass("col-grey");
+        else
+            $(`#protocol_${testNumber}_status`).addClass("col-red");
+    }
+    $("#submissionProtocol").show();
+}
+
 window.onresize = resize;
 window.onload = resize;
 
 socket.on("connect", () => socket.emit("join", problemId));
 socket.on("new_submission", (message) => {
     prependNewSubmission(message.submission_id);
+    showSubmissionsTable();
     inQueue(message.submission_id, message.submission_language);
 });
 socket.on("compiling", (message) => {
@@ -280,7 +316,10 @@ socket.on("completed", (message) => {
 $("#statementsContentScrollable").scroll(updateStatementsShadow);
 $("#statementsLoadedContent").load($("#statementsLoadedContent").attr("href"));
 
-if (localStorage.getItem("currentBox") !== "#submitBox") localStorage.setItem("currentBox", "");
+if (localStorage.getItem("currentBox") === "#submissionDetailsBox")
+    localStorage.setItem("currentBox", "#submitBox");
+if (localStorage.getItem("currentBox") !== "#submitBox")
+    localStorage.setItem("currentBox", "");
 expandBox(localStorage.getItem("currentBox"), false);
 
 $("#extraBoxCollapse").click(() => expandBox(""));
@@ -305,3 +344,5 @@ $("#chooseFileInput").change(function () {
 $("#submitFileButton").click(() => submitFile($("#chooseFileInput").get(0).files[0]));
 
 loadSubmissions();
+
+$("#submissionDetailsClose").click(() => expandBox("#submitBox"));

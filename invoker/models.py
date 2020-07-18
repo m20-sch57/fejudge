@@ -30,10 +30,10 @@ class Submission(Base):
     source = sa.Column(sa.Text)
     status = sa.Column(sa.String(32))
     score = sa.Column(sa.Integer)
-    details = sa.Column(sa.Text, default='{}')
+    protocol = sa.Column(sa.Text, default='{}')
 
     def __repr__(self):
         return '<SUBMISSION ID={} STATUS={} SCORE={}>'.format(self.id, self.status, self.score)
 
-    def set_details(self, details):
-        self.details = json.dumps(details)
+    def set_protocol(self, protocol):
+        self.protocol = json.dumps(protocol)

@@ -161,7 +161,7 @@ class Submission(db.Model):
     source = db.Column(db.Text)
     status = db.Column(db.String(16))
     score = db.Column(db.Integer)
-    details = db.Column(db.Text, default='{}')
+    protocol = db.Column(db.Text, default='{}')
 
     def __repr__(self):
         return '<SUBMISSION PROBLEM={} USER={} SCORE={}>'.format(self.problem_id, self.user_id, self.score)
@@ -170,24 +170,24 @@ class Submission(db.Model):
         contest_request = ContestRequest.query.filter_by(contest=self.contest, user=self.user).first_or_404()
         return self.time - contest_request.start_time
 
-    def formatted_language(self):
-        return constants.LANGUAGE_MATCHING[self.language]
+    # def formatted_language(self):
+    #     return constants.LANGUAGE_MATCHING[self.language]
 
-    def formatted_status(self):
-        return constants.STATUS_MATCHING[self.status]
+    # def formatted_status(self):
+    #     return constants.STATUS_MATCHING[self.status]
 
-    @staticmethod
-    def formatted_test_status(test_status):
-        return constants.STATUS_MATCHING[test_status]
+    # @staticmethod
+    # def formatted_test_status(test_status):
+    #     return constants.STATUS_MATCHING[test_status]
 
-    def show_score(self):
-        return self.status not in ['In queue', 'Compiling']
+    # def show_score(self):
+    #     return self.status not in ['In queue', 'Compiling']
 
-    def is_judged(self):
-        return self.status not in ['In queue', 'Compiling', 'Running']
+    # def is_judged(self):
+    #     return self.status not in ['In queue', 'Compiling', 'Running']
 
-    def get_details(self):
-        return json.loads(self.details)
+    def get_protocol(self):
+        return json.loads(self.protocol)
 
 
 @login.user_loader

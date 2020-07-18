@@ -9,7 +9,7 @@
                     <span class="fa fa-arrow-left"></span>
                 </a>
                 <div id="problemInfo">
-                    <div id="problemId" style="display: none;">
+                    <div id="problemId">
                         {{ problem.id }}
                     </div>
                     <div id="problemName">
@@ -52,13 +52,13 @@
             </div>
         </div>
         <div class="bg-white collapsed" id="extraBox">
-            <div id="submitBox">
-                <div class="bg-green" id="submitTitle">
+            <div class="extra-box" id="submitBox" style="display: none;">
+                <div class="extra-title bg-green" id="submitTitle">
                     <div id="submitText">
                         Submit solution
                     </div>
                 </div>
-                <div id="submitContent">
+                <div class="extra-content">
                     <div id="submitForm">
                         <div id="taskRow">
                             <div id="taskLabel">
@@ -135,23 +135,47 @@
                     </div>
                 </div>
             </div>
-            <div id="contestInfoBox">
-                <div class="bg-blue" id="contestInfoTitle">
+            <div class="extra-box" id="submissionDetailsBox" style="display: none;">
+                <div class="extra-title bg-whitesmoke">
+                    <div id="submissionDetailsLabel">
+                        Submission #<span id="submissionDetailsId"></span>
+                    </div>
+                    <button class="btn-icon btn-transparent" id="submissionDetailsClose">
+                        <span class="fa fa-times"></span>
+                    </button>
+                </div>
+                <div class="extra-content">
+                    <div id="submissionProtocol">
+                        <table id="submissionProtocolTable">
+                        <thead>
+                            <th>Test #</th>
+                            <th>Status</th>
+                            <th>Time (s)</th>
+                            <th>Memory (KB)</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="extra-box" id="contestInfoBox" style="display: none;">
+                <div class="extra-title bg-blue">
                     <div id="contestInfoLabel">
                         Contest information
                     </div>
                 </div>
-                <div id="contestInfoContent">
+                <div class="extra-content">
                     Information here
                 </div>
             </div>
-            <div id="contestMessagesBox">
-                <div class="bg-yellow" id="contestMessagesTitle">
+            <div class="extra-box" id="contestMessagesBox" style="display: none;">
+                <div class="extra-title bg-yellow">
                     <div id="contestMessagesLabel">
                         Contest messages
                     </div>
                 </div>
-                <div id="contestMessagesContent">
+                <div class="extra-content">
                     Messages here
                 </div>
             </div>

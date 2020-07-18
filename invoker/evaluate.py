@@ -132,17 +132,17 @@ def evaluate(submission_id, session, sio):
     session.commit()
     sio.emit('compiling', submission_id)
     compile_status, compile_details, binary_file = compile(submission)
-    submission_details = {'tests': [], 'compiler': compile_details}
+    submission_protocol = {'tests': [], 'compiler': compile_details}
     if compile_status == 'OK':
         submission.status = 'evaluating'
         session.commit()
         sio.emit('evaluating', submission_id)
         test_count = problem_manager.test_count
-        submission_details['tests'] = [{'status': 'NO'}] * test_count
+        submission_protocol['tests'] = [{'status': 'NO'}] * test_count
         current_score = submission.problem.max_score
         for test_number in range(test_count):
             test_status, test_details = run_on_test(test_number + 1, binary_file, problem_manager)
-            submission_details['tests'][test_number] = test_details
+            submission_protocol['tests'][test_number] = test_details
             if test_status != 'OK': # TODO: valuer
                 current_score = 0
                 break
@@ -151,7 +151,7 @@ def evaluate(submission_id, session, sio):
     else:
         submission.score = 0
         submission.status = 'compilation_error'
-    submission.set_details(submission_details)
+    submission.set_protocol(submission_protocol)
     session.commit()
     sio.emit('completed', (submission_id, submission.status, submission.score))
     # write_logs(submission_id,

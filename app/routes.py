@@ -354,6 +354,23 @@ def problem_resource(contest_id, number, resource):
     #         problem=problem, request=contest_request, submissions=submissions, form=problem_form)
 
 
+def get_submission_by_id(submission_id):
+    return Submission.query.filter_by(id=submission_id).first_or_404()
+
+
+@app.route('/submissions/<submission_id>/details')
+@login_required
+def submission_details(submission_id):
+    submission = get_submission_by_id(submission_id)
+    if submission.user != current_user:
+        abort(403)
+    protocol = submission.get_protocol()
+    details = {
+        'protocol': protocol
+    }
+    return json.dumps(details)
+
+
 # @app.route('/download/submission/<submission_id>')
 # @login_required
 # def download_submission(submission_id):

@@ -38,6 +38,10 @@
     padding: 10px;
 }
 
+#problemId {
+    display: none;
+}
+
 #problemName {
     padding-right: 20px;
     margin: auto auto auto 0;
@@ -139,22 +143,29 @@
     background-color: #eee;
 }
 
-#submitBox {
-    display: flex;
-    flex-flow: column;
-    flex-grow: 1;
-}
-
-#submitTitle {
+#extraBox .extra-title {
     position: relative;
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
     padding: 10px 20px;
     height: 80px;
-    border-bottom: 1px solid lightgreen;
+    border-bottom-width: 1px;
     box-shadow: 0 0 10px lightgrey;
     z-index: 1;
+}
+
+#extraBox .extra-content {
+    position: relative;
+    flex-grow: 1;
+    overflow: auto;
+    box-shadow: 0 0 15px -5px lightgrey;
+}
+
+#extraBox .extra-box {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
 }
 
 #submitTitle::after {
@@ -171,12 +182,6 @@
 #submitText {
     margin: auto auto auto 0;
     font-size: 25px;
-}
-
-#submitContent {
-    flex-grow: 1;
-    overflow: auto;
-    box-shadow: 0 0 15px -5px lightgrey;
 }
 
 #submitForm {
@@ -278,36 +283,43 @@
     vertical-align: middle;
 }
 
-#contestInfoBox {
-    display: flex;
-    flex-flow: column;
-    flex-grow: 1;
-}
-
-#contestInfoTitle {
-    position: relative;
-    display: flex;
-    flex-flow: row;
-    padding: 10px 20px;
-    height: 80px;
-    border-bottom: 1px solid lightblue;
-    box-shadow: 0 0 10px lightgrey;
-    z-index: 1;
-}
-
-#contestInfoLabel {
+#submissionDetailsLabel {
     margin: auto auto auto 0;
     font-size: 25px;
 }
 
-#contestInfoContent {
-    position: relative;
-    flex-grow: 1;
-    padding: 30px 20px;
-    box-shadow: 0 0 15px -5px lightgrey;
+#submissionDetailsClose {
+    margin: auto 0;
+    height: 40px;
+    width: 40px;
+    font-size: 20px;
 }
 
-#contestInfoContent::after {
+#submissionProtocol {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+#submissionProtocolTable {
+    width: 100%;
+    font-size: 16px;
+}
+
+#submissionProtocolTable tr {
+    vertical-align: middle;
+}
+
+#submissionProtocolTable th {
+    padding: 15px 5px;
+    white-space: nowrap;
+}
+
+#submissionProtocolTable td {
+    padding: 10px 5px;
+    text-align: center;
+}
+
+#contestInfoBox::after {
     content: "";
     position: absolute;
     bottom: 80px;
@@ -317,36 +329,12 @@
     background-color: lightblue;
 }
 
-#contestMessagesBox {
-    display: flex;
-    flex-flow: column;
-    flex-grow: 1;
-}
-
-#contestMessagesTitle {
-    position: relative;
-    display: flex;
-    flex-flow: row;
-    padding: 10px 20px;
-    height: 80px;
-    border-bottom: 1px solid gold;
-    box-shadow: 0 0 10px lightgrey;
-    z-index: 1;
-}
-
-#contestMessagesLabel {
+#contestInfoLabel {
     margin: auto auto auto 0;
     font-size: 25px;
 }
 
-#contestMessagesContent {
-    position: relative;
-    flex-grow: 1;
-    padding: 30px 20px;
-    box-shadow: 0 0 15px -5px lightgrey;
-}
-
-#contestMessagesContent::after {
+#contestMessagesBox::after {
     content: "";
     position: absolute;
     bottom: 15px;
@@ -354,6 +342,11 @@
     height: 50px;
     width: 2px;
     background-color: gold;
+}
+
+#contestMessagesLabel {
+    margin: auto auto auto 0;
+    font-size: 25px;
 }
 
 #rightBox {
