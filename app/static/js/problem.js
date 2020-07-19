@@ -4,6 +4,11 @@ const contestId = location.href.toString().split("/").slice(-3, -1)[0];
 const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
 const problemId = $("#problemId").text().trim();
 const socket = io.connect(window.location.origin);
+const languageOptions = ["cpp", "py"];
+const languageMatching = {
+    "cpp": "GNU C++ 9.2.0",
+    "py": "Python 3.8"
+};
 
 function resize() {
     let height = $(window).height() - $("#statementsTitle").outerHeight();
@@ -165,7 +170,7 @@ function prependNewSubmission(submissionId) {
 }
 
 function inQueue(submissionId, submissionLanguage) {
-    $(`#submission_${submissionId}_language`).text(submissionLanguage);
+    $(`#submission_${submissionId}_language`).text(languageMatching[submissionLanguage]);
     $(`#submission_${submissionId}_status`).text("In queue");
     $(`#submission_${submissionId}_score`).html("&mdash;");
     $(`#submission_${submissionId}_details`).html("&mdash;");
@@ -362,6 +367,9 @@ $("#taskSelect").change(function () {
     goToProblem(this.value);
 });
 
+languageOptions.forEach((it) => {
+    $("#languageSelect").append(new Option(languageMatching[it], it));
+});
 $("#languageSelect").val(localStorage.getItem("currentLanguage"));
 $("#languageSelect").change(function () {
     localStorage.setItem("currentLanguage", this.value);

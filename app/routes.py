@@ -290,7 +290,6 @@ def submit_problem(contest_id, number):
     current_time = datetime.utcnow()
     submission = Submission(contest=contest, problem=problem, user=current_user, time=current_time, 
         language=language, status='in_queue', score=0, source=source_code)
-    current_user.active_language = language
     db.session.add(submission)
     db.session.commit()
     submit_to_queue(group='invokers', obj={
