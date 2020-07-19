@@ -37,6 +37,10 @@ select {
     outline: none;
 }
 
+pre {
+    margin: 0;
+}
+
 footer {
     text-align: center;
     color: grey;
@@ -141,6 +145,24 @@ footer {
 
 .btn-icon:hover:not([disabled]) {
     box-shadow: 0 0 20px lightgrey;
+}
+
+.btn-nav {
+    display: inline-block;
+    padding: 5px 0;
+    margin-right: 20px;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    border-color: transparent;
+    border-width: 2px 0;
+    font-size: 18px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-nav.active {
+    color: deepskyblue;
+    border-bottom: 2px solid deepskyblue;
 }
 
 .btn-blue {

@@ -3,7 +3,6 @@
 const contestId = location.href.toString().split("/").slice(-3, -1)[0];
 const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
 const problemId = $("#problemId").text().trim();
-const boxes = [$("#submitBox"), $("#submissionDetailsBox"), $("#contestInfoBox"), $("#contestMessagesBox")];
 const socket = io.connect(window.location.origin);
 
 function resize() {
@@ -134,8 +133,6 @@ async function submitFile(file) {
 
 function showSubmissionsTable() {
     $("#submissionsLoading").hide();
-    $("#submissionsNone").hide();
-    $("#submissionsTable").hide();
     if ($("#submissionsTable tbody").children().length == 0) {
         $("#submissionsNone").show();
     }
@@ -269,12 +266,44 @@ function appendNewTestDetails(testNumber) {
     $("#submissionProtocolTable tbody").append(protocolRow);
 }
 
+function hideAllDetails() {
+    let detailsSections = ["submissionProtocol", "submissionCode"];
+    detailsSections.forEach((it) => {
+        $(`#${it}`).hide();
+        $(`#${it}NavButton`).removeClass("active");
+    });
+}
+
+function showSubmissionProtocol() {
+    hideAllDetails();
+    $("#submissionProtocol").show();
+    $("#submissionDetailsBox .extra-content").scrollTop(0);
+    $("#submissionProtocolNavButton").addClass("active");
+    $("#submissionCompiler").hide();
+    $("#submissionTests").hide();
+    if ($("#submissionProtocolTable tbody").children().length == 0) {
+        $("#submissionCompiler").show();
+    }
+    else {
+        $("#submissionTests").show();
+    }
+}
+
+function showSubmissionCode() {
+    hideAllDetails();
+    $("#submissionCode").show();
+    $("#submissionDetailsBox .extra-content").scrollTop(0);
+    $("#submissionCodeNavButton").addClass("active");
+}
+
 async function loadSubmissionDetails(submissionId) {
     $("#submissionDetailsId").text(submissionId);
-    $("#submissionProtocol").hide();
     $("#submissionProtocolTable tbody").empty();
+    hideAllDetails();
+    $("#submissionProtocolNavButton").addClass("active");
     let response = await fetch(`/submissions/${submissionId}/details`);
     let details = await response.json();
+    $("#submissionCompilerLog").text(details.protocol.compiler);
     for (let testNumber = 1; testNumber <= details.protocol.tests.length; ++testNumber) {
         let testDetails = details.protocol.tests[testNumber - 1];
         let testStatus = testDetails.status;
@@ -291,7 +320,8 @@ async function loadSubmissionDetails(submissionId) {
         else
             $(`#protocol_${testNumber}_status`).addClass("col-red");
     }
-    $("#submissionProtocol").show();
+    $("#submissionSource").html(hljs.highlightAuto(details.source).value);
+    showSubmissionProtocol();
 }
 
 window.onresize = resize;
@@ -345,4 +375,6 @@ $("#submitFileButton").click(() => submitFile($("#chooseFileInput").get(0).files
 
 loadSubmissions();
 
+$("#submissionProtocolNavButton").click(showSubmissionProtocol);
+$("#submissionCodeNavButton").click(showSubmissionCode);
 $("#submissionDetailsClose").click(() => expandBox("#submitBox"));

@@ -366,7 +366,8 @@ def submission_details(submission_id):
         abort(403)
     protocol = submission.get_protocol()
     details = {
-        'protocol': protocol
+        'protocol': protocol,
+        'source': submission.source
     }
     return json.dumps(details)
 

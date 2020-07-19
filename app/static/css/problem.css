@@ -157,6 +157,8 @@
 
 #extraBox .extra-content {
     position: relative;
+    display: flex;
+    flex-flow: column;
     flex-grow: 1;
     overflow: auto;
     box-shadow: 0 0 15px -5px lightgrey;
@@ -185,7 +187,7 @@
 }
 
 #submitForm {
-    padding: 30px 20px 15px 20px;
+    padding: 30px 20px 10px 20px;
 }
 
 #taskRow, #languageRow, #chooseFileRow, #submitFileRow {
@@ -239,7 +241,6 @@
 #submissions {
     padding: 20px;
     border-top: 1px solid whitesmoke;
-    overflow-x: auto;
 }
 
 #submissionsLoading {
@@ -283,9 +284,28 @@
     vertical-align: middle;
 }
 
+#submissionDetailsTitle {
+    flex-wrap: nowrap !important;
+}
+
+#submissionDetailsTitleMain {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
 #submissionDetailsLabel {
+    padding-right: 10px;
     margin: auto auto auto 0;
     font-size: 25px;
+}
+
+#submissionDetailsNavigation {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    margin: auto auto auto 0;
 }
 
 #submissionDetailsClose {
@@ -295,7 +315,12 @@
     font-size: 20px;
 }
 
-#submissionProtocol {
+#submissionCompiler pre {
+    padding: 30px 20px;
+    white-space: pre-wrap;
+}
+
+#submissionTests {
     padding: 20px;
     overflow-x: auto;
 }
@@ -317,6 +342,18 @@
 #submissionProtocolTable td {
     padding: 10px 5px;
     text-align: center;
+}
+
+#submissionCode {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+}
+
+#submissionCode pre {
+    flex-grow: 1;
+    padding: 30px 20px;
+    white-space: pre-wrap;
 }
 
 #contestInfoBox::after {
@@ -394,7 +431,6 @@
 #infoSection {
     display: flex;
     flex-flow: column;
-    border-top: 1px solid whitesmoke;
     text-align: center;
 }
 
