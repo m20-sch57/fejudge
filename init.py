@@ -3,7 +3,7 @@ import shutil
 
 from config import Config
 from app import db
-from app.models import User, Contest, Problem, Submission, ContestRequest
+from app.models import User, Contest
 from datetime import timedelta
 
 

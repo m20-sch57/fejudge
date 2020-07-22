@@ -8,7 +8,7 @@ Fejudge is a contest management system, created for automatic solution evaluatio
 
 With help of [libsbox](https://github.com/Forestryks/libsbox), Fejudge is designed to become faster than other systems while evaluating submissions - evaluation on 50 tests of a correct solution to problem A+B takes 1-2 secs.
 
-To become familiar with Fejudge, visit http://m20-sch57.site:3013/, where the test build is located. There are some easy problems which you can solve and submit solutions in order to check perfomance of Fejudge (or to enjoy its nice user interface).
+To become familiar with Fejudge, visit http://m20-sch57.site:3113/, where the test build is located. There are some easy problems which you can solve and submit solutions in order to check perfomance of Fejudge (or to enjoy its nice user interface).
 
 Currently Fejudge supports problem packages which were built on [polygon](http://polygon.codeforces.com), and only full problem scoring (without subtasks).
 

@@ -9,7 +9,7 @@ class Config(object):
     INVOKER_NAME = os.environ.get('INVOKER_NAME') or 'invoker'
 
     # Socketio server
-    SOCKETIO_SERVER = os.environ.get('SOCKETIO_SERVER') or 'http://localhost:3013'
+    SOCKETIO_SERVER = os.environ.get('SOCKETIO_SERVER') or 'http://localhost:3113'
 
     # NATS server
     NATS_SERVER = os.environ.get('NATS_SERVER') or 'nats://localhost:4222'
@@ -23,7 +23,7 @@ class Config(object):
     PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
 
-    # Database
+    # SQLAlchemy database
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
 
     # Default compilation and execution limits

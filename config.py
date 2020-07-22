@@ -29,6 +29,6 @@ class Config(object):
     PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
 
-    # Database
+    # SQLAlchemy database
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False

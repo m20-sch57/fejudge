@@ -138,6 +138,8 @@ async function submitFile(file) {
 
 function showSubmissionsTable() {
     $("#submissionsLoading").hide();
+    $("#submissionsNone").hide();
+    $("#submissionsTable").hide();
     if ($("#submissionsTable tbody").children().length == 0) {
         $("#submissionsNone").show();
     }

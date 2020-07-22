@@ -7,7 +7,7 @@ services:
     app:
         build: .
         ports:
-            - 3013:3013
+            - 3113:3113
         environment:
             - MAIL_USERNAME=${MAIL_USERNAME}
             - MAIL_PASSWORD=${MAIL_PASSWORD}
@@ -33,7 +33,7 @@ services:
             context: invoker/
         environment:
             - PYTHONUNBUFFERED=1
-            - SOCKETIO_SERVER=http://app:3013
+            - SOCKETIO_SERVER=http://app:3113
             - NATS_SERVER=nats://nats:4222
             - DATA_DIR=/data
         volumes:

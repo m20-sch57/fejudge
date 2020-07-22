@@ -3,23 +3,22 @@ import json
 from sqlalchemy import desc
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
-import constants
 from app import db, login
 
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String(128), unique=True)
     first_name = db.Column(db.String(128), default='')
     last_name = db.Column(db.String(128), default='')
     password_hash = db.Column(db.String(128))
 
-    avatar = db.Column(db.String(64), default='user.png')
-    email = db.Column(db.String(128), unique=True)
+    # avatar = db.Column(db.String(64), default='user.png')
 
-    restore_tokens = db.relationship('RestoreToken', backref='user', lazy='dynamic')
+    # restore_tokens = db.relationship('RestoreToken', backref='user', lazy='dynamic')
     contest_requests = db.relationship('ContestRequest', backref='user', lazy='dynamic')
     owned_contests = db.relationship('Contest', backref='owner', lazy='dynamic')
     submissions = db.relationship('Submission', backref='user', lazy='dynamic')
@@ -34,18 +33,18 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class RestoreToken(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    code = db.Column(db.String(10))
-    time = db.Column(db.DateTime)
+# class RestoreToken(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     code = db.Column(db.String(10))
+#     time = db.Column(db.DateTime)
 
-    def __repr__(self):
-        return '<RESTORE_TOKEN USER={} CODE={}>'.format(self.user_id, self.code)
+#     def __repr__(self):
+#         return '<RESTORE_TOKEN USER={} CODE={}>'.format(self.user_id, self.code)
 
-    @staticmethod
-    def get_token(user):
-        return RestoreToken.query.filter_by(user=user).order_by(desc(RestoreToken.time)).first()
+#     @staticmethod
+#     def get_token(user):
+#         return RestoreToken.query.filter_by(user=user).order_by(desc(RestoreToken.time)).first()
 
 
 class Contest(db.Model):
@@ -108,8 +107,8 @@ class Problem(db.Model):
     def max_submission(self, user):
         return self.submissions.filter_by(user=user).order_by(desc(Submission.score)).first()
 
-    def submitted(self, user):
-        return bool(self.last_submission(user))
+    # def submitted(self, user):
+    #     return bool(self.last_submission(user))
 
     def score(self, user):
         submission = self.last_submission(user)

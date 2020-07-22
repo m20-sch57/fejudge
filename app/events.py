@@ -2,15 +2,7 @@ from flask_login import current_user
 from flask_socketio import emit, join_room
 
 from app import socketio
-from app.models import Submission
-
-
-def get_user_by_submission_id(submission_id):
-    return Submission.query.filter_by(id=submission_id).first().user.id
-
-
-def get_problem_by_submission_id(submission_id):
-    return Submission.query.filter_by(id=submission_id).first().problem.id
+from app.queries import get_submission_by_id
 
 
 def build_room(user_id, problem_id):
@@ -23,11 +15,23 @@ def join(problem_id):
     join_room(room)
 
 
+def new_submission(submission_id):
+    submission = get_submission_by_id(submission_id)
+    if not submission:
+        return
+    room = build_room(submission.user.id, submission.problem.id)
+    socketio.emit('new_submission', {
+        'submission_id': submission.id,
+        'submission_language': submission.language
+    }, room=room)
+
+
 @socketio.on('compiling')
 def compiling(submission_id):
-    user_id = get_user_by_submission_id(submission_id)
-    problem_id = get_problem_by_submission_id(submission_id)
-    room = build_room(user_id, problem_id)
+    submission = get_submission_by_id(submission_id)
+    if not submission:
+        return
+    room = build_room(submission.user.id, submission.problem.id)
     emit('compiling', {
         'submission_id': submission_id
     }, room=room)
@@ -35,21 +39,23 @@ def compiling(submission_id):
 
 @socketio.on('evaluating')
 def evaluating(submission_id):
-    user_id = get_user_by_submission_id(submission_id)
-    problem_id = get_problem_by_submission_id(submission_id)
-    room = build_room(user_id, problem_id)
+    submission = get_submission_by_id(submission_id)
+    if not submission:
+        return
+    room = build_room(submission.user.id, submission.problem.id)
     emit('evaluating', {
         'submission_id': submission_id
     }, room=room)
 
 
 @socketio.on('completed')
-def completed(submission_id, submission_status, submission_score):
-    user_id = get_user_by_submission_id(submission_id)
-    problem_id = get_problem_by_submission_id(submission_id)
-    room = build_room(user_id, problem_id)
+def completed(submission_id):
+    submission = get_submission_by_id(submission_id)
+    if not submission:
+        return
+    room = build_room(submission.user.id, submission.problem.id)
     emit('completed', {
         'submission_id': submission_id,
-        'submission_status': submission_status,
-        'submission_score': submission_score
+        'submission_status': submission.status,
+        'submission_score': submission.score
     }, room=room)

@@ -4,7 +4,6 @@ from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRan
 # from wtforms import StringField, PasswordField, SubmitField
 # from wtforms_components import IntegerField, DateField, SelectField, EmailField
 
-import constants
 from app.models import User, Contest
 
 

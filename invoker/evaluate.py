@@ -153,7 +153,7 @@ def evaluate(submission_id, session, sio):
         submission.status = 'compilation_error'
     submission.set_protocol(submission_protocol)
     session.commit()
-    sio.emit('completed', (submission_id, submission.status, submission.score))
+    sio.emit('completed', submission_id)
     # write_logs(submission_id,
     #     'Submission status: {}\nSubmission score: {}\n'.format(
     #         submission.status,
