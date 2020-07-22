@@ -50,6 +50,12 @@ function expandBox(box, animate = true) {
         $("#statementsBox").addClass("collapsed");
         $(box).show();
     }
+    if (box === "" || box === "#submissionDetailsBox") {
+        $("#extraBoxCollapse").hide();
+    }
+    else {
+        $("#extraBoxCollapse").show();
+    }
 }
 
 function navButtonPressed(box) {
@@ -274,7 +280,7 @@ function appendNewTestDetails(testNumber) {
 }
 
 function hideAllDetails() {
-    let detailsSections = ["submissionProtocol", "submissionCode"];
+    let detailsSections = ["submissionProtocol", "submissionCode", "submissionInfo"];
     detailsSections.forEach((it) => {
         $(`#${it}`).hide();
         $(`#${it}NavButton`).removeClass("active");
@@ -303,6 +309,13 @@ function showSubmissionCode() {
     $("#submissionCodeNavButton").addClass("active");
 }
 
+function showSubmissionInfo() {
+    hideAllDetails();
+    $("#submissionInfo").show();
+    $("#submissionDetailsBox .extra-content").scrollTop(0);
+    $("#submissionInfoNavButton").addClass("active");
+}
+
 async function loadSubmissionDetails(submissionId) {
     $("#submissionDetailsId").text(submissionId);
     $("#submissionProtocolTable tbody").empty();
@@ -328,6 +341,14 @@ async function loadSubmissionDetails(submissionId) {
             $(`#protocol_${testNumber}_status`).addClass("col-red");
     }
     $("#submissionSource").html(hljs.highlightAuto(details.source).value);
+    $("#submissionCodeCopy").click(() => {
+        navigator.clipboard.writeText(details.source).then(() => {
+            $("#submissionCodeCopyHint").css("opacity", 1);
+            setTimeout(() => {
+                $("#submissionCodeCopyHint").css("opacity", 0);
+            }, 5000);
+        });
+    });
     showSubmissionProtocol();
 }
 
@@ -387,4 +408,5 @@ loadSubmissions();
 
 $("#submissionProtocolNavButton").click(showSubmissionProtocol);
 $("#submissionCodeNavButton").click(showSubmissionCode);
+$("#submissionInfoNavButton").click(showSubmissionInfo);
 $("#submissionDetailsClose").click(() => expandBox("#submitBox"));

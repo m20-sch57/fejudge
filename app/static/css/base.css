@@ -150,12 +150,11 @@ footer {
 .btn-nav {
     display: inline-block;
     padding: 5px 0;
-    margin-right: 20px;
     color: rgba(0, 0, 0, 0.5);
     background-color: transparent;
     border-color: transparent;
     border-width: 2px 0;
-    font-size: 18px;
+    font-size: 20px;
     text-decoration: none;
     cursor: pointer;
 }

@@ -148,7 +148,6 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    padding: 10px 20px;
     height: 80px;
     border-bottom-width: 1px;
     box-shadow: 0 0 10px lightgrey;
@@ -182,6 +181,7 @@
 }
 
 #submitText {
+    padding: 20px;
     margin: auto auto auto 0;
     font-size: 25px;
 }
@@ -296,7 +296,7 @@
 }
 
 #submissionDetailsLabel {
-    padding-right: 10px;
+    padding: 0 20px;
     margin: auto auto auto 0;
     font-size: 25px;
 }
@@ -305,13 +305,17 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    margin: auto auto auto 0;
+    padding-left: 20px;
+    margin: -2px auto -2px 0;
+}
+
+#submissionDetailsNavigation .btn-nav {
+    margin-right: 20px;
 }
 
 #submissionDetailsClose {
-    margin: auto 0;
-    height: 40px;
-    width: 40px;
+    height: 80px;
+    width: 80px;
     font-size: 20px;
 }
 
@@ -356,6 +360,47 @@
     white-space: pre-wrap;
 }
 
+#submissionCodeBottom {
+    position: sticky;
+    display: flex;
+    flex-flow: row;
+    bottom: 0;
+    height: 80px;
+    width: 0;
+}
+
+#submissionCodeCopy {
+    height: 50px;
+    width: 50px;
+    margin: 15px;
+    font-size: 18px;
+}
+
+#submissionCodeCopyHint {
+    position: relative;
+    flex-shrink: 0;
+    padding: 10px 20px 10px 15px;
+    margin: auto auto auto 0;
+    color: rgba(0, 0, 0, 0.8);
+    border-radius: 25px;
+    font-size: 18px;
+    line-height: 20px;
+    opacity: 0;
+    box-shadow: 0 0 10px lightgrey;
+    transition: opacity 300ms linear;
+}
+
+#submissionCodeCopyHint::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    height: 16px;
+    width: 16px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background-color: inherit;
+}
+
 #contestInfoBox::after {
     content: "";
     position: absolute;
@@ -367,6 +412,7 @@
 }
 
 #contestInfoLabel {
+    padding: 20px;
     margin: auto auto auto 0;
     font-size: 25px;
 }
@@ -382,6 +428,7 @@
 }
 
 #contestMessagesLabel {
+    padding: 20px;
     margin: auto auto auto 0;
     font-size: 25px;
 }
