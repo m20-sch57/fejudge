@@ -78,18 +78,16 @@ function hideSubmitStatus() {
 }
 
 function hideSubmitStatusDelay(element) {
-    setTimeout(() => $(element).css("opacity", 0), 5000);
+    setTimeout(() => $(element).fadeOut(300), 5000);
 }
 
 function showSubmitSuccess() {
     hideSubmitStatus();
-    $("#submitSuccess").css("opacity", 1);
     $("#submitSuccess").show();
 }
 
 function showSubmitFail(message) {
     hideSubmitStatus();
-    $("#submitFail").css("opacity", 1);
     $("#submitFail").show();
     $("#submitFileButton").removeAttr("disabled");
     $("#submitFail").text(message);
@@ -343,9 +341,9 @@ async function loadSubmissionDetails(submissionId) {
     $("#submissionSource").html(hljs.highlightAuto(details.source).value);
     $("#submissionCodeCopy").click(() => {
         navigator.clipboard.writeText(details.source).then(() => {
-            $("#submissionCodeCopyHint").css("opacity", 1);
+            $("#submissionCodeCopyHint").fadeIn(300);
             setTimeout(() => {
-                $("#submissionCodeCopyHint").css("opacity", 0);
+                $("#submissionCodeCopyHint").fadeOut(300);
             }, 5000);
         });
     });

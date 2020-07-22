@@ -230,14 +230,6 @@
     white-space: nowrap;
 }
 
-#submitSuccess {
-    transition: opacity 300ms linear;
-}
-
-#submitFail {
-    transition: opacity 300ms linear;
-}
-
 #submissions {
     padding: 20px;
     border-top: 1px solid whitesmoke;
@@ -385,20 +377,19 @@
     border-radius: 25px;
     font-size: 18px;
     line-height: 20px;
-    opacity: 0;
     box-shadow: 0 0 10px lightgrey;
-    transition: opacity 300ms linear;
 }
 
 #submissionCodeCopyHint::after {
     content: "";
     position: absolute;
     top: 50%;
-    left: 4px;
-    height: 16px;
-    width: 16px;
+    left: 5px;
+    height: 18px;
+    width: 18px;
     transform: translate(-50%, -50%) rotate(45deg);
     background-color: inherit;
+    z-index: -1;
 }
 
 #contestInfoBox::after {
