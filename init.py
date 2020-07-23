@@ -1,15 +1,15 @@
 import os
 import shutil
 
-from config import Config
-from app import db
-from app.models import User, Contest
 from datetime import timedelta
 
+from config import Config
+from app import db
+from app.services import register_user, create_contest
 
-def clear_folder(folder):
+
+def init_folder(folder):
     if not os.path.isdir(folder):
-        print('Clear folder {}: folder not exist, creating...'.format(folder))
         os.makedirs(folder)
         return
     for item in os.listdir(folder):
@@ -28,19 +28,17 @@ def clear_database(session):
 
 
 clear_database(db.session)
-clear_folder(Config.SUBMISSIONS_DOWNLOAD_PATH)
-clear_folder(Config.PROBLEMS_UPLOAD_PATH)
-clear_folder(Config.PROBLEMS_PATH)
+init_folder(Config.SUBMISSIONS_DOWNLOAD_PATH)
+init_folder(Config.PROBLEMS_UPLOAD_PATH)
+init_folder(Config.PROBLEMS_PATH)
 
-u = User(
+user = register_user(
     username='Kuyanov',
-    first_name='Fedor',
-    last_name='Kuyanov',
-    email='feodor.kuyanov@gmail.com'
+    email='feodor.kuyanov@gmail.com',
+    password='fedor2002'
 )
-u.set_password('fedor2002')
-db.session.add(u)
-
-c = Contest(name='Идейные задачи', duration=timedelta(hours=24), owner=u)
-db.session.add(c)
-db.session.commit()
+create_contest(
+    name='Идейные задачи',
+    duration=timedelta(hours=24),
+    owner=user
+)

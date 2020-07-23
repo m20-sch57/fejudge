@@ -1,7 +1,7 @@
 from flask import flash, abort
 
 from app import app
-from app.queries import get_user_by_username, get_user_by_email
+from app.services import get_user_by_username, get_user_by_email
 
 
 def verify_login(username, password):

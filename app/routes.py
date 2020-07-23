@@ -1,20 +1,17 @@
 import os
 
 from functools import wraps
-from flask import \
-    render_template, jsonify, send_from_directory,\
+from flask import render_template, jsonify, send_from_directory,\
     request, redirect, abort, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
-from datetime import datetime
 
-from app import app, db, submit_to_queue
+from app import app, db
 from app.forms import UploadPackageForm # Remove then!
-from app.events import new_submission
-from app.models import User, Problem, ContestRequest, Submission
-from app.queries import \
-    get_user_by_username,\
-    get_contest_by_id_or_404, get_contest_request, get_contests_for_user,\
-    get_problem_by_number_or_404, get_submission_by_id, get_submissions_by_problem_user
+from app.events import send_new_submission_event
+from app.services import register_user, create_contest_request, create_submission, create_problem,\
+    get_user_by_username, get_contest_by_id_or_404, get_contest_request, get_contests_for_user,\
+    get_problem_by_number_or_404, get_submission_by_id, get_submissions_by_problem_user,\
+    evaluate_submission, initialize_problem
 from app.verify import verify_login, verify_register, verify_submit
 
 
@@ -86,10 +83,7 @@ def register():
         password = request.form['password']
         if not verify_register(username, email, password):
             return redirect(url_for('register'))
-        user = User(username=username, email=email)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
+        register_user(username, email, password)
         flash('You have successfully registered', category='success auto-dismiss')
         return redirect(url_for('login'))
     return render_template('register.html', page='register')
@@ -98,8 +92,8 @@ def register():
 @app.route('/contests')
 @login_required
 def contests_page():
-    contests = get_contests_for_user(current_user)
-    return render_template('contests.html', page='contests', contests=contests)
+    return render_template(
+        'contests.html', page='contests', contests=get_contests_for_user(current_user))
 
 
 @app.route('/contests/<contest_id>')
@@ -122,9 +116,7 @@ def participate(contest_id):
     if contest_request is not None:
         flash('You are already participating in the contest', category='failure')
         return redirect(url_for('contests_page'))
-    contest_request = ContestRequest(
-        contest=contest, user=current_user, start_time=datetime.utcnow())
-    db.session.commit()
+    create_contest_request(contest=contest, user=current_user)
     return redirect(url_for('contest_problem', contest_id=contest.id, number=1))
 
 
@@ -148,12 +140,14 @@ def contest_problem(contest_id, number):
     problem = get_problem_by_number_or_404(contest, number)
     from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
-    if problem.problem_type == 'Programming':
-        return render_template(
-            'problem.html', page='problem', contest=contest, contest_request=contest_request,
-            problem=problem, problem_manager=problem_manager)
-    else:
-        pass
+    return render_template(
+        'problem.html',
+        page='problem',
+        contest=contest,
+        contest_request=contest_request,
+        problem=problem,
+        problem_manager=problem_manager
+    )
 
 
 @app.route('/contests/<contest_id>/<number>/submit', methods=['POST'])
@@ -167,16 +161,15 @@ def submit_problem(contest_id, number):
     language = request.form['language']
     verify_submit(source_blob, language)
     source_code = source_blob.decode('utf-8')
-    submission = Submission(
-        contest=contest, problem=problem, user=current_user, time=datetime.utcnow(), 
-        language=language, status='in_queue', score=0, source=source_code)
-    db.session.add(submission)
-    db.session.commit()
-    submit_to_queue(group='invokers', obj={
-        'type': 'evaluate',
-        'submission_id': submission.id
-    })
-    new_submission(submission.id)
+    submission = create_submission(
+        contest=contest,
+        problem=problem,
+        user=current_user,
+        language=language,
+        source=source_code
+    )
+    evaluate_submission(submission)
+    send_new_submission_event(submission)
     return ''
 
 
@@ -257,20 +250,15 @@ def contest_admin_newproblem(contest_id):
     contest = get_contest_by_id_or_404(contest_id)
     upload_package_form = UploadPackageForm()
     if upload_package_form.validate_on_submit():
-        new_problem = Problem(
-            contest=contest, problem_type='Programming', number=contest.problems.count() + 1, status='Pending')
-        db.session.add(new_problem)
-        db.session.flush()
-        upload_folder = app.config['PROBLEMS_UPLOAD_PATH']
-        filename = str(new_problem.id) + '.zip'
-        path = os.path.join(upload_folder, filename)
+        new_problem = create_problem(contest=contest, problem_type='prog')
+        path = os.path.join(app.config['PROBLEMS_UPLOAD_PATH'], str(new_problem.id) + '.zip')
         upload_package_form.package.data.save(path)
-        db.session.commit()
-        submit_to_queue(group='invokers', obj={
-            'type': 'problem_init',
-            'problem_id': new_problem.id,
-        })
-        flash('Your package has been uploaded, check the status of the problem', category='alert-info')
+        initialize_problem(new_problem)
+        flash('Your package has been uploaded', category='alert-info')
         return redirect(url_for('contest_admin_newproblem', contest_id=contest_id))
-    return render_template('old/contest_admin_newproblem.html',
-        title='New problem', contest=contest, form=upload_package_form)
+    return render_template(
+        'old/contest_admin_newproblem.html',
+        title='New problem',
+        contest=contest, 
+        form=upload_package_form
+    )

@@ -1,34 +1,6 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange
-# from wtforms import StringField, PasswordField, SubmitField
-# from wtforms_components import IntegerField, DateField, SelectField, EmailField
-
-from app.models import User, Contest
-
-
-# class LoginForm(FlaskForm):
-#     username = StringField('Ваш логин:', validators=[DataRequired()])
-#     password = PasswordField('Введите пароль:')
-
-
-# class RegistrationForm(FlaskForm):
-#     username = StringField('Ваш логин:', validators=[DataRequired()])
-#     email = EmailField('Введите почту:', validators=[DataRequired()])
-#     password = PasswordField('Введите пароль:')
-#     password2 = PasswordField('Повторите пароль:', validators=[
-#         EqualTo('password', message='Пароли должны совпадать')
-#     ])
-
-#     def validate_username(self, username):
-#         user = User.query.filter_by(username=username.data).first()
-#         if user is not None:
-#             raise ValidationError('Этот логин уже занят.')
-
-#     def validate_email(self, email):
-#         user = User.query.filter_by(email=email.data).first()
-#         if user is not None:
-#             raise ValidationError('Эта почта уже занята.')
+from flask_wtf.file import FileField
+from wtforms.validators import DataRequired
 
 
 # class RestorePasswordForm(FlaskForm):
@@ -67,19 +39,6 @@ from app.models import User, Contest
 #     new_password2 = PasswordField('Повторите пароль:', validators=[
 #         EqualTo('new_password', message='Пароли должны совпадать')
 #     ])
-
-
-# class InputProblemForm(FlaskForm):
-#     source = StringField('Ответ:', validators=[DataRequired()])
-
-
-# class FileProblemForm(FlaskForm):
-#     language = SelectField(
-#         'Programming language',
-#         choices=list(constants.LANGUAGE_MATCHING.items()),
-#         default='cpp'
-#     )
-#     source = FileField('Выберите файл', validators=[FileRequired()])
 
 
 # class AdminInfoForm(FlaskForm):

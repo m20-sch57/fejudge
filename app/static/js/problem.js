@@ -315,10 +315,12 @@ function showSubmissionInfo() {
 }
 
 async function loadSubmissionDetails(submissionId) {
-    $("#submissionDetailsId").text(submissionId);
-    $("#submissionProtocolTable tbody").empty();
     hideAllDetails();
+    $("#submissionDetailsId").text(submissionId);
     $("#submissionProtocolNavButton").addClass("active");
+    $("#submissionCompilerLog").text("");
+    $("#submissionProtocolTable tbody").empty();
+    $("#submissionSource").empty();
     let response = await fetch(`/submissions/${submissionId}/details`);
     let details = await response.json();
     $("#submissionCompilerLog").text(details.protocol.compiler);
@@ -344,7 +346,7 @@ async function loadSubmissionDetails(submissionId) {
             $("#submissionCodeCopyHint").fadeIn(300);
             setTimeout(() => {
                 $("#submissionCodeCopyHint").fadeOut(300);
-            }, 5000);
+            }, 2500);
         });
     });
     showSubmissionProtocol();
