@@ -9,6 +9,16 @@ const languageMatching = {
     "cpp": "GNU C++ 9.2.0",
     "py": "Python 3.8"
 };
+const submissionStatusMatching = {
+    "accepted": "Accepted",
+    "partial": "Partial solution",
+    "compilation_error": "Not compiled"
+};
+const submissionStyleMatching = {
+    "accepted": "col-green",
+    "partial": "col-red",
+    "compilation_error": "col-red"
+};
 
 function resize() {
     let height = $(window).height() - $("#statementsTitle").outerHeight();
@@ -207,19 +217,9 @@ function completed(submissionId, submissionStatus, submissionScore) {
     let score = $(`#submission_${submissionId}_score`);
     let details = $(`#submission_${submissionId}_details`);
     status.empty();
-    status.removeClass("col-grey");
-    if (submissionStatus === "accepted") {
-        status.addClass("col-green");
-        status.text("OK");
-    }
-    else if (submissionStatus === "partial") {
-        status.addClass("col-red");
-        status.text("Partial");
-    }
-    else if (submissionStatus === "compilation_error") {
-        status.addClass("col-red");
-        status.text("Not compiled");
-    }
+    status.removeClass();
+    status.addClass(submissionStyleMatching[submissionStatus]);
+    status.text(submissionStatusMatching[submissionStatus]);
     score.text(submissionScore);
     details.empty();
     let detailsButton = document.createElement("button");
@@ -314,15 +314,21 @@ function showSubmissionInfo() {
     $("#submissionInfoNavButton").addClass("active");
 }
 
-async function loadSubmissionDetails(submissionId) {
-    hideAllDetails();
-    $("#submissionDetailsId").text(submissionId);
-    $("#submissionProtocolNavButton").addClass("active");
-    $("#submissionCompilerLog").text("");
-    $("#submissionProtocolTable tbody").empty();
-    $("#submissionSource").empty();
-    let response = await fetch(`/submissions/${submissionId}/details`);
-    let details = await response.json();
+function initSubmissionProtocol(details) {
+    $("#submissionResultStatus").removeClass();
+    $("#submissionResultStatus").addClass(submissionStyleMatching[details.status]);
+    if (details.status === "accepted")
+        $("#submissionResultStatus").html(
+            `<span class="fa fa-check"></span> ${submissionStatusMatching[details.status]}`
+        );
+    else
+        $("#submissionResultStatus").html(
+            `<span class="fa fa-times"></span> ${submissionStatusMatching[details.status]}`
+        );
+    let testsPassed = numberOfTestsPassed(details.protocol.tests);
+    $("#submissionResultTestsPassed").text(
+        `Tests passed: ${testsPassed} of ${details.protocol.tests.length}`
+    );
     $("#submissionCompilerLog").text(details.protocol.compiler);
     for (let testNumber = 1; testNumber <= details.protocol.tests.length; ++testNumber) {
         let testDetails = details.protocol.tests[testNumber - 1];
@@ -340,6 +346,9 @@ async function loadSubmissionDetails(submissionId) {
         else
             $(`#protocol_${testNumber}_status`).addClass("col-red");
     }
+}
+
+function initSubmissionCode(details) {
     $("#submissionSource").html(hljs.highlightAuto(details.source).value);
     $("#submissionCodeCopy").click(() => {
         navigator.clipboard.writeText(details.source).then(() => {
@@ -349,6 +358,36 @@ async function loadSubmissionDetails(submissionId) {
             }, 2500);
         });
     });
+}
+
+function initSubmissionInfo(details) {
+    $("#submissionInfoLanguage").text(languageMatching[details.language]);
+    $("#submissionInfoTime").text(details.time);
+    $("#submissionInfoStatus").text(submissionStatusMatching[details.status]);
+    $("#submissionInfoScore").text(details.score);
+    $("#submissionInfoUser").text(details.user);
+}
+
+function numberOfTestsPassed(tests) {
+    let counter = 0;
+    for (let testDetails of tests) {
+        if (testDetails.status === "OK") ++counter;
+    }
+    return counter;
+}
+
+async function loadSubmissionDetails(submissionId) {
+    hideAllDetails();
+    $("#submissionDetailsId").text(submissionId);
+    $("#submissionProtocolNavButton").addClass("active");
+    $("#submissionCompilerLog").text("");
+    $("#submissionProtocolTable tbody").empty();
+    $("#submissionSource").empty();
+    let response = await fetch(`/submissions/${submissionId}/details`);
+    let details = await response.json();
+    initSubmissionProtocol(details);
+    initSubmissionCode(details);
+    initSubmissionInfo(details);
     showSubmissionProtocol();
 }
 

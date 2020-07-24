@@ -9,7 +9,7 @@
                     <span class="fa fa-arrow-left"></span>
                 </a>
                 <div id="problemInfo">
-                    <div id="problemId">
+                    <div id="problemId" style="display: none;">
                         {{ problem.id }}
                     </div>
                     <div id="problemName">
@@ -157,6 +157,12 @@
                 </div>
                 <div class="extra-content">
                     <div id="submissionProtocol">
+                        <div id="submissionResult">
+                            <div id="submissionResultStatus">
+                            </div>
+                            <div class="col-grey" id="submissionResultTestsPassed">
+                            </div>
+                        </div>
                         <div id="submissionCompiler">
                             <pre><code id="submissionCompilerLog">
                             </code></pre>
@@ -185,6 +191,32 @@
                                 Copied!
                             </div>
                         </div>
+                    </div>
+                    <div id="submissionInfo">
+                        <table id="submissionInfoTable">
+                        <tbody>
+                            <tr>
+                                <td>Sender:</td>
+                                <td id="submissionInfoUser"></td>
+                            </tr>
+                            <tr>
+                                <td>Programming language:</td>
+                                <td id="submissionInfoLanguage"></td>
+                            </tr>
+                            <tr>
+                                <td>Submit time:</td>
+                                <td id="submissionInfoTime"></td>
+                            </tr>
+                            <tr>
+                                <td>Result of checking:</td>
+                                <td id="submissionInfoStatus"></td>
+                            </tr>
+                            <tr>
+                                <td>Points scored:</td>
+                                <td id="submissionInfoScore"></td>
+                            </tr>
+                        </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

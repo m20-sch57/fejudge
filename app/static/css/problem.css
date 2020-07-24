@@ -38,10 +38,6 @@
     padding: 10px;
 }
 
-#problemId {
-    display: none;
-}
-
 #problemName {
     padding-right: 20px;
     margin: auto auto auto 0;
@@ -232,7 +228,6 @@
 
 #submissions {
     padding: 20px;
-    border-top: 1px solid whitesmoke;
 }
 
 #submissionsLoading {
@@ -311,18 +306,43 @@
     font-size: 20px;
 }
 
+#submissionProtocol {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+}
+
+#submissionResult {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 25px;
+    border-bottom: 1px solid whitesmoke;
+}
+
+#submissionResultStatus {
+    padding: 5px;
+    font-size: 20px;
+}
+
+#submissionResultTestsPassed {
+    padding: 5px;
+    font-size: 18px;
+}
+
 #submissionCompiler pre {
     padding: 30px 20px;
     white-space: pre-wrap;
 }
 
 #submissionTests {
-    padding: 20px;
     overflow-x: auto;
 }
 
 #submissionProtocolTable {
     width: 100%;
+    margin: 20px 0;
     font-size: 16px;
 }
 
@@ -389,6 +409,22 @@
     width: 14px;
     transform: translate(-50%, -50%) rotate(45deg);
     background-color: inherit;
+}
+
+#submissionInfo {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+}
+
+#submissionInfoTable {
+    width: 100%;
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+#submissionInfoTable td {
+    padding: 10px 20px;
 }
 
 #contestInfoBox::after {

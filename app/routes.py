@@ -196,7 +196,7 @@ def problem_resource(contest_id, number, resource):
     problem = get_problem_by_number_or_404(contest, number)
     from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
-    resource_dir = ''
+    resource_dir = None
     if resource.endswith('.css'):
         resource_dir = 'static/css'
     elif resource.endswith('.html'):
@@ -225,10 +225,14 @@ def submission_details(submission_id):
     submission = get_submission_by_id(submission_id)
     if not submission or submission.user != current_user:
         abort(403)
-    protocol = submission.get_protocol()
     return jsonify({
-        'protocol': protocol,
-        'source': submission.source
+        'protocol': submission.get_protocol(),
+        'source': submission.source,
+        'user': submission.user.username,
+        'language': submission.language,
+        'time': submission.time,
+        'status': submission.status,
+        'score': submission.score
     })
 
 

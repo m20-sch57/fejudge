@@ -28,7 +28,7 @@ def connect_to_socketio():
     while True:
         try:
             sio.connect(Config.SOCKETIO_SERVER)
-            print('\nConnected to socketio')
+            print('Connecting to socketio - success')
             return
         except ConnectionError:
             print('Connecting to socketio...', end='\r')
@@ -40,7 +40,7 @@ def connect_to_nats():
         try:
             nats.connect()
             nats.subscribe('invokers', queue='worker', callback=message_handler)
-            print('\nConnected to NATS')
+            print('Connecting to NATS - success')
             nats.wait()
         except (socket.error, NATSError):
             print('Connecting to NATS...', end='\r')
