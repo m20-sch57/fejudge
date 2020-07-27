@@ -9,7 +9,7 @@ from pynats import NATSClient
 from pynats.exceptions import NATSError
 from socketio.exceptions import ConnectionError
 from evaluate import evaluate
-from problem_init import init
+from problem_init import init, InitializationError
 from models import Base
 from config import Config
 
@@ -19,7 +19,11 @@ def message_handler(msg):
     if obj['type'] == 'evaluate':
         evaluate(obj['submission_id'], session, sio)
     elif obj['type'] == 'problem_init':
-        init(obj['problem_id'], session)
+        try:
+            init(obj['problem_id'], session)
+        except InitializationError as e:
+            print(e.cause)
+            print(e.details)
     else:
         print('Unsupported type of query: {}'.format(obj['type']))
 
@@ -55,5 +59,8 @@ if __name__ == "__main__":
     sio = socketio.Client()
     nats = NATSClient(Config.NATS_SERVER, name=Config.INVOKER_NAME)
 
-    connect_to_socketio()
-    connect_to_nats()
+    try:
+        connect_to_socketio()
+        connect_to_nats()
+    except KeyboardInterrupt:
+        exit()

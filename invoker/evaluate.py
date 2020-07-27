@@ -1,18 +1,10 @@
-import json
-
 from libsbox_client import File, libsbox
 from problem_manage import ProblemManager
 from models import Submission
 from config import Config
 
 
-# def write_logs(submission_id, message):
-#     fout = open(os.path.join(Config.SUBMISSIONS_LOG_PATH, str(submission_id).zfill(6) + '.txt'), 'a')
-#     fout.write(message)
-#     fout.close()
-
-
-def parse_checker_status(exit_code):
+def get_checker_status(exit_code):
     if exit_code == 0:
         return 'OK'
     if exit_code == 1:
@@ -62,7 +54,7 @@ def run_on_test(test_number, binary_file, problem_manager):
     )
     checker_exit_code = checker_task['exit_code']
     test_status = participant_status if checker_status in ['OK', 'RE'] else 'FAIL'
-    test_status = parse_checker_status(checker_exit_code) if test_status == 'OK' else test_status
+    test_status = get_checker_status(checker_exit_code) if test_status == 'OK' else test_status
     test_details = {
         'status': test_status,
         'time_usage_s': participant_task['time_usage_ms'] / 1000,
@@ -113,20 +105,10 @@ def compile(submission):
 
 
 def evaluate(submission_id, session, sio):
-    print('Started evaluating submission {}'.format(submission_id))
     submission = session.query(Submission).filter_by(id=submission_id).first()
     if submission is None:
-        print('Cannot find submission {}'.format(submission_id))
         return
     problem_manager = ProblemManager(submission.problem_id)
-    # write_logs(submission_id,
-    #     'Started judging at {}\n\nProblem ID: {}\nSubmission ID: {}\nLanguage: {}\n'.format(
-    #         datetime.datetime.today().replace(microsecond=0),
-    #         submission.problem_id,
-    #         submission_id,
-    #         submission.language
-    #     )
-    # )
     submission.status = 'compiling'
     submission.score = 0
     session.commit()
@@ -147,17 +129,13 @@ def evaluate(submission_id, session, sio):
                 current_score = 0
                 break
         submission.score = current_score
-        submission.status = 'accepted' if current_score == submission.problem.max_score else 'partial'
+        if current_score == submission.problem.max_score:
+            submission.status = 'accepted'
+        else:
+            submission.status = 'partial'
     else:
         submission.score = 0
         submission.status = 'compilation_error'
     submission.set_protocol(submission_protocol)
     session.commit()
     sio.emit('completed', submission_id)
-    # write_logs(submission_id,
-    #     'Submission status: {}\nSubmission score: {}\n'.format(
-    #         submission.status,
-    #         submission.score
-    #     )
-    # )
-    print('Finished evaluating submission {}'.format(submission_id))

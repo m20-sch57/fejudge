@@ -7,6 +7,13 @@ from models import Problem
 from config import Config
 
 
+class InitializationError(Exception):
+    def __init__(self, cause='', details=''):
+        super(InitializationError, self).__init__(cause)
+        self.cause = cause
+        self.details = details
+
+
 def extract_archive(problem_id):
     archive_path = os.path.join(Config.PROBLEMS_UPLOAD_PATH, str(problem_id) + '.zip')
     problem_path = os.path.join(Config.PROBLEMS_PATH, str(problem_id))
@@ -37,11 +44,17 @@ def compile_checker(problem_manager):
         stderr='@_stdout'
     )
     if compile_status != 'OK':
-        print('Failed to compile checker verdict={}'.format(compile_status))
+        raise InitializationError(
+            cause='Failed to compile checker',
+            details={
+                'status': compile_status,
+                'errors': libsbox.read_file(error_file)
+            }
+        )
     libsbox.export_file(checker_binary_file, problem_manager.checker_binary_path)
 
 
-def prepare_and_generate_tests(problem_manager):
+def compile_main_solution(problem_manager):
     main_solution_source_file = File(
         language=problem_manager.main_solution_language,
         external_path=problem_manager.main_solution_source_path
@@ -56,7 +69,17 @@ def prepare_and_generate_tests(problem_manager):
         stderr='@_stdout'
     )
     if compile_status != 'OK':
-        print('Failed to compile main solution')
+        raise InitializationError(
+            cause='Failed to compile main solution',
+            details={
+                'status': compile_status,
+                'errors': libsbox.read_file(error_file)
+            }
+        )
+    return main_solution_binary_file
+
+
+def compile_executables(problem_manager):
     executables_bin = []
     for executable in problem_manager.executables:
         executable_source_file = File(
@@ -73,8 +96,18 @@ def prepare_and_generate_tests(problem_manager):
             stderr='@_stdout'
         )
         if compile_status != 'OK':
-            print('Failed to compile executable {}'.format(executable_source_file.internal_path))
+            raise InitializationError(
+                cause='Failed to compile executable {}'.format(executable_source_file.internal_path),
+                details={
+                    'status': compile_status,
+                    'errors': libsbox.read_file(error_file)
+                }
+            )
         executables_bin.append(executable_binary_file)
+    return executables_bin
+
+
+def generate_tests(problem_manager, main_solution_binary_file, executables_bin):
     for test_info in problem_manager.tests_to_generate:
         test_number = test_info['test_number']
         input_file = libsbox.create_file('input')
@@ -93,7 +126,13 @@ def prepare_and_generate_tests(problem_manager):
                 stderr=error_file.internal_path
             )
             if generator_status != 'OK':
-                print('Failed to generate input for test #{} verdict={}'.format(test_number, generator_status))
+                raise InitializationError(
+                    cause='Failed to generate input for test {}'.format(test_number),
+                    details={
+                        'status': generator_status,
+                        'errors': libsbox.read_file(error_file)
+                    }
+                )
             libsbox.export_file(input_file, input_file.external_path)
         else:
             libsbox.import_file(input_file)
@@ -106,21 +145,35 @@ def prepare_and_generate_tests(problem_manager):
                 stderr=error_file.internal_path
             )
             if solution_status != 'OK':
-                print('Failed to generate output for test #{} verdict={}'.format(test_number, solution_status))
+                raise InitializationError(
+                    cause='Failed to generate output for test {}'.format(test_number),
+                    details={
+                        'status': solution_status,
+                        'errors': libsbox.read_file(error_file)
+                    }
+                )
             libsbox.export_file(output_file, output_file.external_path)
         else:
             libsbox.import_file(output_file)
+    
 
-
-def init(problem_id, session): # TODO: error handler
+def init(problem_id, session):
     print('Started initializing problem {}'.format(problem_id))
     success = extract_archive(problem_id)
     if not success:
-        print('Cannot find archive for problem {}'.format(problem_id))
-        return
-    problem_manager = ProblemManager(problem_id)
+        raise InitializationError(cause='Failed to extract archive')
+    try:
+        problem_manager = ProblemManager(problem_id)
+    except Exception as e:
+        raise InitializationError(cause='Problem package is invalid', details={'error': str(e)})
+    print('Compiling checker...')
     compile_checker(problem_manager)
-    prepare_and_generate_tests(problem_manager)
+    print('Compiling main solution...')
+    main_solution_binary_file = compile_main_solution(problem_manager)
+    print('Compiling executables...')
+    executables_bin = compile_executables(problem_manager)
+    print('Generating tests...')
+    generate_tests(problem_manager, main_solution_binary_file, executables_bin)
     problem = session.query(Problem).filter_by(id=problem_id).first()
     problem.set_names(problem_manager.names_dict)
     session.commit()
