@@ -11,8 +11,6 @@ services:
         environment:
             - MAIL_USERNAME=${MAIL_USERNAME}
             - MAIL_PASSWORD=${MAIL_PASSWORD}
-            - FLASK_APP=app
-            - FLASK_ENV=development
             - FLASK_DEBUG=0
             - NATS_SERVER=nats://nats:4222
             - DATA_DIR=/data
