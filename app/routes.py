@@ -6,7 +6,6 @@ from flask import render_template, jsonify, send_from_directory,\
 from flask_login import current_user, login_user, logout_user, login_required
 
 from app import app, db
-from app.forms import UploadPackageForm # Remove then!
 from app.events import send_new_submission_event
 from app.services import register_user, create_contest_request, create_submission, create_problem,\
     get_user_by_username, get_contest_by_id_or_404, get_contest_request, get_contests_for_user,\
@@ -252,17 +251,11 @@ def contest_admin(func):
 @contest_admin
 def contest_admin_newproblem(contest_id):
     contest = get_contest_by_id_or_404(contest_id)
-    upload_package_form = UploadPackageForm()
-    if upload_package_form.validate_on_submit():
+    if request.method == 'POST':
         new_problem = create_problem(contest=contest, problem_type='prog')
         path = os.path.join(app.config['PROBLEMS_UPLOAD_PATH'], str(new_problem.id) + '.zip')
-        upload_package_form.package.data.save(path)
+        source_blob = request.files['file'].read()
+        open(path, 'wb').write(source_blob)
         initialize_problem(new_problem)
-        flash('Your package has been uploaded', category='alert-info')
         return redirect(url_for('contest_admin_newproblem', contest_id=contest_id))
-    return render_template(
-        'old/contest_admin_newproblem.html',
-        title='New problem',
-        contest=contest, 
-        form=upload_package_form
-    )
+    return render_template('newproblem.html')

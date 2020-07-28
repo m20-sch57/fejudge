@@ -1,10 +1,8 @@
-werkzeug==0.16.1 # remove then
 Flask==1.1.1
 Flask-SocketIO==4.3.1
 Flask-Login==0.4.1
 Flask-Migrate==2.5.2
 Flask-SQLAlchemy==2.4.1
-Flask-WTF==0.14.2 # remove then
 SQLAlchemy==1.3.10
 eventlet==0.25.2
 nats-python==0.7.0

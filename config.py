@@ -27,7 +27,6 @@ class Config(object):
 
     # Data
     DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(basedir, 'data')
-    AVATARS_SAVE_PATH = os.path.join(DATA_DIR, 'avatars')
     SUBMISSIONS_DOWNLOAD_PATH = os.path.join(DATA_DIR, 'download', 'submissions')
     PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')

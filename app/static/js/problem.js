@@ -217,7 +217,7 @@ function completed(submissionId, submissionStatus, submissionScore) {
     let score = $(`#submission_${submissionId}_score`);
     let details = $(`#submission_${submissionId}_details`);
     status.empty();
-    status.removeClass();
+    status.removeClass("col-grey");
     status.addClass(submissionStyleMatching[submissionStatus]);
     status.text(submissionStatusMatching[submissionStatus]);
     score.text(submissionScore);

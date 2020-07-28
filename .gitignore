@@ -1,6 +1,5 @@
 # Temporary data files
-data/*
-!data/avatars/user.png
+data/
 
 # Temporary files and logs
 logs/

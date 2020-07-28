@@ -16,8 +16,6 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(128), default='')
     password_hash = db.Column(db.String(128))
 
-    # avatar = db.Column(db.String(64), default='user.png')
-
     # restore_tokens = db.relationship('RestoreToken', backref='user', lazy='dynamic')
     contest_requests = db.relationship('ContestRequest', backref='user', lazy='dynamic')
     owned_contests = db.relationship('Contest', backref='owner', lazy='dynamic')
