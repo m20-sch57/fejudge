@@ -35,17 +35,20 @@ flask db upgrade
 ```
 4. Initialize all data
 ```
-./init.sh
+sudo ./init.sh
 ```
 5. Run main script
 ```
-./run.sh
+sudo -E ./run.sh
 ```
 6. Run invoker
 ```
 cd invoker/
 sudo -E ./run.sh
 ```
+
+If you want to run invokers on separate machines, you will have to set up NFS.
+To do it, open `setup_nfs_server.sh` or `setup_nfs_client.sh` and follow all the instructions in it.
 
 To start in docker, run `docker-compose up --build` in the project directory.
 
