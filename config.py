@@ -9,9 +9,6 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'surprise!'
     MAX_CONTENT_LENGTH = 1024 * 65536
 
-    # Logging
-    LOG_FILE = 'logs/app.log'
-
     # Max submission size
     MAX_SUBMISSION_SIZE = 1024 * 1024
 

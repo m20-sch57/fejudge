@@ -53,18 +53,18 @@ sudo mount <DATA_REMOTE_FOLDER> data/
 ```
 `DATA_REMOTE_FOLDER` is a remote path to data directory on NFS server, for example `57.57.57.57:/Fejudge/data`.
 
-### Setting up main server
+### Setting up NATS server
 
 1. Download and install [NATS Server](https://docs.nats.io/nats-server/installation)
-2. Upgrade database
-```
-sudo python3 -m flask db upgrade
-```
-3. Initialize defaults
+2. Run it by typing `nats-server`
+
+### Setting up main server
+
+1. Initialize defaults
 ```
 sudo ./init.sh
 ```
-4. Run main server
+2. Run main server
 ```
 export MAIL_USERNAME=<YOUR_EMAIL_USERNAME>
 export MAIL_PASSWORD=<YOUR_EMAIL_PASSWORD>

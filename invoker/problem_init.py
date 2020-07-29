@@ -51,7 +51,8 @@ def compile_checker(problem_manager):
                 'errors': libsbox.read_file(error_file)
             }
         )
-    libsbox.export_file(checker_binary_file, problem_manager.checker_binary_path)
+    checker_binary_file.external_path = problem_manager.checker_binary_path
+    libsbox.export_file(checker_binary_file)
 
 
 def compile_main_solution(problem_manager):
@@ -133,7 +134,7 @@ def generate_tests(problem_manager, main_solution_binary_file, executables_bin):
                         'errors': libsbox.read_file(error_file)
                     }
                 )
-            libsbox.export_file(input_file, input_file.external_path)
+            libsbox.export_file(input_file)
         else:
             libsbox.import_file(input_file)
         if test_info['generate_output']:
@@ -152,7 +153,7 @@ def generate_tests(problem_manager, main_solution_binary_file, executables_bin):
                         'errors': libsbox.read_file(error_file)
                     }
                 )
-            libsbox.export_file(output_file, output_file.external_path)
+            libsbox.export_file(output_file)
         else:
             libsbox.import_file(output_file)
     

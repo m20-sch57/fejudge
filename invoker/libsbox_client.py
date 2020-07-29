@@ -65,11 +65,11 @@ class Libsbox:
             if should_remove:
                 os.remove(os.path.join(self.home_dir, item))
 
-    def write_file(self, source_file: File, content):
+    def write_file(self, source_file: File, content: str):
         path = os.path.join(self.home_dir, source_file.internal_path)
         open(path, 'w').write(content)
 
-    def create_file(self, name, language='txt', add_extension=True):
+    def create_file(self, name: str, language='txt', add_extension=True):
         filename = '{}.{}'.format(name, language) if add_extension else name
         path = os.path.join(self.home_dir, filename)
         open(path, 'w').write('')
@@ -85,9 +85,9 @@ class Libsbox:
         path = os.path.join(self.home_dir, source_file.internal_path)
         return open(path, 'r').read()
 
-    def export_file(self, source_file: File, destination):
+    def export_file(self, source_file: File):
         path = os.path.join(self.home_dir, source_file.internal_path)
-        shutil.copyfile(path, destination)
+        shutil.copyfile(path, source_file.external_path)
 
     def compile(self, source_file: File, **kwargs):
         binary_path = os.path.splitext(source_file.internal_path)[0]
