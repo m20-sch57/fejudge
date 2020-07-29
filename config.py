@@ -32,6 +32,7 @@ class Config(object):
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
 
     # SQLAlchemy database
+    # TODO: replace sqlite with postgres
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     NAMING_CONVENTION = {
