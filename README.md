@@ -22,35 +22,72 @@ These instructions will guide you through the installation process of Fejudge.
 - cgroup v1 heirarchy mounted in /sys/fs/cgroup
 - C++ 17 compiler, with `std::filesystem` support
 - CMake version 3.10 or higher
-- OpenJDK Runtime environment 11.0.4
 - Python 3.6 or higher, see `requirements.txt`
 
-### Installing
+### Setting up NFS server
+
+1. Download `nfs-kernel-server` package
+2. Create data folder and set correct permissions to it
+```
+mkdir data
+sudo chown nobody:nogroup data/
+```
+2. Open file `/etc/exports` and share this folder with all other clients
+3. Export it
+```
+sudo exportfs -a
+```
+4. Start `rpcbind` and `nfs-kernel-server` services
+```
+sudo service rpcbind start
+sudo service nfs-kernel-server start
+```
+
+### Setting up NFS clients (main server and invokers)
+
+1. Download `nfs-common` package
+2. Mount remote data folder
+```
+mkdir data
+sudo mount <DATA_REMOTE_FOLDER> data/
+```
+`DATA_REMOTE_FOLDER` is a remote path to data directory on NFS server, for example `57.57.57.57:/Fejudge/data`.
+
+### Setting up main server
 
 1. Download and install [NATS Server](https://docs.nats.io/nats-server/installation)
-2. Compile and install [libsbox](https://github.com/Forestryks/libsbox), located in `./invoker/libsbox`
-3. Create and upgrade database
+2. Upgrade database
 ```
-flask db upgrade
+sudo python3 -m flask db upgrade
 ```
-4. Initialize all data
+3. Initialize defaults
 ```
 sudo ./init.sh
 ```
-5. Run main script
+4. Run main server
 ```
+export MAIL_USERNAME=<YOUR_EMAIL_USERNAME>
+export MAIL_PASSWORD=<YOUR_EMAIL_PASSWORD>
 sudo -E ./run.sh
 ```
-6. Run invoker
+Your email will be used to send informational letters.
+
+### Setting up invoker
+
+1. Compile and install [libsbox](https://github.com/Forestryks/libsbox), located in `./invoker/libsbox`
+2. Run invoker
 ```
 cd invoker/
+export INVOKER_NAME=<UNIQUE_ID>
+export NATS_SERVER=<MAIN_SERVER_IP:4222>
+export SOCKETIO_SERVER=<MAIN_SERVER_IP:3113>
 sudo -E ./run.sh
 ```
+`UNIQUE_ID` should differ among all invokers.
 
-If you want to run invokers on separate machines, you will have to set up NFS.
-To do it, open `setup_nfs_server.sh` or `setup_nfs_client.sh` and follow all the instructions in it.
+### Run in docker
 
-To start in docker, run `docker-compose up --build` in the project directory.
+To start in docker, run `docker-compose build && docker-compose up` in the project directory.
 
 ## Documentation
 
