@@ -23,7 +23,7 @@ app.logger.addHandler(file_handler)
 db = SQLAlchemy(app, metadata=MetaData(naming_convention=Config.NAMING_CONVENTION))
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
-nats = NATSClient(Config.NATS_SERVER, name='producer1')
+nats = NATSClient(Config.NATS_SERVER, name='app')
 
 login = LoginManager(app)
 login.login_view = 'login'

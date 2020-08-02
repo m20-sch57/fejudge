@@ -78,12 +78,14 @@ Your email will be used to send informational letters.
 2. Run invoker
 ```
 cd invoker/
-export INVOKER_NAME=<UNIQUE_ID>
 export NATS_SERVER=<MAIN_SERVER_IP:4222>
 export SOCKETIO_SERVER=<MAIN_SERVER_IP:3113>
 sudo -E ./run.sh
 ```
-`UNIQUE_ID` should differ among all invokers.
+If you want to run multiple invokers on a single machine, specify `INVOKER_NAME` before running
+```
+export INVOKER_NAME=<UNIQUE_ID>
+```
 
 ### Run in docker
 
