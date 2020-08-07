@@ -1,9 +1,6 @@
 import os
 
 
-basedir = os.path.dirname(__file__)
-
-
 class Config(object):
     # Flask
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'surprise!'
@@ -20,22 +17,19 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
 
     # NATS server
-    NATS_SERVER = os.environ.get('NATS_SERVER') or 'nats://localhost:4222'
+    NATS_URL = os.environ.get('NATS_URL') or 'nats://localhost:4222'
 
     # Data
-    DATA_DIR = os.environ.get('DATA_DIR') or os.path.join(basedir, 'data')
+    DATA_DIR = os.environ.get('DATA_DIR') or ''
     SUBMISSIONS_DOWNLOAD_PATH = os.path.join(DATA_DIR, 'download', 'submissions')
     PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
 
     # SQLAlchemy database
-    # TODO: replace sqlite with postgres
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
+    POSTGRES_URL = os.environ.get('POSTGRES_URL') or 'localhost:5432'
+    POSTGRES_USER = os.environ.get('POSTGRES_USER') or 'postgres'
+    POSTGRES_PW = os.environ.get('POSTGRES_PW') or 'postgres'
+    POSTGRES_DB = os.environ.get('POSTGRES_DB') or 'database.db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{pw}@{url}/{db}'.format(
+        user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL, db=POSTGRES_DB)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    NAMING_CONVENTION = {
-        "ix": 'ix_%(column_0_label)s',
-        "uq": "uq_%(table_name)s_%(column_0_name)s",
-        "ck": "ck_%(table_name)s_%(column_0_name)s",
-        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-        "pk": "pk_%(table_name)s"
-    }

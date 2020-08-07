@@ -1,5 +1,13 @@
 version: '3'
 services:
+    postgres:
+        image: postgres
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=database.db
     nats:
         image: nats
         ports:
@@ -9,14 +17,15 @@ services:
         ports:
             - 3113:3113
         environment:
+            - POSTGRES_URL=postgres:5432
+            - NATS_URL=nats://nats:4222
             - MAIL_USERNAME=${MAIL_USERNAME}
             - MAIL_PASSWORD=${MAIL_PASSWORD}
-            - FLASK_DEBUG=0
-            - NATS_SERVER=nats://nats:4222
-            - DATA_DIR=/data
+            - DATA_DIR=/fejudge/data
         volumes:
-            - data:/data
+            - data:/fejudge/data
         depends_on:
+            - postgres
             - nats
     libsbox:
         build:
@@ -24,20 +33,21 @@ services:
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
-            - sandbox:/invoker/sandbox
-            - data:/data
+            - sandbox:/fejudge/invoker/sandbox
+            - data:/fejudge/data
     invoker:
         build:
             context: invoker/
         environment:
             - PYTHONUNBUFFERED=1
-            - SOCKETIO_SERVER=http://app:3113
-            - NATS_SERVER=nats://nats:4222
-            - DATA_DIR=/data
+            - POSTGRES_URL=postgres:5432
+            - SOCKETIO_URL=http://app:3113
+            - NATS_URL=nats://nats:4222
+            - DATA_DIR=/fejudge/data
         volumes:
             - libsboxd:/etc/libsboxd
-            - sandbox:/invoker/sandbox
-            - data:/data
+            - sandbox:/fejudge/invoker/sandbox
+            - data:/fejudge/data
         depends_on:
             - app
             - libsbox
@@ -45,8 +55,3 @@ volumes:
     libsboxd:
     sandbox:
     data:
-        driver: local
-        driver_opts:
-            type: none
-            device: $PWD/data
-            o: bind

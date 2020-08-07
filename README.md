@@ -53,6 +53,22 @@ sudo mount <DATA_REMOTE_FOLDER> data/
 ```
 `DATA_REMOTE_FOLDER` is a remote path to data directory on NFS server, for example `57.57.57.57:/Fejudge/data`.
 
+### Setting up PostgreSQL server
+
+1. Download `postgresql` package
+2. Start `postgresql` service
+```
+sudo service postgresql start
+```
+3. Create database `database.db` and user `postgres` with password `postgres`
+```
+sudo -u postgres createuser postgres
+sudo -u postgres createdb database.db
+sudo -u postgres psql
+psql=# alter user postgres with encrypted password 'postgres';
+```
+If you use another login and password, then specify `POSTGRES_USER` and `POSTGRES_PW` variables at each client.
+
 ### Setting up NATS server
 
 1. Download and install [NATS Server](https://docs.nats.io/nats-server/installation)
@@ -60,14 +76,17 @@ sudo mount <DATA_REMOTE_FOLDER> data/
 
 ### Setting up main server
 
-1. Initialize defaults
+1. Upgrade database and initialize defaults
 ```
-sudo ./init.sh
+flask db upgrade
+sudo ./reset.sh
 ```
 2. Run main server
 ```
-export MAIL_USERNAME=<YOUR_EMAIL_USERNAME>
-export MAIL_PASSWORD=<YOUR_EMAIL_PASSWORD>
+export POSTGRES_URL=<...>:5432
+export NATS_URL=<...>:4222
+export MAIL_USERNAME=<...>
+export MAIL_PASSWORD=<...>
 sudo -E ./run.sh
 ```
 Your email will be used to send informational letters.
@@ -78,8 +97,9 @@ Your email will be used to send informational letters.
 2. Run invoker
 ```
 cd invoker/
-export NATS_SERVER=<MAIN_SERVER_IP:4222>
-export SOCKETIO_SERVER=<MAIN_SERVER_IP:3113>
+export POSTGRES_URL=<...>:5432
+export SOCKETIO_URL=<...>:3113
+export NATS_URL=<...>:4222
 sudo -E ./run.sh
 ```
 If you want to run multiple invokers on a single machine, specify `INVOKER_NAME` before running

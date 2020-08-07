@@ -31,7 +31,7 @@ def message_handler(msg):
 def connect_to_socketio():
     while True:
         try:
-            sio.connect(Config.SOCKETIO_SERVER)
+            sio.connect(Config.SOCKETIO_URL)
             print('Connecting to socketio - success')
             return
         except ConnectionError:
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     session = Session(bind=engine)
 
     sio = socketio.Client()
-    nats = NATSClient(Config.NATS_SERVER, name=Config.INVOKER_NAME)
+    nats = NATSClient(Config.NATS_URL, name=Config.INVOKER_NAME)
 
     try:
         connect_to_socketio()

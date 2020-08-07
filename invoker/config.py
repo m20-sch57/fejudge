@@ -9,22 +9,28 @@ class Config(object):
     INVOKER_NAME = os.environ.get('INVOKER_NAME') or 'invoker'
 
     # Socketio server
-    SOCKETIO_SERVER = os.environ.get('SOCKETIO_SERVER') or 'http://localhost:3113'
+    SOCKETIO_URL = os.environ.get('SOCKETIO_URL') or 'http://localhost:3113'
 
     # NATS server
-    NATS_SERVER = os.environ.get('NATS_SERVER') or 'nats://localhost:4222'
+    NATS_URL = os.environ.get('NATS_URL') or 'nats://localhost:4222'
 
     # Libsbox
     LIBSBOX_SOCKET = os.environ.get('LIBSBOX_SOCKET') or '/etc/libsboxd/socket'
     LIBSBOX_DIR = os.path.join(basedir, 'sandbox', INVOKER_NAME)
 
     # Data
-    DATA_DIR = os.environ.get('DATA_DIR')
+    DATA_DIR = os.environ.get('DATA_DIR') or ''
     PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
     PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
 
     # SQLAlchemy database
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'database.db')
+    POSTGRES_URL = os.environ.get('POSTGRES_URL') or 'localhost:5432'
+    POSTGRES_USER = os.environ.get('POSTGRES_USER') or 'postgres'
+    POSTGRES_PW = os.environ.get('POSTGRES_PW') or 'postgres'
+    POSTGRES_DB = os.environ.get('POSTGRES_DB') or 'database.db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{pw}@{url}/{db}'.format(
+        user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL, db=POSTGRES_DB)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Default compilation and execution limits
     COMPILATION_TIME_LIMIT_MS = os.environ.get('COMPILATION_TIME_LIMIT_MS') or 30000

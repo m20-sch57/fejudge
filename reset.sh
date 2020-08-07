@@ -11,5 +11,4 @@ mkdir data/upload
 mkdir data/upload/problems
 mkdir data/problems
 
-python3 -m flask db upgrade
-python3 init.py
+python3 reset.py

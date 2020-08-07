@@ -7,4 +7,4 @@ COPY . /fejudge
 WORKDIR /fejudge
 
 EXPOSE 3113
-ENTRYPOINT [ "python3", "run.py" ]
+ENTRYPOINT [ "./entrypoint.sh"]
