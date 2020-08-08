@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export DATA_DIR=$PWD/../data
+export STORAGE_DIR=$PWD/../storage
 
 libsboxd start &
 python3 invoker.py

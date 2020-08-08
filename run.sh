@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export DATA_DIR=$PWD/data
+export STORAGE_DIR=$PWD/storage
 
 python3 run.py

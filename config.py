@@ -19,11 +19,11 @@ class Config(object):
     # NATS server
     NATS_URL = os.environ.get('NATS_URL') or 'nats://localhost:4222'
 
-    # Data
-    DATA_DIR = os.environ.get('DATA_DIR') or ''
-    SUBMISSIONS_DOWNLOAD_PATH = os.path.join(DATA_DIR, 'download', 'submissions')
-    PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
-    PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
+    # Storage
+    STORAGE_DIR = os.environ.get('STORAGE_DIR') or ''
+    SUBMISSIONS_DOWNLOAD_PATH = os.path.join(STORAGE_DIR, 'download', 'submissions')
+    PROBLEMS_UPLOAD_PATH = os.path.join(STORAGE_DIR, 'upload', 'problems')
+    PROBLEMS_PATH = os.path.join(STORAGE_DIR, 'problems')
 
     # SQLAlchemy database
     POSTGRES_URL = os.environ.get('POSTGRES_URL') or 'localhost:5432'

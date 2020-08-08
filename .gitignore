@@ -1,8 +1,7 @@
-# Temporary data files
-data/
+# Storage
+storage/
 
 # Temporary files and logs
-logs/
 sandbox/
 
 # Byte-compiled / optimized / DLL files

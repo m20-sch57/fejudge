@@ -27,10 +27,10 @@ These instructions will guide you through the installation process of Fejudge.
 ### Setting up NFS server
 
 1. Download `nfs-kernel-server` package
-2. Create data folder and set correct permissions to it
+2. Create storage folder and set correct permissions to it
 ```
-mkdir data
-sudo chown nobody:nogroup data/
+mkdir storage
+sudo chown nobody:nogroup storage/
 ```
 2. Open file `/etc/exports` and share this folder with all other clients
 3. Export it
@@ -46,12 +46,12 @@ sudo service nfs-kernel-server start
 ### Setting up NFS clients (main server and invokers)
 
 1. Download `nfs-common` package
-2. Mount remote data folder
+2. Mount remote storage folder
 ```
-mkdir data
-sudo mount <DATA_REMOTE_FOLDER> data/
+mkdir storage
+sudo mount <STORAGE_REMOTE_FOLDER> storage/
 ```
-`DATA_REMOTE_FOLDER` is a remote path to data directory on NFS server, for example `57.57.57.57:/Fejudge/data`.
+`STORAGE_REMOTE_FOLDER` is a remote path to storage directory on NFS server, for example `57.57.57.57:/Fejudge/storage`.
 
 ### Setting up PostgreSQL server
 

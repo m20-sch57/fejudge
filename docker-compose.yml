@@ -21,9 +21,9 @@ services:
             - NATS_URL=nats://nats:4222
             - MAIL_USERNAME=${MAIL_USERNAME}
             - MAIL_PASSWORD=${MAIL_PASSWORD}
-            - DATA_DIR=/fejudge/data
+            - STORAGE_DIR=/fejudge/storage
         volumes:
-            - data:/fejudge/data
+            - storage:/fejudge/storage
         depends_on:
             - postgres
             - nats
@@ -34,7 +34,7 @@ services:
         volumes:
             - libsboxd:/etc/libsboxd
             - sandbox:/fejudge/invoker/sandbox
-            - data:/fejudge/data
+            - storage:/fejudge/storage
     invoker:
         build:
             context: invoker/
@@ -43,15 +43,15 @@ services:
             - POSTGRES_URL=postgres:5432
             - SOCKETIO_URL=http://app:3113
             - NATS_URL=nats://nats:4222
-            - DATA_DIR=/fejudge/data
+            - STORAGE_DIR=/fejudge/storage
         volumes:
             - libsboxd:/etc/libsboxd
             - sandbox:/fejudge/invoker/sandbox
-            - data:/fejudge/data
+            - storage:/fejudge/storage
         depends_on:
             - app
             - libsbox
 volumes:
     libsboxd:
     sandbox:
-    data:
+    storage:

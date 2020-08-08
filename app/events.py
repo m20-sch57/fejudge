@@ -19,6 +19,8 @@ def send_new_submission_event(submission):
 
 @socketio.on('join')
 def join(problem_id):
+    if current_user.is_anonymous:
+        return
     room = build_room(current_user.id, problem_id)
     join_room(room)
 

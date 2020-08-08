@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if ! [ -d 'data' ]; then
-    mkdir 'data'
+if ! [ -d 'storage' ]; then
+    mkdir 'storage'
 fi
 
-rm -rf data/*
-mkdir data/download
-mkdir data/download/submissions
-mkdir data/upload
-mkdir data/upload/problems
-mkdir data/problems
+rm -rf storage/*
+mkdir storage/download
+mkdir storage/download/submissions
+mkdir storage/upload
+mkdir storage/upload/problems
+mkdir storage/problems
 
 python3 reset.py

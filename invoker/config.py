@@ -18,10 +18,10 @@ class Config(object):
     LIBSBOX_SOCKET = os.environ.get('LIBSBOX_SOCKET') or '/etc/libsboxd/socket'
     LIBSBOX_DIR = os.path.join(basedir, 'sandbox', INVOKER_NAME)
 
-    # Data
-    DATA_DIR = os.environ.get('DATA_DIR') or ''
-    PROBLEMS_UPLOAD_PATH = os.path.join(DATA_DIR, 'upload', 'problems')
-    PROBLEMS_PATH = os.path.join(DATA_DIR, 'problems')
+    # Storage
+    STORAGE_DIR = os.environ.get('STORAGE_DIR') or ''
+    PROBLEMS_UPLOAD_PATH = os.path.join(STORAGE_DIR, 'upload', 'problems')
+    PROBLEMS_PATH = os.path.join(STORAGE_DIR, 'problems')
 
     # SQLAlchemy database
     POSTGRES_URL = os.environ.get('POSTGRES_URL') or 'localhost:5432'
