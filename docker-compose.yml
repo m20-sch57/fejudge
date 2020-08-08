@@ -1,13 +1,13 @@
 version: '3'
 services:
-    postgres:
+    db:
         image: postgres
         ports:
             - 5432:5432
         environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=database.db
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: database.db
     nats:
         image: nats
         ports:
@@ -17,15 +17,15 @@ services:
         ports:
             - 3113:3113
         environment:
-            - POSTGRES_URL=postgres:5432
-            - NATS_URL=nats://nats:4222
-            - MAIL_USERNAME=${MAIL_USERNAME}
-            - MAIL_PASSWORD=${MAIL_PASSWORD}
-            - STORAGE_DIR=/fejudge/storage
+            POSTGRES_URL: db:5432
+            NATS_URL: nats://nats:4222
+            MAIL_USERNAME: ${MAIL_USERNAME}
+            MAIL_PASSWORD: ${MAIL_PASSWORD}
+            STORAGE_DIR: /fejudge/storage
         volumes:
             - storage:/fejudge/storage
         depends_on:
-            - postgres
+            - db
             - nats
     libsbox:
         build:
@@ -39,11 +39,11 @@ services:
         build:
             context: invoker/
         environment:
-            - PYTHONUNBUFFERED=1
-            - POSTGRES_URL=postgres:5432
-            - SOCKETIO_URL=http://app:3113
-            - NATS_URL=nats://nats:4222
-            - STORAGE_DIR=/fejudge/storage
+            PYTHONUNBUFFERED: 1
+            POSTGRES_URL: db:5432
+            SOCKETIO_URL: http://app:3113
+            NATS_URL: nats://nats:4222
+            STORAGE_DIR: /fejudge/storage
         volumes:
             - libsboxd:/etc/libsboxd
             - sandbox:/fejudge/invoker/sandbox

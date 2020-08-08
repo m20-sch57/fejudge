@@ -28,8 +28,8 @@ class Config(object):
     # SQLAlchemy database
     POSTGRES_URL = os.environ.get('POSTGRES_URL') or 'localhost:5432'
     POSTGRES_USER = os.environ.get('POSTGRES_USER') or 'postgres'
-    POSTGRES_PW = os.environ.get('POSTGRES_PW') or 'postgres'
+    POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD') or 'postgres'
     POSTGRES_DB = os.environ.get('POSTGRES_DB') or 'database.db'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{pw}@{url}/{db}'.format(
-        user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL, db=POSTGRES_DB)
+    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{url}/{db}'.format(
+        user=POSTGRES_USER, password=POSTGRES_PASSWORD, url=POSTGRES_URL, db=POSTGRES_DB)
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -67,7 +67,7 @@ sudo -u postgres createdb database.db
 sudo -u postgres psql
 psql=# alter user postgres with encrypted password 'postgres';
 ```
-If you use another login and password, then specify `POSTGRES_USER` and `POSTGRES_PW` variables at each client.
+If you use another login and password, then specify `POSTGRES_USER` and `POSTGRES_PASSWORD` variables at each client.
 
 ### Setting up NATS server
 
