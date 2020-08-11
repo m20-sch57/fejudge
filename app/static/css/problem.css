@@ -47,7 +47,6 @@
 #problemLimits {
     display: flex;
     flex-flow: row;
-    margin: 0 auto 0 0;
 }
 
 #timeLimit {
@@ -57,12 +56,6 @@
 }
 
 #memoryLimit {
-    padding-right: 20px;
-    margin: auto 0 auto 0;
-    font-size: 20px;
-}
-
-#problemScore {
     padding-right: 20px;
     margin: auto 0 auto 0;
     font-size: 20px;
@@ -90,10 +83,6 @@
 
 #statementsLoadingLabel {
     margin: auto;
-}
-
-#statementsBox.collapsed #problemScore {
-    display: none;
 }
 
 #statementsBox.collapsed #problemLimits {
@@ -331,31 +320,31 @@
     font-size: 18px;
 }
 
-#submissionCompiler pre {
+#submissionCompilation pre {
     padding: 30px 20px;
     white-space: pre-wrap;
 }
 
-#submissionTests {
+#submissionEvaluation {
     overflow-x: auto;
 }
 
-#submissionProtocolTable {
+#submissionEvaluationTable {
     width: 100%;
     margin: 20px 0;
     font-size: 16px;
 }
 
-#submissionProtocolTable tr {
+#submissionEvaluationTable tr {
     vertical-align: middle;
 }
 
-#submissionProtocolTable th {
+#submissionEvaluationTable th {
     padding: 15px 5px;
     white-space: nowrap;
 }
 
-#submissionProtocolTable td {
+#submissionEvaluationTable td {
     padding: 10px 5px;
     text-align: center;
 }
@@ -536,24 +525,16 @@
     }
 }
 
-@media (max-width: 750px) {
-    #timeLimit, #memoryLimit {
+@media (max-width: 600px) {
+    #problemLimits {
         display: none;
     }
-}
 
-@media (max-width: 550px) {
     #chooseFileLabel, #submitFileLabel {
         display: none;
     }
 
     #submissionsTable .language {
-        display: none;
-    }
-}
-
-@media (max-width: 500px) {
-    #problemScore {
         display: none;
     }
 }

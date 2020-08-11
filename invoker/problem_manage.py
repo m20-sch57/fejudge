@@ -35,10 +35,11 @@ class ProblemManager:
 
         self.testlib_path = self.build_path(os.path.join('files', 'testlib.h'))
 
-        checker_source = root.find('assets').find('checker').find('source')
-        self.checker_source_path = self.build_path(checker_source.attrib['path'])
+        checker = root.find('assets').find('checker')
+        self.checker_type = checker.attrib.get('type') or ''
+        self.checker_source_path = self.build_path(checker.find('source').attrib['path'])
         self.checker_binary_path = self.build_path('check.out')
-        self.checker_language = self.match_language(checker_source.attrib['type'])
+        self.checker_language = self.match_language(checker.find('source').attrib['type'])
 
         self.executables = []
         if root.find('files').find('executables') is not None:
@@ -53,11 +54,18 @@ class ProblemManager:
         self.main_solution_source_path = self.build_path(main_solution_source.attrib['path'])
         self.main_solution_language = self.match_language(main_solution_source.attrib['type'])
 
-        self.tests_to_generate = []
+        self.tests = []
+        self.test_points_enabled = False
         for ind, test in enumerate(testset.find('tests')):
             test_number = ind + 1
+            test_group = test.attrib.get('group') or ''
+            test_points = float(test.attrib.get('points')) if test.attrib.get('points') else 0
+            if test_points:
+                self.test_points_enabled = True
             test_info = {
                 'test_number': test_number,
+                'group': test_group,
+                'points': test_points,
                 'generate_input': not os.path.exists(self.test_input_path(test_number)),
                 'generate_output': not os.path.exists(self.test_output_path(test_number))
             }
@@ -65,7 +73,37 @@ class ProblemManager:
                 argv = test.attrib['cmd'].split()
                 test_info['program'] = argv[0]
                 test_info['additional_argv'] = argv[1:]
-            self.tests_to_generate.append(test_info)
+            self.tests.append(test_info)
+
+        self.groups = dict()
+        if testset.find('groups') is not None:
+            for group in testset.find('groups'):
+                name = group.attrib['name']
+                group_points = float(group.attrib.get('points')) if group.attrib.get('points') else 0
+                group_points_policy = group.attrib.get('points-policy') or ''
+                group_info = {
+                    'points': group_points,
+                    'points-policy': group_points_policy,
+                    'dependencies': []
+                }
+                if group.find('dependencies') is not None:
+                    for dependency in group.find('dependencies'):
+                        group_info['dependencies'].append(dependency.attrib['group'])
+                self.groups[name] = group_info
+        else:
+            default_points_policy = 'each-test' if self.test_points_enabled else 'complete-group'
+            self.groups[''] = {
+                'points-policy': default_points_policy,
+                'dependencies': []
+            }
+
+        self.group_test_indices = dict([(name, []) for name in self.groups.keys()])
+        for ind, test_info in enumerate(self.tests):
+            test_group = test_info['group']
+            self.group_test_indices[test_group].append(ind)
+
+        self.group_order = self.generate_group_order()
+        self.test_order = self.generate_test_order()
 
     def problem_name(self, language='english'):
         return self.select_language(self.names_dict, language)
@@ -76,21 +114,43 @@ class ProblemManager:
     def pdf_dir(self, language='english'):
         return self.select_language(self.pdf_dir_dict, language)
 
-    def build_path(self, relpath):
+    def build_path(self, relpath: str):
         return os.path.join(self.package_path, relpath)
 
-    def test_input_path(self, test_number):
+    def test_input_path(self, test_number: int):
         return self.input_path_pattern % test_number
 
-    def test_output_path(self, test_number):
+    def test_output_path(self, test_number: int):
         return self.output_path_pattern % test_number
 
+    def generate_group_order(self):
+        def dfs(u):
+            visited.add(u)
+            for v in self.groups[u]['dependencies']:
+                if v not in visited:
+                    dfs(v)
+            order.append(u)
+
+        order = []
+        visited = set()
+        for group in self.groups.keys():
+            if group not in visited:
+                dfs(group)
+        return order
+
+    def generate_test_order(self):
+        test_order = []
+        for group in self.group_order:
+            for ind in self.group_test_indices[group]:
+                test_order.append(ind)
+        return test_order
+
     @staticmethod
-    def select_language(dictionary, language):
+    def select_language(dictionary: dict, language: str):
         return dictionary[language] if language in dictionary.keys() else next(iter(dictionary.values()))
 
     @staticmethod
-    def match_language(language):
+    def match_language(language: str):
         if language.startswith('cpp'):
             return 'cpp'
         elif language.startswith('py'):

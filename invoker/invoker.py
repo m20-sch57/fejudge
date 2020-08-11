@@ -8,24 +8,30 @@ from sqlalchemy.orm import Session
 from pynats import NATSClient
 from pynats.exceptions import NATSError
 from socketio.exceptions import ConnectionError
-from evaluate import evaluate
-from problem_init import init, InitializationError
+from libsbox_client import Libsbox
 from models import Base
 from config import Config
 
 
 def message_handler(msg):
+    from evaluate import evaluate, EvaluationError
+    from problem_init import init, InitializationError
+
     obj = json.loads(msg.payload.decode('utf-8'))
-    if obj['type'] == 'evaluate':
-        evaluate(obj['submission_id'], session, sio)
-    elif obj['type'] == 'problem_init':
+    if obj.get('type') == 'evaluate':
         try:
-            init(obj['problem_id'], session)
+            evaluate(obj.get('submission_id'))
+        except EvaluationError as e:
+            print(e.cause)
+            print(e.details)
+    elif obj.get('type') == 'problem_init':
+        try:
+            init(obj.get('problem_id'))
         except InitializationError as e:
             print(e.cause)
             print(e.details)
     else:
-        print('Unsupported type of query: {}'.format(obj['type']))
+        print('Unsupported type of query: {}'.format(obj.get('type')))
 
 
 def connect_to_socketio():
@@ -51,16 +57,18 @@ def connect_to_nats():
             time.sleep(1)
 
 
-if __name__ == "__main__":
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-    Base.metadata.create_all(engine)
-    session = Session(bind=engine)
-
-    sio = socketio.Client()
-    nats = NATSClient(Config.NATS_URL, name=Config.INVOKER_NAME)
-
+def run():
     try:
         connect_to_socketio()
         connect_to_nats()
     except KeyboardInterrupt:
         exit()
+
+
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+Base.metadata.create_all(engine)
+session = Session(bind=engine)
+
+sio = socketio.Client()
+nats = NATSClient(Config.NATS_URL, name=Config.INVOKER_NAME)
+libsbox = Libsbox()

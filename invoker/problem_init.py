@@ -1,9 +1,10 @@
 import os
 
 from zipfile import ZipFile
-from libsbox_client import File, libsbox
+from services import commit_session, get_problem_by_id
+from invoker import libsbox
+from libsbox_client import File
 from problem_manage import ProblemManager
-from models import Problem
 from config import Config
 
 
@@ -14,7 +15,7 @@ class InitializationError(Exception):
         self.details = details
 
 
-def extract_archive(problem_id):
+def extract_archive(problem_id: int):
     archive_path = os.path.join(Config.PROBLEMS_UPLOAD_PATH, str(problem_id) + '.zip')
     problem_path = os.path.join(Config.PROBLEMS_PATH, str(problem_id))
     if not os.path.exists(archive_path):
@@ -23,7 +24,7 @@ def extract_archive(problem_id):
     return True
 
 
-def compile_checker(problem_manager):
+def compile_checker(problem_manager: ProblemManager):
     checker_source_file = File(
         language=problem_manager.checker_language,
         external_path=problem_manager.checker_source_path
@@ -34,20 +35,21 @@ def compile_checker(problem_manager):
     )
     libsbox.clear()
     libsbox.import_file(checker_source_file)
-    libsbox.import_file(testlib_file)
+    if problem_manager.checker_type == 'testlib':
+        libsbox.import_file(testlib_file)
     error_file = libsbox.create_file('error')
-    compile_status, compile_task, checker_binary_file = libsbox.compile(checker_source_file,
+    compilation_status, compilation_task, checker_binary_file = libsbox.compile(checker_source_file,
         time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
         memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
         max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
     )
-    if compile_status != 'OK':
+    if compilation_status != 'OK':
         raise InitializationError(
             cause='Failed to compile checker',
             details={
-                'status': compile_status,
+                'status': compilation_status,
                 'errors': libsbox.read_file(error_file)
             }
         )
@@ -55,32 +57,32 @@ def compile_checker(problem_manager):
     libsbox.export_file(checker_binary_file)
 
 
-def compile_main_solution(problem_manager):
+def compile_main_solution(problem_manager: ProblemManager):
     main_solution_source_file = File(
         language=problem_manager.main_solution_language,
         external_path=problem_manager.main_solution_source_path
     )
     libsbox.import_file(main_solution_source_file)
     error_file = libsbox.create_file('error')
-    compile_status, compile_task, main_solution_binary_file = libsbox.compile(main_solution_source_file,
+    compilation_status, compilation_task, main_solution_binary_file = libsbox.compile(main_solution_source_file,
         time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
         memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
         max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
     )
-    if compile_status != 'OK':
+    if compilation_status != 'OK':
         raise InitializationError(
             cause='Failed to compile main solution',
             details={
-                'status': compile_status,
+                'status': compilation_status,
                 'errors': libsbox.read_file(error_file)
             }
         )
     return main_solution_binary_file
 
 
-def compile_executables(problem_manager):
+def compile_executables(problem_manager: ProblemManager):
     executables_bin = []
     for executable in problem_manager.executables:
         executable_source_file = File(
@@ -89,18 +91,18 @@ def compile_executables(problem_manager):
         )
         libsbox.import_file(executable_source_file)
         error_file = libsbox.create_file('error')
-        compile_status, compile_task, executable_binary_file = libsbox.compile(executable_source_file,
+        compilation_status, compilation_task, executable_binary_file = libsbox.compile(executable_source_file,
             time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
             memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
             max_threads=10,
             stdout=error_file.internal_path,
             stderr='@_stdout'
         )
-        if compile_status != 'OK':
+        if compilation_status != 'OK':
             raise InitializationError(
                 cause='Failed to compile executable {}'.format(executable_source_file.internal_path),
                 details={
-                    'status': compile_status,
+                    'status': compilation_status,
                     'errors': libsbox.read_file(error_file)
                 }
             )
@@ -108,8 +110,8 @@ def compile_executables(problem_manager):
     return executables_bin
 
 
-def generate_tests(problem_manager, main_solution_binary_file, executables_bin):
-    for test_info in problem_manager.tests_to_generate:
+def generate_tests(problem_manager: ProblemManager, main_solution_binary_file: File, executables_bin: list):
+    for test_info in problem_manager.tests:
         test_number = test_info['test_number']
         input_file = libsbox.create_file('input')
         input_file.external_path = problem_manager.test_input_path(test_number)
@@ -156,9 +158,9 @@ def generate_tests(problem_manager, main_solution_binary_file, executables_bin):
             libsbox.export_file(output_file)
         else:
             libsbox.import_file(output_file)
-    
 
-def init(problem_id, session):
+
+def init(problem_id: int):
     print('Started initializing problem {}'.format(problem_id))
     success = extract_archive(problem_id)
     if not success:
@@ -175,7 +177,7 @@ def init(problem_id, session):
     executables_bin = compile_executables(problem_manager)
     print('Generating tests...')
     generate_tests(problem_manager, main_solution_binary_file, executables_bin)
-    problem = session.query(Problem).filter_by(id=problem_id).first()
+    problem = get_problem_by_id(problem_id)
     problem.set_names(problem_manager.names_dict)
-    session.commit()
+    commit_session()
     print('Finished building package for problem {}'.format(problem_id))

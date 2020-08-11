@@ -10,7 +10,6 @@ class Problem(Base):
     __tablename__ = 'problem'
     id = sa.Column(sa.Integer, primary_key=True)
     names = sa.Column(sa.Text, default='{}')
-    max_score = sa.Column(sa.Integer, default=100)
     max_submissions = sa.Column(sa.Integer, default=50)
 
     submissions = sa.orm.relationship('Submission', backref='problem', lazy='dynamic')
@@ -26,7 +25,7 @@ class Submission(Base):
     __tablename__ = 'submission'
     id = sa.Column(sa.Integer, primary_key=True)
     problem_id = sa.Column(sa.Integer, sa.ForeignKey('problem.id'))
-    language = sa.Column(sa.String(16))
+    language = sa.Column(sa.String(32))
     source = sa.Column(sa.Text)
     status = sa.Column(sa.String(32))
     score = sa.Column(sa.Integer)

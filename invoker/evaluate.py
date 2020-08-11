@@ -1,10 +1,19 @@
-from libsbox_client import File, libsbox
+from services import commit_session, get_submission_by_id,\
+    send_compiling_event, send_evaluating_event, send_completed_event
+from invoker import libsbox
+from libsbox_client import File
 from problem_manage import ProblemManager
-from models import Submission
 from config import Config
 
 
-def get_checker_status(exit_code):
+class EvaluationError(Exception):
+    def __init__(self, cause='', details=''):
+        super(EvaluationError, self).__init__(cause)
+        self.cause = cause
+        self.details = details
+
+
+def parse_checker_status(exit_code: int):
     if exit_code == 0:
         return 'OK'
     if exit_code == 1:
@@ -14,7 +23,29 @@ def get_checker_status(exit_code):
     return 'FAIL'
 
 
-def run_on_test(test_number, binary_file, problem_manager):
+def compile(submission):
+    libsbox.clear()
+    source_file = libsbox.create_file('participant', language=submission.language)
+    error_file = libsbox.create_file('error')
+    libsbox.write_file(source_file, submission.source)
+    compilation_status, compilation_task, binary_file = libsbox.compile(source_file,
+        time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
+        memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
+        max_threads=10,
+        stdout=error_file.internal_path,
+        stderr='@_stdout'
+    )
+    compilation_details = libsbox.read_file(error_file)
+    return (compilation_status, compilation_details, binary_file)
+    # write_logs(submission.id,
+    #     'Compilation code: {}\nCompilation output:\n{}\n\n'.format(
+    #         compilation_task['exit_code'],
+    #         compilation_details
+    #     )
+    # )
+
+
+def run_on_test(test_number: int, binary_file: File, problem_manager: ProblemManager):
     input_file = File(
         internal_path='input.txt',
         external_path=problem_manager.test_input_path(test_number)
@@ -54,7 +85,7 @@ def run_on_test(test_number, binary_file, problem_manager):
     )
     checker_exit_code = checker_task['exit_code']
     test_status = participant_status if checker_status in ['OK', 'RE'] else 'FAIL'
-    test_status = get_checker_status(checker_exit_code) if test_status == 'OK' else test_status
+    test_status = parse_checker_status(checker_exit_code) if test_status == 'OK' else test_status
     test_details = {
         'status': test_status,
         'time_usage_s': participant_task['time_usage_ms'] / 1000,
@@ -82,60 +113,77 @@ def run_on_test(test_number, binary_file, problem_manager):
     # ))
 
 
-def compile(submission):
-    libsbox.clear()
-    source_file = libsbox.create_file('participant', language=submission.language)
-    error_file = libsbox.create_file('error')
-    libsbox.write_file(source_file, submission.source)
-    compile_status, compile_task, binary_file = libsbox.compile(source_file,
-        time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
-        memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
-        max_threads=10,
-        stdout=error_file.internal_path,
-        stderr='@_stdout'
-    )
-    compile_details = libsbox.read_file(error_file)
-    return (compile_status, compile_details, binary_file)
-    # write_logs(submission.id,
-    #     'Compilation code: {}\nCompilation output:\n{}\n\n'.format(
-    #         compile_task['exit_code'],
-    #         compile_details
-    #     )
-    # )
+def check_dependencies(group: str, group_dependencies: list, failed_groups: set):
+    for previous_group in group_dependencies:
+        if previous_group in failed_groups:
+            return False
+    return True
 
 
-def evaluate(submission_id, session, sio):
-    submission = session.query(Submission).filter_by(id=submission_id).first()
+def run_on_tests(binary_file: File, problem_manager: ProblemManager):
+    evaluation_details = [{'status': 'NO'}] * problem_manager.test_count
+    group_score = dict([(name, 0) for name in problem_manager.groups.keys()])
+    failed_groups = set()
+    for ind in problem_manager.test_order:
+        test_number = problem_manager.tests[ind]['test_number']
+        test_group = problem_manager.tests[ind]['group']
+        test_points = problem_manager.tests[ind]['points']
+        test_group_info = problem_manager.groups[test_group]
+        if test_group in failed_groups:
+            continue
+        if not check_dependencies(test_group, test_group_info['dependencies'], failed_groups):
+            failed_groups.add(test_group)
+            continue
+        test_status, test_details = run_on_test(test_number, binary_file, problem_manager)
+        evaluation_details[ind] = test_details
+        if test_status == 'OK':
+            group_score[test_group] += test_points
+        elif test_group_info['points-policy'] == 'complete-group':
+            group_score[test_group] = 0
+            failed_groups.add(test_group)
+    submission_status = 'accepted'
+    for evaluation_info in evaluation_details:
+        if evaluation_info['status'] != 'OK':
+            submission_status = 'partial'
+    submission_score = 0
+    for score in group_score.values():
+        submission_score += score
+    return evaluation_details, submission_status, submission_score
+
+
+def evaluate(submission_id):
+    submission = get_submission_by_id(submission_id)
     if submission is None:
         return
     problem_manager = ProblemManager(submission.problem_id)
     submission.status = 'compiling'
-    submission.score = 0
-    session.commit()
-    sio.emit('compiling', submission_id)
-    compile_status, compile_details, binary_file = compile(submission)
-    submission_protocol = {'tests': [], 'compiler': compile_details}
-    if compile_status == 'OK':
+    commit_session()
+    send_compiling_event(submission_id)
+    try:
+        compilation_status, compilation_details, binary_file = compile(submission)
+    except Exception as e:
+        raise EvaluationError(
+            cause='An exception has occurred during compiling the solution',
+            details=str(e)
+        )
+    if compilation_status == 'OK':
         submission.status = 'evaluating'
-        session.commit()
-        sio.emit('evaluating', submission_id)
-        test_count = problem_manager.test_count
-        submission_protocol['tests'] = [{'status': 'NO'}] * test_count
-        current_score = submission.problem.max_score
-        for test_number in range(test_count):
-            test_status, test_details = run_on_test(test_number + 1, binary_file, problem_manager)
-            submission_protocol['tests'][test_number] = test_details
-            if test_status != 'OK': # TODO: valuer
-                current_score = 0
-                break
-        submission.score = current_score
-        if current_score == submission.problem.max_score:
-            submission.status = 'accepted'
-        else:
-            submission.status = 'partial'
+        commit_session()
+        send_evaluating_event(submission_id)
+        try:
+            evaluation_details, submission.status, submission.score = run_on_tests(binary_file, problem_manager)
+        except Exception as e:
+            raise EvaluationError(
+                cause='An exception has occurred during running the solution',
+                details=str(e)
+            )
     else:
-        submission.score = 0
+        evaluation_details = []
         submission.status = 'compilation_error'
-    submission.set_protocol(submission_protocol)
-    session.commit()
-    sio.emit('completed', submission_id)
+        submission.score = 0
+    submission.set_protocol({
+        'compilation': compilation_details,
+        'evaluation': evaluation_details
+    })
+    commit_session()
+    send_completed_event(submission_id)

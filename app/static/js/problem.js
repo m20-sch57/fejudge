@@ -274,7 +274,7 @@ function appendNewTestDetails(testNumber) {
         if (name === "number") $(elem).text(testNumber);
         $(protocolRow).append(elem);
     }
-    $("#submissionProtocolTable tbody").append(protocolRow);
+    $("#submissionEvaluationTable tbody").append(protocolRow);
 }
 
 function hideAllDetails() {
@@ -290,13 +290,13 @@ function showSubmissionProtocol() {
     $("#submissionProtocol").show();
     $("#submissionDetailsBox .extra-content").scrollTop(0);
     $("#submissionProtocolNavButton").addClass("active");
-    $("#submissionCompiler").hide();
-    $("#submissionTests").hide();
-    if ($("#submissionProtocolTable tbody").children().length == 0) {
-        $("#submissionCompiler").show();
+    $("#submissionCompilation").hide();
+    $("#submissionEvaluation").hide();
+    if ($("#submissionEvaluationTable tbody").children().length == 0) {
+        $("#submissionCompilation").show();
     }
     else {
-        $("#submissionTests").show();
+        $("#submissionEvaluation").show();
     }
 }
 
@@ -325,13 +325,13 @@ function initSubmissionProtocol(details) {
         $("#submissionResultStatus").html(
             `<span class="fa fa-times"></span> ${submissionStatusMatching[details.status]}`
         );
-    let testsPassed = numberOfTestsPassed(details.protocol.tests);
+    let testsPassed = numberOfTestsPassed(details.protocol.evaluation);
     $("#submissionResultTestsPassed").text(
-        `Tests passed: ${testsPassed} of ${details.protocol.tests.length}`
+        `Tests passed: ${testsPassed} of ${details.protocol.evaluation.length}`
     );
-    $("#submissionCompilerLog").text(details.protocol.compiler);
-    for (let testNumber = 1; testNumber <= details.protocol.tests.length; ++testNumber) {
-        let testDetails = details.protocol.tests[testNumber - 1];
+    $("#submissionCompilationLog").text(details.protocol.compilation);
+    for (let testNumber = 1; testNumber <= details.protocol.evaluation.length; ++testNumber) {
+        let testDetails = details.protocol.evaluation[testNumber - 1];
         let testStatus = testDetails.status;
         let testTime = testDetails.time_usage_s;
         let testMemory = testDetails.memory_usage_kb;
@@ -380,8 +380,8 @@ async function loadSubmissionDetails(submissionId) {
     hideAllDetails();
     $("#submissionDetailsId").text(submissionId);
     $("#submissionProtocolNavButton").addClass("active");
-    $("#submissionCompilerLog").text("");
-    $("#submissionProtocolTable tbody").empty();
+    $("#submissionCompilationLog").text("");
+    $("#submissionEvaluationTable tbody").empty();
     $("#submissionSource").empty();
     let response = await fetch(`/submissions/${submissionId}/details`);
     let details = await response.json();

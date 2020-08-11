@@ -3,4 +3,4 @@
 export STORAGE_DIR=$PWD/../storage
 
 libsboxd start &
-python3 invoker.py
+python3 run.py

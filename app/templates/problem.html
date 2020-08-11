@@ -25,9 +25,6 @@
                             {{ problem_manager.memory_limit_kb // 1024 }} MB
                         </div>
                     </div>
-                    <div id="problemScore">
-                        {{ problem.max_score }} points
-                    </div>
                 </div>
             </div>
             <div id="statementsContent">
@@ -163,12 +160,11 @@
                             <div class="col-grey" id="submissionResultTestsPassed">
                             </div>
                         </div>
-                        <div id="submissionCompiler">
-                            <pre><code id="submissionCompilerLog">
-                            </code></pre>
+                        <div id="submissionCompilation">
+                            <pre><code id="submissionCompilationLog"></code></pre>
                         </div>
-                        <div id="submissionTests">
-                            <table id="submissionProtocolTable">
+                        <div id="submissionEvaluation">
+                            <table id="submissionEvaluationTable">
                             <thead>
                                 <th>Test #</th>
                                 <th>Status</th>
@@ -181,8 +177,7 @@
                         </div>
                     </div>
                     <div id="submissionCode">
-                        <pre><code id="submissionSource">
-                        </code></pre>
+                        <pre><code id="submissionSource"></code></pre>
                         <div id="submissionCodeBottom">
                             <button class="btn-icon btn-green" id="submissionCodeCopy">
                                 <span class="fa fa-clipboard"></span>

@@ -10,7 +10,7 @@ With help of [libsbox](https://github.com/Forestryks/libsbox), Fejudge is design
 
 To become familiar with Fejudge, visit http://m20-sch57.site:3113/, where the test build is located. There are some easy problems which you can solve and submit solutions in order to check perfomance of Fejudge (or to enjoy its nice user interface).
 
-Currently Fejudge supports problem packages which were built on [polygon](http://polygon.codeforces.com), and only full problem scoring (without subtasks).
+Fejudge supports problem packages built on [polygon](http://polygon.codeforces.com).
 
 ## Getting started
 

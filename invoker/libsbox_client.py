@@ -7,14 +7,14 @@ import socket
 from config import Config
 
 
-def compile_argv(source_path, binary_path, language):
+def compilation_argv(source_path, binary_path, language):
     if language == 'cpp':
         return ['g++-9', source_path, '-o', binary_path, '-std=c++17', '-Wall', '-Wextra', '-O2']
     else:
         return ['cp', source_path, binary_path]
 
 
-def run_argv(binary_path, language):
+def launch_argv(binary_path, language):
     if language == 'cpp':
         return ['./' + binary_path]
     elif language == 'py':
@@ -92,14 +92,14 @@ class Libsbox:
     def compile(self, source_file: File, **kwargs):
         binary_path = os.path.splitext(source_file.internal_path)[0]
         binary_file = self.create_file(binary_path, language=source_file.language, add_extension=False)
-        argv = compile_argv(source_file.internal_path, binary_file.internal_path, source_file.language)
+        argv = compilation_argv(source_file.internal_path, binary_file.internal_path, source_file.language)
         properties = self.build_properties(argv=argv, work_dir=self.home_dir, **kwargs)
         response = json.loads(self.send(properties))
         status = self.parse_execution_status(response['tasks'][0], properties['tasks'][0])
         return (status, response['tasks'][0], binary_file)
 
     def run(self, binary_file: File, additional_argv=[], **kwargs):
-        argv = run_argv(binary_file.internal_path, binary_file.language)
+        argv = launch_argv(binary_file.internal_path, binary_file.language)
         argv.extend(additional_argv)
         properties = self.build_properties(argv=argv, work_dir=self.home_dir, **kwargs)
         response = json.loads(self.send(properties))
@@ -146,6 +146,3 @@ class Libsbox:
                 }
             ]
         }
-
-
-libsbox = Libsbox()

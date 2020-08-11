@@ -50,7 +50,7 @@ class Contest(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     name = db.Column(db.String(64), unique=True)
-    contest_type = db.Column(db.String(16))
+    contest_type = db.Column(db.String(32))
     start_time = db.Column(db.DateTime)
     duration = db.Column(db.Interval)
 
@@ -70,22 +70,15 @@ class Contest(db.Model):
             score += problem.score(user)
         return score
 
-    def total_maxscore(self):
-        max_score = 0
-        for problem in self.problems:
-            max_score += problem.max_score
-        return max_score
-
 
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     contest_id = db.Column(db.Integer, db.ForeignKey('contest.id'))
 
-    problem_type = db.Column(db.String(16))
-    status = db.Column(db.String(16), default='')
+    problem_type = db.Column(db.String(32))
+    status = db.Column(db.String(32), default='')
     number = db.Column(db.Integer)
     names = db.Column(db.Text, default='{}')
-    max_score = db.Column(db.Integer, default=100)
     max_submissions = db.Column(db.Integer, default=50)
 
     submissions = db.relationship('Submission', backref='problem', lazy='dynamic')
@@ -153,9 +146,9 @@ class Submission(db.Model):
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     time = db.Column(db.DateTime)
-    language = db.Column(db.String(16))
+    language = db.Column(db.String(32))
     source = db.Column(db.Text)
-    status = db.Column(db.String(16))
+    status = db.Column(db.String(32))
     score = db.Column(db.Integer)
     protocol = db.Column(db.Text, default='{}')
 
