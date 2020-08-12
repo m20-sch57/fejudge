@@ -9,16 +9,29 @@ const languageMatching = {
     "cpp": "GNU C++ 9.2.0",
     "py": "Python 3.8"
 };
-const submissionStatusMatching = {
-    "accepted": "Accepted",
-    "partial": "Partial solution",
-    "compilation_error": "Not compiled"
+const statusMatching = {
+    "AC": "Accepted",
+    "PT": "Partial solution",
+    "CE": "Not compiled",
+    "WA": "Wrong answer",
+    "PE": "Presentation error",
+    "RE": "Runtime error",
+    "ML": "Memory limit hit",
+    "TL": "Time limit hit",
+    "IL": "Idleness limit hit"
 };
-const submissionStyleMatching = {
-    "accepted": "col-green",
-    "partial": "col-red",
-    "compilation_error": "col-red"
-};
+
+function getLanguageName(status) {
+    return languageMatching[status];
+}
+
+function getStatusName(status) {
+    return statusMatching[status];
+}
+
+function getStatusColor(status) {
+    return status === "AC" ? "col-green" : "col-red";
+}
 
 function resize() {
     let height = $(window).height() - $("#statementsTitle").outerHeight();
@@ -186,7 +199,7 @@ function prependNewSubmission(submissionId) {
 }
 
 function inQueue(submissionId, submissionLanguage) {
-    $(`#submission_${submissionId}_language`).text(languageMatching[submissionLanguage]);
+    $(`#submission_${submissionId}_language`).text(getLanguageName(submissionLanguage));
     $(`#submission_${submissionId}_status`).text("In queue");
     $(`#submission_${submissionId}_score`).html("&mdash;");
     $(`#submission_${submissionId}_details`).html("&mdash;");
@@ -218,8 +231,8 @@ function completed(submissionId, submissionStatus, submissionScore) {
     let details = $(`#submission_${submissionId}_details`);
     status.empty();
     status.removeClass("col-grey");
-    status.addClass(submissionStyleMatching[submissionStatus]);
-    status.text(submissionStatusMatching[submissionStatus]);
+    status.addClass(getStatusColor(submissionStatus));
+    status.text(getStatusName(submissionStatus));
     score.text(submissionScore);
     details.empty();
     let detailsButton = document.createElement("button");
@@ -266,7 +279,7 @@ async function loadSubmissions() {
 
 function appendNewTestDetails(testNumber) {
     let protocolRow = document.createElement("tr");
-    let cellNames = ["number", "status", "time", "memory"];
+    let cellNames = ["number", "status", "time", "memory", "score"];
     for (let name of cellNames) {
         let elem = document.createElement("td");
         $(elem).addClass(name);
@@ -316,14 +329,14 @@ function showSubmissionInfo() {
 
 function initSubmissionProtocol(details) {
     $("#submissionResultStatus").removeClass();
-    $("#submissionResultStatus").addClass(submissionStyleMatching[details.status]);
-    if (details.status === "accepted")
+    $("#submissionResultStatus").addClass(getStatusColor(details.status));
+    if (details.status === "AC")
         $("#submissionResultStatus").html(
-            `<span class="fa fa-check"></span> ${submissionStatusMatching[details.status]}`
+            `<span class="fa fa-check"></span> ${getStatusName(details.status)}`
         );
     else
         $("#submissionResultStatus").html(
-            `<span class="fa fa-times"></span> ${submissionStatusMatching[details.status]}`
+            `<span class="fa fa-times"></span> ${getStatusName(details.status)}`
         );
     let testsPassed = numberOfTestsPassed(details.protocol.evaluation);
     $("#submissionResultTestsPassed").text(
@@ -335,10 +348,14 @@ function initSubmissionProtocol(details) {
         let testStatus = testDetails.status;
         let testTime = testDetails.time_usage_s;
         let testMemory = testDetails.memory_usage_kb;
+        let testScore = testDetails.score;
+        let testMaxscore = testDetails.maxscore;
+        let testScoreStr = testMaxscore === undefined ? "" : `${testScore} (${testMaxscore})`;
         appendNewTestDetails(testNumber);
         $(`#protocol_${testNumber}_status`).text(testStatus);
         $(`#protocol_${testNumber}_time`).text(testTime);
         $(`#protocol_${testNumber}_memory`).text(testMemory);
+        $(`#protocol_${testNumber}_score`).text(testScoreStr);
         if (testStatus === "OK")
             $(`#protocol_${testNumber}_status`).addClass("col-green");
         else if (testStatus === "NO")
@@ -361,11 +378,13 @@ function initSubmissionCode(details) {
 }
 
 function initSubmissionInfo(details) {
-    $("#submissionInfoLanguage").text(languageMatching[details.language]);
-    $("#submissionInfoTime").text(details.time);
-    $("#submissionInfoStatus").text(submissionStatusMatching[details.status]);
-    $("#submissionInfoScore").text(details.score);
     $("#submissionInfoUser").text(details.user);
+    $("#submissionInfoContest").text(details.contest);
+    $("#submissionInfoProblem").text(details.problem);
+    $("#submissionInfoLanguage").text(getLanguageName(details.language));
+    $("#submissionInfoTime").text(details.time);
+    $("#submissionInfoStatus").text(getStatusName(details.status));
+    $("#submissionInfoScore").text(details.score);
 }
 
 function numberOfTestsPassed(tests) {
@@ -430,7 +449,7 @@ $("#taskSelect").change(function () {
 });
 
 languageOptions.forEach((it) => {
-    $("#languageSelect").append(new Option(languageMatching[it], it));
+    $("#languageSelect").append(new Option(getLanguageName(it), it));
 });
 $("#languageSelect").val(localStorage.getItem("currentLanguage"));
 $("#languageSelect").change(function () {

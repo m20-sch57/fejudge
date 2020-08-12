@@ -228,6 +228,8 @@ def submission_details(submission_id):
         'protocol': submission.get_protocol(),
         'source': submission.source,
         'user': submission.user.username,
+        'contest': submission.problem.contest.name,
+        'problem': submission.problem.number,
         'language': submission.language,
         'time': submission.time,
         'status': submission.status,

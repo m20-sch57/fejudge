@@ -79,10 +79,8 @@ class ProblemManager:
         if testset.find('groups') is not None:
             for group in testset.find('groups'):
                 name = group.attrib['name']
-                group_points = float(group.attrib.get('points')) if group.attrib.get('points') else 0
                 group_points_policy = group.attrib.get('points-policy') or ''
                 group_info = {
-                    'points': group_points,
                     'points-policy': group_points_policy,
                     'dependencies': []
                 }

@@ -87,7 +87,6 @@ def run_on_test(test_number: int, binary_file: File, problem_manager: ProblemMan
     test_status = participant_status if checker_status in ['OK', 'RE'] else 'FAIL'
     test_status = parse_checker_status(checker_exit_code) if test_status == 'OK' else test_status
     test_details = {
-        'status': test_status,
         'time_usage_s': participant_task['time_usage_ms'] / 1000,
         'wall_time_usage_s': participant_task['wall_time_usage_ms'] / 1000,
         'memory_usage_kb': participant_task['memory_usage_kb']
@@ -135,19 +134,29 @@ def run_on_tests(binary_file: File, problem_manager: ProblemManager):
             failed_groups.add(test_group)
             continue
         test_status, test_details = run_on_test(test_number, binary_file, problem_manager)
-        evaluation_details[ind] = test_details
-        if test_status == 'OK':
-            group_score[test_group] += test_points
-        elif test_group_info['points-policy'] == 'complete-group':
+        test_score = test_points if test_status == 'OK' else 0
+        evaluation_details[ind] = {
+            'status': test_status,
+            'score': test_score,
+            'maxscore': test_points,
+            **test_details
+        }
+        group_score[test_group] += test_score
+        if test_status != 'OK' and test_group_info['points-policy'] == 'complete-group':
             group_score[test_group] = 0
             failed_groups.add(test_group)
-    submission_status = 'accepted'
-    for evaluation_info in evaluation_details:
-        if evaluation_info['status'] != 'OK':
-            submission_status = 'partial'
+
+    submission_status = 'AC'
+    for ind in problem_manager.test_order:
+        test_status = evaluation_details[ind]['status']
+        if test_status != 'OK':
+            submission_status = test_status if not problem_manager.test_points_enabled else 'PT'
+            break
     submission_score = 0
     for score in group_score.values():
         submission_score += score
+    if not problem_manager.test_points_enabled and submission_status == 'AC':
+        submission_score = 100
     return evaluation_details, submission_status, submission_score
 
 
@@ -179,7 +188,7 @@ def evaluate(submission_id):
             )
     else:
         evaluation_details = []
-        submission.status = 'compilation_error'
+        submission.status = 'CE'
         submission.score = 0
     submission.set_protocol({
         'compilation': compilation_details,
