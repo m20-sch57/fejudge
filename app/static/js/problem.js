@@ -18,7 +18,8 @@ const statusMatching = {
     "RE": "Runtime error",
     "ML": "Memory limit hit",
     "TL": "Time limit hit",
-    "IL": "Idleness limit hit"
+    "IL": "Idleness limit hit",
+    "FAIL": "Check failed"
 };
 
 function getLanguageName(status) {
