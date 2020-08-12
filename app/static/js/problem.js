@@ -367,7 +367,7 @@ function initSubmissionProtocol(details) {
 }
 
 function initSubmissionCode(details) {
-    $("#submissionSource").html(hljs.highlightAuto(details.source).value);
+    $("#submissionSource").html(hljs.highlight(details.language, details.source).value);
     $("#submissionCodeCopy").click(() => {
         navigator.clipboard.writeText(details.source).then(() => {
             $("#submissionCodeCopyHint").fadeIn(300);
