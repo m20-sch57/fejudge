@@ -155,6 +155,19 @@ def finish_contest(contest_id):
     return redirect(url_for('load_problem', contest_id=contest.id, number=1, attr='main'))
 
 
+# if contest_request.state() == 'Finished':
+#     flash('Ваше участие в контесте завершено', category='alert-info')
+# if problem.problem_type == 'Programming':
+#     problem_form = FileProblemForm(language=current_user.active_language)
+#     return render_template('contest_problem_prog.html', title=contest.name, contest=contest,
+#         problem=problem, problem_manager=problem_manager, request=contest_request,
+#         submissions=submissions, form=problem_form)
+# elif problem.problem_type == 'Test':
+#     problem_form = InputProblemForm()
+#     return render_template('contest_problem_test.html', title=contest.name, contest=contest,
+#         problem=problem, request=contest_request, submissions=submissions, form=problem_form)
+
+
 @app.route('/contests/<contest_id>/admin', methods=['GET', 'POST'])
 @app.route('/contests/<contest_id>/admin/info', methods=['GET', 'POST'])
 @login_required

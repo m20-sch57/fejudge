@@ -12,19 +12,16 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    padding: 25px;
+    align-items: center;
+    padding: 30px;
 }
 
 #title {
-    padding: 5px;
     margin-right: auto;
     font-size: 30px;
 }
 
 #logout {
-    padding: 5px;
-    margin-top: auto;
-    margin-bottom: auto;
     font-size: 20px;
 }
 
@@ -36,7 +33,8 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    padding: 25px;
+    align-items: center;
+    padding: 30px;
     color: inherit;
     border-bottom: 1px solid whitesmoke;
     text-decoration: none;
@@ -48,7 +46,6 @@
 }
 
 .contest-label {
-    padding: 5px;
     margin-right: auto;
     font-size: 22px;
 }
@@ -56,9 +53,6 @@
 .contest-details {
     display: flex;
     flex-flow: row;
-    padding: 5px;
-    margin-top: auto;
-    margin-bottom: auto;
 }
 
 .contest-status {

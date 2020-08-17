@@ -15,8 +15,9 @@
     background-color: white;
     border-radius: 20px;
     opacity: 1;
-    box-shadow: 0 0 10px lightgrey;
+    box-shadow: 0 2px 7px grey;
     transition: opacity 300ms linear;
+    z-index: 999;
 }
 
 #messages .message.hidden {

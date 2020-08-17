@@ -167,6 +167,7 @@ def init(problem_id: int):
         raise InitializationError(cause='Failed to extract archive')
     try:
         problem_manager = ProblemManager(problem_id)
+        problem_manager.init_tests()
     except Exception as e:
         raise InitializationError(cause='Problem package is invalid', details={'error': str(e)})
     print('Compiling checker...')

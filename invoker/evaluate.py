@@ -165,6 +165,7 @@ def evaluate(submission_id):
     if submission is None:
         return
     problem_manager = ProblemManager(submission.problem_id)
+    problem_manager.init_tests()
     submission.status = 'compiling'
     commit_session()
     send_compiling_event(submission_id)

@@ -86,7 +86,7 @@ class Problem(db.Model):
     def __repr__(self):
         return '<PROBLEM {}>'.format(self.id)
 
-    def get_name(self, language='english'):
+    def get_name(self, language):
         names_dict = json.loads(self.names)
         if language in names_dict.keys():
             return names_dict[language]

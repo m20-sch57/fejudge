@@ -75,9 +75,16 @@
     margin-bottom: 1em;
 }
 
-.problem-statement .sample-tests .input {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+.problem-statement .sample-tests pre {
+    padding: 0.5em;
+    margin: 0;
+    border: 1px solid whitesmoke;
+}
+
+.problem-statement .sample-tests .title {
+    font-size: 110%;
+    padding: 0.5em;
+    background-color: whitesmoke;
 }
 
 .problem-statement .sample-tests .input .title {
@@ -85,41 +92,25 @@
     border-top-right-radius: 10px;
 }
 
-.problem-statement .sample-tests .output {
-    margin-bottom: 1.5em;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
 .problem-statement .sample-tests .output pre {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.problem-statement .sample-tests pre {
-    padding: 10px;
-    margin: 0;
-    border: 1px solid whitesmoke;
-}
-
-.problem-statement .sample-tests .title {
-    font-size: 120%;
-    padding: 8px 10px 8px 10px;
-    background-color: whitesmoke;
+.problem-statement .sample-tests .output {
+    margin-bottom: 1em;
 }
 
 .problem-statement .tex-formula {
     vertical-align: middle;
     margin: 0;
-    border:medium none;
+    border: medium none;
     position: relative;
     bottom: 2px;
 }
 
 .problem-statement .tex-span {
     font-size: 125%;
-    font-family: times new roman;
-    white-space: nowrap;
 }
 
 .problem-statement .tex-font-size-tiny {

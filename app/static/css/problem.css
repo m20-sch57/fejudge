@@ -33,32 +33,34 @@
 #problemInfo {
     display: flex;
     flex-flow: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     flex-grow: 1;
-    padding: 10px;
+    align-items: center;
+    margin: 10px;
 }
 
 #problemName {
-    padding-right: 20px;
-    margin: auto auto auto 0;
+    flex-grow: 1;
+    width: 0;
     font-size: 25px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-#problemLimits {
+#problemLanguage {
     display: flex;
     flex-flow: row;
+    align-items: center;
 }
 
-#timeLimit {
-    padding-right: 20px;
-    margin: auto 0 auto 0;
-    font-size: 20px;
+#problemLanguageLabel {
+    margin-right: 15px;
+    font-size: 18px;
 }
 
-#memoryLimit {
-    padding-right: 20px;
-    margin: auto 0 auto 0;
-    font-size: 20px;
+#problemLanguageSelect {
+    margin-right: 5px;
 }
 
 #statementsContent {
@@ -72,6 +74,28 @@
     overflow: auto;
 }
 
+#statementsHeader {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0 auto 30px auto;
+    max-width: 1024px;
+    font-size: 20px;
+}
+
+#timeLimit {
+    margin: 5px 20px 5px 5px;
+}
+
+#memoryLimit {
+    margin: 5px auto 5px 5px;
+}
+
+#inputOutput {
+    margin: 5px;
+}
+
 #statementsLoading {
     position: absolute;
     top: 0;
@@ -83,10 +107,6 @@
 
 #statementsLoadingLabel {
     margin: auto;
-}
-
-#statementsBox.collapsed #problemLimits {
-    margin-right: 0;
 }
 
 #extraBox {
@@ -154,6 +174,10 @@
     flex-grow: 1;
 }
 
+#submitTitle {
+    align-items: center;
+}
+
 #submitTitle::after {
     content: "";
     position: absolute;
@@ -166,37 +190,31 @@
 }
 
 #submitText {
-    padding: 20px;
-    margin: auto auto auto 0;
+    margin: 20px;
     font-size: 25px;
 }
 
 #submitForm {
-    padding: 30px 20px 10px 20px;
+    margin: 25px 20px;
 }
 
 #taskRow, #languageRow, #chooseFileRow, #submitFileRow {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
+    align-items: center;
     margin-bottom: 10px;
 }
 
 #taskLabel, #languageLabel, #chooseFileLabel, #submitFileLabel {
     flex-basis: 150px;
-    padding: 5px 0;
-    margin: auto 10px;
+    margin: 5px 10px;
     font-size: 17px;
 }
 
 #taskSelect, #languageSelect {
     flex-grow: 1;
-    margin-right: 5px;
     width: 200px;
-}
-
-#chooseFileInput {
-    display: none;
 }
 
 #chooseFileButton, #submitFileButton {
@@ -216,7 +234,7 @@
 }
 
 #submissions {
-    padding: 20px;
+    margin: 0 20px 20px 20px;
 }
 
 #submissionsLoading {
@@ -269,11 +287,12 @@
     flex-flow: row;
     flex-wrap: wrap;
     flex-grow: 1;
+    padding-left: 20px;
 }
 
 #submissionDetailsLabel {
-    padding: 0 20px;
-    margin: auto auto auto 0;
+    flex-grow: 1;
+    margin: auto 20px auto 0;
     font-size: 25px;
 }
 
@@ -281,8 +300,8 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    padding-left: 20px;
-    margin: -2px auto -2px 0;
+    flex-grow: 1;
+    margin: -2px 0;
 }
 
 #submissionDetailsNavigation .btn-nav {
@@ -305,18 +324,17 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 25px;
+    padding: 20px;
     border-bottom: 1px solid whitesmoke;
 }
 
 #submissionResultStatus {
-    padding: 5px;
+    margin: 5px auto 5px 5px;
     font-size: 20px;
 }
 
 #submissionResultTestsPassed {
-    padding: 5px;
+    margin: 5px;
     font-size: 18px;
 }
 
@@ -426,9 +444,12 @@
     background-color: lightblue;
 }
 
-#contestInfoLabel {
-    padding: 20px;
-    margin: auto auto auto 0;
+#contestInfoTitle {
+    align-items: center;
+}
+
+#contestInfoText {
+    margin: 20px;
     font-size: 25px;
 }
 
@@ -442,9 +463,12 @@
     background-color: gold;
 }
 
-#contestMessagesLabel {
-    padding: 20px;
-    margin: auto auto auto 0;
+#contestMessagesTitle {
+    align-items: center;
+}
+
+#contestMessagesText {
+    margin: 20px;
     font-size: 25px;
 }
 
@@ -473,7 +497,6 @@
 
 #problemNavigation {
     flex-grow: 1;
-    font-size: 20px;
     height: 0;
     overflow-y: auto;
 }
@@ -482,6 +505,7 @@
     height: 50px;
     width: 50px;
     margin: 15px;
+    font-size: 18px;
 }
 
 #problemNavigation .action.active {
@@ -526,7 +550,7 @@
 }
 
 @media (max-width: 600px) {
-    #problemLimits {
+    #problemLanguageLabel {
         display: none;
     }
 

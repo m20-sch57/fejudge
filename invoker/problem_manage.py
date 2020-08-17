@@ -26,12 +26,15 @@ class ProblemManager:
             elif child.attrib['type'] == 'application/pdf':
                 self.pdf_dir_dict[child.attrib['language']] = curdir
 
-        testset = root.find('judging')[0]
-        self.time_limit_ms = int(testset.find('time-limit').text)
-        self.memory_limit_kb = int(testset.find('memory-limit').text) // 1024
-        self.test_count = int(testset.find('test-count').text)
-        self.input_path_pattern = self.build_path(testset.find('input-path-pattern').text)
-        self.output_path_pattern = self.build_path(testset.find('answer-path-pattern').text)
+        self.statements_languages = list(self.html_dir_dict.keys())
+        self.program_languages = ['cpp', 'py']
+
+        self.testset = root.find('judging')[0]
+        self.time_limit_ms = int(self.testset.find('time-limit').text)
+        self.memory_limit_kb = int(self.testset.find('memory-limit').text) // 1024
+        self.test_count = int(self.testset.find('test-count').text)
+        self.input_path_pattern = self.build_path(self.testset.find('input-path-pattern').text)
+        self.output_path_pattern = self.build_path(self.testset.find('answer-path-pattern').text)
 
         self.testlib_path = self.build_path(os.path.join('files', 'testlib.h'))
 
@@ -54,9 +57,28 @@ class ProblemManager:
         self.main_solution_source_path = self.build_path(main_solution_source.attrib['path'])
         self.main_solution_language = self.match_language(main_solution_source.attrib['type'])
 
+    def problem_name(self, language: str):
+        return self.names_dict.get(language)
+
+    def html_dir(self, language: str):
+        return self.html_dir_dict.get(language)
+
+    def pdf_dir(self, language: str):
+        return self.pdf_dir_dict.get(language)
+
+    def build_path(self, relpath: str):
+        return os.path.join(self.package_path, relpath)
+
+    def test_input_path(self, test_number: int):
+        return self.input_path_pattern % test_number
+
+    def test_output_path(self, test_number: int):
+        return self.output_path_pattern % test_number
+
+    def init_tests(self):
         self.tests = []
         self.test_points_enabled = False
-        for ind, test in enumerate(testset.find('tests')):
+        for ind, test in enumerate(self.testset.find('tests')):
             test_number = ind + 1
             test_group = test.attrib.get('group') or ''
             test_points = float(test.attrib.get('points')) if test.attrib.get('points') else 0
@@ -76,8 +98,8 @@ class ProblemManager:
             self.tests.append(test_info)
 
         self.groups = dict()
-        if testset.find('groups') is not None:
-            for group in testset.find('groups'):
+        if self.testset.find('groups') is not None:
+            for group in self.testset.find('groups'):
                 name = group.attrib['name']
                 group_points_policy = group.attrib.get('points-policy') or ''
                 group_info = {
@@ -103,24 +125,6 @@ class ProblemManager:
         self.group_order = self.generate_group_order()
         self.test_order = self.generate_test_order()
 
-    def problem_name(self, language='english'):
-        return self.select_language(self.names_dict, language)
-
-    def html_dir(self, language='english'):
-        return self.select_language(self.html_dir_dict, language)
-
-    def pdf_dir(self, language='english'):
-        return self.select_language(self.pdf_dir_dict, language)
-
-    def build_path(self, relpath: str):
-        return os.path.join(self.package_path, relpath)
-
-    def test_input_path(self, test_number: int):
-        return self.input_path_pattern % test_number
-
-    def test_output_path(self, test_number: int):
-        return self.output_path_pattern % test_number
-
     def generate_group_order(self):
         def dfs(u):
             visited.add(u)
@@ -143,9 +147,9 @@ class ProblemManager:
                 test_order.append(ind)
         return test_order
 
-    @staticmethod
-    def select_language(dictionary: dict, language: str):
-        return dictionary[language] if language in dictionary.keys() else next(iter(dictionary.values()))
+    # @staticmethod
+    # def select_language(dictionary: dict, language: str):
+    #     return dictionary[language] if language in dictionary.keys() else next(iter(dictionary.values()))
 
     @staticmethod
     def match_language(language: str):

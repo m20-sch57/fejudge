@@ -13,23 +13,37 @@
                         {{ problem.id }}
                     </div>
                     <div id="problemName">
-                        {{ problem_manager.problem_name() }}
+                        Task {{ problem.number }}: {{ problem_manager.problem_name(language) }}
                     </div>
-                    <div id="problemLimits">
-                        <div id="timeLimit">
-                            <span class="fa fa-clock"></span>
-                            {{ (problem_manager.time_limit_ms / 1000) | round(2) }} sec
+                    <div id="problemLanguage">
+                        <div id="problemLanguageLabel">
+                            Language:
                         </div>
-                        <div id="memoryLimit">
-                            <span class="fa fa-microchip"></span>
-                            {{ problem_manager.memory_limit_kb // 1024 }} MB
-                        </div>
+                        <select class="select-small select-white" id="problemLanguageSelect">
+                            {% for statements_language in problem_manager.statements_languages %}
+                            <option value="{{ statements_language }}"></option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
             <div id="statementsContent">
                 <div id="statementsContentScrollable">
-                    <div href="/contests/{{ contest.id }}/{{ problem.number }}/problem.html" id="statementsLoadedContent"></div>
+                    <div id="statementsHeader">
+                        <div id="timeLimit">
+                            <span class="fa fa-clock"></span>
+                            {{ (problem_manager.time_limit_ms / 1000) | round(2) }} second(s)
+                        </div>
+                        <div id="memoryLimit">
+                            <span class="fa fa-microchip"></span>
+                            {{ problem_manager.memory_limit_kb // 1024 }} MiB
+                        </div>
+                        <div id="inputOutput">
+                            Standard input / output
+                        </div>
+                    </div>
+                    <div id="statementsLoadedContent">
+                    </div>
                     <script type="text/x-mathjax-config">
                         MathJax.Hub.Config({
                             messageStyle: "none"
@@ -52,7 +66,7 @@
             <div class="extra-box" id="submitBox" style="display: none;">
                 <div class="extra-title bg-green" id="submitTitle">
                     <div id="submitText">
-                        Submit solution
+                        Submit a solution
                     </div>
                 </div>
                 <div class="extra-content">
@@ -62,9 +76,9 @@
                                 Select task:
                             </div>
                             <select class="select-small select-white" id="taskSelect">
-                                {% for any_problem in contest.problems %}
-                                <option value="{{ any_problem.number }}">
-                                    Task {{ any_problem.number }}: {{ any_problem.get_name() }}
+                                {% for another_problem in contest.problems %}
+                                <option value="{{ another_problem.number }}">
+                                    Task {{ another_problem.number }}: {{ another_problem.get_name(language) }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -74,13 +88,16 @@
                                 Select language:
                             </div>
                             <select class="select-small select-white" id="languageSelect">
+                                {% for program_language in problem_manager.program_languages %}
+                                <option value="{{ program_language }}"></option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div id="chooseFileRow">
                             <div id="chooseFileLabel">
                                 Choose file:
                             </div>
-                            <input type="file" id="chooseFileInput">
+                            <input type="file" id="chooseFileInput" style="display: none;">
                             <label for="chooseFileInput" class="btn-small btn-blue" id="chooseFileButton">
                                 Choose file
                             </label>
@@ -225,8 +242,8 @@
                 </div>
             </div>
             <div class="extra-box" id="contestInfoBox" style="display: none;">
-                <div class="extra-title bg-blue">
-                    <div id="contestInfoLabel">
+                <div class="extra-title bg-blue" id="contestInfoTitle">
+                    <div id="contestInfoText">
                         Contest information
                     </div>
                 </div>
@@ -235,8 +252,8 @@
                 </div>
             </div>
             <div class="extra-box" id="contestMessagesBox" style="display: none;">
-                <div class="extra-title bg-yellow">
-                    <div id="contestMessagesLabel">
+                <div class="extra-title bg-yellow" id="contestMessagesTitle">
+                    <div id="contestMessagesText">
                         Contest messages
                     </div>
                 </div>
@@ -255,11 +272,11 @@
                 </button>
             </div>
             <div id="problemNavigation">
-                {% for any_problem in contest.problems %}
-                {% with class = "active" if any_problem.number == problem.number else "btn-white" %}
-                <a href="/contests/{{ contest.id }}/{{ any_problem.number }}/problem" class="btn-icon action {{ class }}">
-                    <span>{{ any_problem.number }}</span>
-                </a>
+                {% for another_problem in contest.problems %}
+                {% with class = "active" if another_problem.number == problem.number else "btn-white" %}
+                <button class="btn-icon action {{ class }}" number="{{ another_problem.number }}">
+                    <span>{{ another_problem.number }}</span>
+                </button>
                 {% endwith %}
                 {% endfor %}
             </div>

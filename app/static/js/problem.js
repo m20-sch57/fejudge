@@ -1,11 +1,13 @@
 'use strict'
 
-const contestId = location.href.toString().split("/").slice(-3, -1)[0];
-const problemNumber = location.href.toString().split("/").slice(-3, -1)[1];
+const contestId = location.href.toString().split("/").slice(-4, -1)[0];
+const problemNumber = location.href.toString().split("/").slice(-4, -1)[1];
+const problemLanguage = location.href.toString().split("/").slice(-4, -1)[2];
 const problemId = $("#problemId").text().trim();
 const socket = io.connect(window.location.origin);
-const languageOptions = ["cpp", "py"];
 const languageMatching = {
+    "english": "English",
+    "russian": "Russian",
     "cpp": "GNU C++ 9.2.0",
     "py": "Python 3.8"
 };
@@ -34,6 +36,10 @@ function getStatusColor(status) {
     return status === "AC" ? "col-green" : "col-red";
 }
 
+function goToProblem(problemNumber, problemLanguage) {
+    location.replace(`/contests/${contestId}/${problemNumber}/${problemLanguage}/problem`);
+}
+
 function resize() {
     let height = $(window).height() - $("#statementsTitle").outerHeight();
     let width = $(window).width() - $("#rightBox").outerWidth();
@@ -52,6 +58,20 @@ function updateStatementsShadow() {
     else {
         $("#statementsTitle").addClass("shadow");
     }
+}
+
+function initStatements() {
+    $("#problemLanguageSelect option").each(function () {
+        this.innerText = getLanguageName(this.value);
+    });
+    $("#problemLanguageSelect").val(problemLanguage);
+    $("#statementsContentScrollable").scroll(updateStatementsShadow);
+    $("#statementsLoadedContent").load(
+        `/contests/${contestId}/${problemNumber}/${problemLanguage}/problem.html`
+    );
+    $("#problemLanguageSelect").change(function () {
+        goToProblem(problemNumber, this.value);
+    });
 }
 
 function expandBox(box, animate = true) {
@@ -91,8 +111,18 @@ function navButtonPressed(box) {
     }
 }
 
-function goToProblem(problemNumber) {
-    window.location.replace(`/contests/${contestId}/${problemNumber}/problem`);
+function initProgramLanguageSelect() {
+    $("#languageSelect option").each(function () {
+        this.innerText = getLanguageName(this.value);
+    });
+    let defaultLanguage = localStorage.getItem("programLanguage");
+    if ($(`#languageSelect option[value="${defaultLanguage}"]`).length == 0) {
+        defaultLanguage = $("#languageSelect option:first").val();
+    }
+    $("#languageSelect").val(defaultLanguage);
+    $("#languageSelect").change(function () {
+        localStorage.setItem("programLanguage", this.value);
+    });
 }
 
 function hideSubmitStatus() {
@@ -430,8 +460,7 @@ socket.on("completed", (message) => {
     completed(message.submission_id, message.submission_status, message.submission_score);
 });
 
-$("#statementsContentScrollable").scroll(updateStatementsShadow);
-$("#statementsLoadedContent").load($("#statementsLoadedContent").attr("href"));
+initStatements();
 
 if (localStorage.getItem("currentBox") === "#submissionDetailsBox")
     localStorage.setItem("currentBox", "#submitBox");
@@ -444,18 +473,16 @@ $("#submitExpand").click(() => navButtonPressed("#submitBox"));
 $("#viewContestInfo").click(() => navButtonPressed("#contestInfoBox"));
 $("#viewContestMessages").click(() => navButtonPressed("#contestMessagesBox"));
 
-$("#taskSelect").val(problemNumber);
-$("#taskSelect").change(function () {
-    goToProblem(this.value);
+$("#problemNavigation button").each(function () {
+    this.onclick = () => goToProblem(this.getAttribute("number"), problemLanguage);
 });
 
-languageOptions.forEach((it) => {
-    $("#languageSelect").append(new Option(getLanguageName(it), it));
+$("#taskSelect").val(problemNumber);
+$("#taskSelect").change(function () {
+    goToProblem(this.value, problemLanguage);
 });
-$("#languageSelect").val(localStorage.getItem("currentLanguage"));
-$("#languageSelect").change(function () {
-    localStorage.setItem("currentLanguage", this.value);
-});
+
+initProgramLanguageSelect();
 
 resetFileInput();
 $("#chooseFileInput").change(function () {

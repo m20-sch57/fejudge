@@ -12,6 +12,7 @@ from app.services import register_user, create_contest_request, create_submissio
     get_problem_by_number_or_404, get_submission_by_id, get_submissions_by_problem_user,\
     evaluate_submission, initialize_problem
 from app.verify import verify_login, verify_register, verify_submit
+from invoker.problem_manage import ProblemManager
 
 
 @app.errorhandler(403)
@@ -104,7 +105,12 @@ def contest_page(contest_id):
         return render_template('contest_register.html', page='contest_register', contest=contest)
     if contest_request.state() == 'Not started':
         return render_template('contest_wait.html', page='contest_wait')
-    return redirect(url_for('contest_problem', contest_id=contest_id, number=1))
+    return redirect(url_for(
+        'contest_problem',
+        contest_id=contest_id,
+        number=1,
+        language='english'
+    ))
 
 
 @app.route('/contests/<contest_id>/participate')
@@ -116,7 +122,12 @@ def participate(contest_id):
         flash('You are already participating in the contest', category='failure')
         return redirect(url_for('contests_page'))
     create_contest_request(contest=contest, user=current_user)
-    return redirect(url_for('contest_problem', contest_id=contest.id, number=1))
+    return redirect(url_for(
+        'contest_problem',
+        contest_id=contest.id,
+        number=1,
+        language='english'
+    ))
 
 
 def participation_required(func):
@@ -130,23 +141,54 @@ def participation_required(func):
     return decorated_view
 
 
-@app.route('/contests/<contest_id>/<number>/problem')
+@app.route('/contests/<contest_id>/<number>/<language>/problem')
 @login_required
 @participation_required
-def contest_problem(contest_id, number):
+def contest_problem(contest_id, number, language):
     contest = get_contest_by_id_or_404(contest_id)
     contest_request = get_contest_request(contest, current_user)
     problem = get_problem_by_number_or_404(contest, number)
-    from invoker.problem_manage import ProblemManager
     problem_manager = ProblemManager(problem.id)
+    if language not in problem_manager.statements_languages:
+        flash(
+            'Statements are not available in {} language'.format(language),
+            category='warning auto-dismiss'
+        )
+        language = problem_manager.statements_languages[0]
+        return redirect(url_for(
+            'contest_problem',
+            contest_id=contest_id,
+            number=number,
+            language=language
+        ))
     return render_template(
         'problem.html',
         page='problem',
         contest=contest,
         contest_request=contest_request,
         problem=problem,
-        problem_manager=problem_manager
+        problem_manager=problem_manager,
+        language=language
     )
+
+
+@app.route('/contests/<contest_id>/<number>/<language>/<resource>')
+@login_required
+@participation_required
+def problem_resource(contest_id, number, language, resource):
+    contest = get_contest_by_id_or_404(contest_id)
+    problem = get_problem_by_number_or_404(contest, number)
+    problem_manager = ProblemManager(problem.id)
+    resource_dir = None
+    if resource.endswith('.css'):
+        resource_dir = 'static/css'
+    elif resource.endswith('.pdf'):
+        resource_dir = problem_manager.pdf_dir(language)
+    else:
+        resource_dir = problem_manager.html_dir(language)
+    if resource_dir is None:
+        abort(404)
+    return send_from_directory(resource_dir, resource)
 
 
 @app.route('/contests/<contest_id>/<number>/submit', methods=['POST'])
@@ -185,37 +227,6 @@ def problem_submissions(contest_id, number):
         'submission_status': submission.status,
         'submission_score': submission.score
     } for submission in submissions])
-
-
-@app.route('/contests/<contest_id>/<number>/<resource>')
-@login_required
-@participation_required
-def problem_resource(contest_id, number, resource):
-    contest = get_contest_by_id_or_404(contest_id)
-    problem = get_problem_by_number_or_404(contest, number)
-    from invoker.problem_manage import ProblemManager
-    problem_manager = ProblemManager(problem.id)
-    resource_dir = None
-    if resource.endswith('.css'):
-        resource_dir = 'static/css'
-    elif resource.endswith('.html'):
-        resource_dir = problem_manager.html_dir()
-    elif resource.endswith('.pdf'):
-        resource_dir = problem_manager.pdf_dir()
-    else:
-        resource_dir = problem_manager.html_dir()
-    return send_from_directory(resource_dir, resource)
-    # if contest_request.state() == 'Finished':
-    #     flash('Ваше участие в контесте завершено', category='alert-info')
-    # if problem.problem_type == 'Programming':
-    #     problem_form = FileProblemForm(language=current_user.active_language)
-    #     return render_template('contest_problem_prog.html', title=contest.name, contest=contest,
-    #         problem=problem, problem_manager=problem_manager, request=contest_request,
-    #         submissions=submissions, form=problem_form)
-    # elif problem.problem_type == 'Test':
-    #     problem_form = InputProblemForm()
-    #     return render_template('contest_problem_test.html', title=contest.name, contest=contest,
-    #         problem=problem, request=contest_request, submissions=submissions, form=problem_form)
 
 
 @app.route('/submissions/<submission_id>/details')

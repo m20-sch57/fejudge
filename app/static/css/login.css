@@ -8,19 +8,16 @@
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
-    padding: 25px;
+    align-items: center;
+    padding: 30px;
 }
 
 #title {
-    padding: 5px;
     margin-right: auto;
     font-size: 30px;
 }
 
 #register {
-    padding: 5px;
-    margin-top: auto;
-    margin-bottom: auto;
     font-size: 20px;
 }
 
@@ -41,6 +38,7 @@
 #footer {
     display: flex;
     flex-flow: row;
+    align-items: center;
     margin-top: 30px;
 }
 
@@ -49,9 +47,7 @@
 }
 
 #forgotPassword {
-    padding: 5px;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-right: 5px;
     font-size: 18px;
 }
 
