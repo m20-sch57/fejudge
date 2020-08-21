@@ -19,7 +19,7 @@
                         <div id="problemLanguageLabel">
                             Language:
                         </div>
-                        <select class="select-small select-white" id="problemLanguageSelect">
+                        <select class="select select-small select-white" id="problemLanguageSelect">
                             {% for statements_language in problem_manager.statements_languages %}
                             <option value="{{ statements_language }}"></option>
                             {% endfor %}
@@ -39,7 +39,7 @@
                             {{ problem_manager.memory_limit_kb // 1024 }} MiB
                         </div>
                         <div id="inputOutput">
-                            Standard input / output
+                            stdin &rarr; stdout
                         </div>
                     </div>
                     <div id="statementsLoadedContent">
@@ -75,7 +75,7 @@
                             <div id="taskLabel">
                                 Select task:
                             </div>
-                            <select class="select-small select-white" id="taskSelect">
+                            <select class="select select-small select-white" id="taskSelect">
                                 {% for another_problem in contest.problems %}
                                 <option value="{{ another_problem.number }}">
                                     Task {{ another_problem.number }}: {{ another_problem.get_name(language) }}
@@ -87,7 +87,7 @@
                             <div id="languageLabel">
                                 Select language:
                             </div>
-                            <select class="select-small select-white" id="languageSelect">
+                            <select class="select select-small select-white" id="languageSelect">
                                 {% for program_language in problem_manager.program_languages %}
                                 <option value="{{ program_language }}"></option>
                                 {% endfor %}
@@ -98,7 +98,7 @@
                                 Choose file:
                             </div>
                             <input type="file" id="chooseFileInput" style="display: none;">
-                            <label for="chooseFileInput" class="btn-small btn-blue" id="chooseFileButton">
+                            <label for="chooseFileInput" class="btn btn-small btn-blue" id="chooseFileButton">
                                 Choose file
                             </label>
                             <div id="chooseFileName">
@@ -108,7 +108,7 @@
                             <div id="submitFileLabel">
                                 Submit:
                             </div>
-                            <button class="btn-small btn-green" id="submitFileButton">
+                            <button class="btn btn-small btn-green" id="submitFileButton">
                                 Submit it!
                             </button>
                             <div id="submitLoading" style="display: none;">

@@ -404,7 +404,7 @@
     border-radius: 25px;
     font-size: 18px;
     line-height: 20px;
-    box-shadow: 0 0 10px lightgrey;
+    box-shadow: 0 0 15px lightgrey;
 }
 
 #submissionCodeCopyHint::after {

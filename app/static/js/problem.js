@@ -267,7 +267,7 @@ function completed(submissionId, submissionStatus, submissionScore) {
     score.text(submissionScore);
     details.empty();
     let detailsButton = document.createElement("button");
-    $(detailsButton).addClass("flat-link");
+    $(detailsButton).addClass("link");
     $(detailsButton).addClass("link-blue");
     $(detailsButton).text("Details");
     $(detailsButton).click(() => {
