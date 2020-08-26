@@ -28,6 +28,7 @@
     margin: 15px;
     height: 50px;
     width: 50px;
+    font-size: 18px;
 }
 
 #problemInfo {
@@ -134,18 +135,14 @@
     width: 30px;
     transform: translateY(-50%);
     padding-left: 3px;
-    background-color: white;
+    background-color: #fafafa;
     border-radius: 0 30px 30px 0;
     font-size: 16px;
-    box-shadow: 0 0 10px lightgrey;
-}
-
-#extraBoxCollapse:hover {
-    background-color: whitesmoke;
+    box-shadow: 0 0 5px #bbbbbb;
 }
 
 #extraBoxCollapse:active {
-    background-color: #eee;
+    background-color: #eaeaea;
 }
 
 #extraBox .extra-title {
@@ -219,6 +216,7 @@
 
 #chooseFileButton, #submitFileButton {
     width: 130px;
+    font-size: 18px;
     text-align: center;
 }
 
@@ -309,8 +307,9 @@
 }
 
 #submissionDetailsClose {
-    height: 80px;
-    width: 80px;
+    height: 50px;
+    width: 50px;
+    margin: 15px;
     font-size: 20px;
 }
 
@@ -393,6 +392,7 @@
     width: 50px;
     margin: 15px;
     font-size: 18px;
+    box-shadow: 0 0 15px lightgrey;
 }
 
 #submissionCodeCopyHint {
@@ -511,12 +511,13 @@
 #problemNavigation .action.active {
     color: white;
     background-color: rgb(21, 148, 252);
-    box-shadow: 0 0 10px lightgrey;
+    border-color: transparent;
 }
 
 #infoSection {
     display: flex;
     flex-flow: column;
+    border-top: 1px solid whitesmoke;
     text-align: center;
 }
 

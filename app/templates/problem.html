@@ -5,7 +5,7 @@
     <div id="content">
         <div class="bg-white" id="statementsBox">
             <div id="statementsTitle">
-                <a href="/contests" class="btn-icon btn-white" id="goBack">
+                <a href="/contests" class="btn-flat hover-dark" id="goBack">
                     <span class="fa fa-arrow-left"></span>
                 </a>
                 <div id="problemInfo">
@@ -19,7 +19,7 @@
                         <div id="problemLanguageLabel">
                             Language:
                         </div>
-                        <select class="select select-small select-white" id="problemLanguageSelect">
+                        <select class="select select-small bd-lightgrey" id="problemLanguageSelect">
                             {% for statements_language in problem_manager.statements_languages %}
                             <option value="{{ statements_language }}"></option>
                             {% endfor %}
@@ -75,7 +75,7 @@
                             <div id="taskLabel">
                                 Select task:
                             </div>
-                            <select class="select select-small select-white" id="taskSelect">
+                            <select class="select select-small bd-lightgrey" id="taskSelect">
                                 {% for another_problem in contest.problems %}
                                 <option value="{{ another_problem.number }}">
                                     Task {{ another_problem.number }}: {{ another_problem.get_name(language) }}
@@ -87,7 +87,7 @@
                             <div id="languageLabel">
                                 Select language:
                             </div>
-                            <select class="select select-small select-white" id="languageSelect">
+                            <select class="select select-small bd-lightgrey" id="languageSelect">
                                 {% for program_language in problem_manager.program_languages %}
                                 <option value="{{ program_language }}"></option>
                                 {% endfor %}
@@ -98,7 +98,7 @@
                                 Choose file:
                             </div>
                             <input type="file" id="chooseFileInput" style="display: none;">
-                            <label for="chooseFileInput" class="btn btn-small btn-blue" id="chooseFileButton">
+                            <label for="chooseFileInput" class="btn btn-blue" id="chooseFileButton">
                                 Choose file
                             </label>
                             <div id="chooseFileName">
@@ -108,7 +108,7 @@
                             <div id="submitFileLabel">
                                 Submit:
                             </div>
-                            <button class="btn btn-small btn-green" id="submitFileButton">
+                            <button class="btn btn-green" id="submitFileButton">
                                 Submit it!
                             </button>
                             <div id="submitLoading" style="display: none;">
@@ -165,7 +165,7 @@
                             </button>
                         </div>
                     </div>
-                    <button class="btn-icon btn-transparent" id="submissionDetailsClose">
+                    <button class="btn-flat hover-dark" id="submissionDetailsClose">
                         <span class="fa fa-times"></span>
                     </button>
                 </div>
@@ -197,7 +197,7 @@
                     <div id="submissionCode">
                         <pre><code id="submissionSource"></code></pre>
                         <div id="submissionCodeBottom">
-                            <button class="btn-icon btn-green" id="submissionCodeCopy">
+                            <button class="btn-flat btn-green" id="submissionCodeCopy">
                                 <span class="fa fa-clipboard"></span>
                             </button>
                             <div class="bg-green" id="submissionCodeCopyHint" style="display: none;">
@@ -261,20 +261,20 @@
                     Messages here
                 </div>
             </div>
-            <button class="btn-icon" id="extraBoxCollapse">
+            <button class="btn-flat hover-dark" id="extraBoxCollapse">
                 <span class="fa fa-arrow-right"></span>
             </button>
         </div>
         <div class="bg-white" id="rightBox">
             <div id="submitSection">
-                <button class="btn-icon btn-green" id="submitExpand">
+                <button class="btn-flat btn-green" id="submitExpand">
                     <span class="fa fa-paper-plane"></span>
                 </button>
             </div>
             <div id="problemNavigation">
                 {% for another_problem in contest.problems %}
-                {% with class = "active" if another_problem.number == problem.number else "btn-white" %}
-                <button class="btn-icon action {{ class }}" number="{{ another_problem.number }}">
+                {% with class = "active" if another_problem.number == problem.number else "" %}
+                <button class="btn-flat bd-lightgrey hover-dark action {{ class }}" number="{{ another_problem.number }}">
                     <span>{{ another_problem.number }}</span>
                 </button>
                 {% endwith %}
@@ -287,10 +287,10 @@
                         {{ contest_request.time_remaining().total_seconds() | round }}
                     </span>
                 </div>
-                <button class="btn-icon btn-blue" id="viewContestInfo">
+                <button class="btn-flat btn-blue" id="viewContestInfo">
                     <span class="fa fa-info"></span>
                 </button>
-                <button class="btn-icon btn-yellow" id="viewContestMessages">
+                <button class="btn-flat btn-yellow" id="viewContestMessages">
                     <span class="fa fa-comment-alt"></span>
                 </button>
             </div>

@@ -116,36 +116,32 @@ footer {
     background-color: whitesmoke;
 }
 
-.btn-normal {
-    font-size: 20px;
-}
-
-.btn-small {
-    font-size: 18px;
-}
-
-.btn-icon {
+.btn-flat {
     display: flex;
     flex-shrink: 0;
     color: rgba(0, 0, 0, 0.8);
+    background-color: transparent;
     border-width: 0;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 0 5px lightgrey;
     cursor: pointer;
 }
 
-.btn-icon span {
+.btn-flat span {
     margin: auto;
 }
 
-.btn-icon:hover:not([disabled]) {
-    box-shadow: 0 0 20px lightgrey;
+.btn-flat.hover-dark:hover:not([disabled]) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-flat.hover-dark:active:not([disabled]) {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .btn-nav {
     display: inline-block;
-    padding: 5px 0;
+    padding: 0;
     color: rgba(0, 0, 0, 0.5);
     background-color: transparent;
     border-color: transparent;
@@ -184,41 +180,22 @@ footer {
     background-color: goldenrod;
 }
 
-.btn-white {
-    background-color: white;
-}
-
-.btn-white:active:not([disabled]) {
-    background-color: whitesmoke;
-}
-
-.btn-transparent {
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
 .select {
     display: inline-block;
     padding: 0.4em 2em 0.4em 0.8em;
     color: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: white;
     border-radius: 1.25em;
     line-height: 1.5em;
     text-overflow: ellipsis;
-    box-shadow: 0 0 1px lightgrey;
+}
+
+.select:hover:not([disabled]) {
+    background-color: #fbfbfb;
 }
 
 .select-small {
     font-size: 18px;
-}
-
-.select-white {
-    background-color: white;
-}
-
-.select-white:focus {
-    border-color: lightblue;
 }
 
 .bg-blue {
@@ -243,6 +220,10 @@ footer {
 
 .bg-grey {
     background-color: lightgrey;
+}
+
+.bd-lightgrey {
+    border: 1px solid #eeeeee;
 }
 
 .col-blue {
