@@ -135,14 +135,18 @@
     width: 30px;
     transform: translateY(-50%);
     padding-left: 3px;
-    background-color: #fafafa;
+    background-color: white;
     border-radius: 0 30px 30px 0;
     font-size: 16px;
-    box-shadow: 0 0 5px #bbbbbb;
+    box-shadow: 0 0 5px lightgrey;
+}
+
+#extraBoxCollapse:hover {
+    background-color: whitesmoke;
 }
 
 #extraBoxCollapse:active {
-    background-color: #eaeaea;
+    background-color: #eeeeee;
 }
 
 #extraBox .extra-title {
