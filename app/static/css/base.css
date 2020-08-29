@@ -131,14 +131,6 @@ footer {
     margin: auto;
 }
 
-.btn-flat.hover-dark:hover:not([disabled]) {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.btn-flat.hover-dark:active:not([disabled]) {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
 .btn-nav {
     display: inline-block;
     padding: 0;
@@ -151,6 +143,10 @@ footer {
     cursor: pointer;
 }
 
+.btn-nav:hover {
+    border-bottom: 2px solid darkgrey;
+}
+
 .btn-nav.active {
     color: deepskyblue;
     border-bottom: 2px solid deepskyblue;
@@ -158,6 +154,10 @@ footer {
 
 .btn-blue {
     background-color: lightblue;
+}
+
+.btn-blue:hover:not([disabled]) {
+    background-color: rgb(149, 208, 228);
 }
 
 .btn-blue:active:not([disabled]) {
@@ -168,6 +168,10 @@ footer {
     background-color: lightgreen;
 }
 
+.btn-green:hover:not([disabled]) {
+    background-color: rgb(124, 228, 124);
+}
+
 .btn-green:active:not([disabled]) {
     background-color: rgb(104, 214, 104);
 }
@@ -176,8 +180,32 @@ footer {
     background-color: gold;
 }
 
+.btn-yellow:hover:not([disabled]) {
+    background-color: rgb(233, 198, 0);
+}
+
 .btn-yellow:active:not([disabled]) {
     background-color: goldenrod;
+}
+
+.btn-white {
+    background-color: white;
+}
+
+.btn-white:hover:not([disabled]) {
+    background-color: whitesmoke;
+}
+
+.btn-white:active:not([disabled]) {
+    background-color: #eeeeee;
+}
+
+.btn-transparent:hover:not([disabled]) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-transparent:active:not([disabled]) {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .select {

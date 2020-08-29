@@ -61,6 +61,7 @@ function updateStatementsShadow() {
 }
 
 function initStatements() {
+    $("#reloadStatements").click(() => goToProblem(problemNumber, problemLanguage))
     $("#problemLanguageSelect option").each(function () {
         this.innerText = getLanguageName(this.value);
     });

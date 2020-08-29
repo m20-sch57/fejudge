@@ -152,7 +152,7 @@ def contest_problem(contest_id, number, language):
     if language not in problem_manager.statements_languages:
         flash(
             'Statements are not available in {} language'.format(language),
-            category='warning auto-dismiss'
+            category='failure auto-dismiss'
         )
         language = problem_manager.statements_languages[0]
         return redirect(url_for(

@@ -5,9 +5,14 @@
     <div id="content">
         <div class="bg-white" id="statementsBox">
             <div id="statementsTitle">
-                <a href="/contests" class="btn-flat hover-dark" id="goBack">
-                    <span class="fa fa-arrow-left"></span>
-                </a>
+                <div id="problemActions">
+                    <a href="/contests" class="btn-flat btn-transparent" id="goBack">
+                        <span class="fa fa-arrow-left"></span>
+                    </a>
+                    <button class="btn-flat btn-transparent" id="reloadStatements">
+                        <span class="fa fa-redo"></span>
+                    </button>
+                </div>
                 <div id="problemInfo">
                     <div id="problemId" style="display: none;">
                         {{ problem.id }}
@@ -16,9 +21,6 @@
                         Task {{ problem.number }}: {{ problem_manager.problem_name(language) }}
                     </div>
                     <div id="problemLanguage">
-                        <div id="problemLanguageLabel">
-                            Language:
-                        </div>
                         <select class="select select-small bd-lightgrey" id="problemLanguageSelect">
                             {% for statements_language in problem_manager.statements_languages %}
                             <option value="{{ statements_language }}"></option>
@@ -165,7 +167,7 @@
                             </button>
                         </div>
                     </div>
-                    <button class="btn-flat hover-dark" id="submissionDetailsClose">
+                    <button class="btn-flat btn-transparent" id="submissionDetailsClose">
                         <span class="fa fa-times"></span>
                     </button>
                 </div>
@@ -261,7 +263,7 @@
                     Messages here
                 </div>
             </div>
-            <button class="btn-flat hover-dark" id="extraBoxCollapse">
+            <button class="btn-flat btn-white" id="extraBoxCollapse">
                 <span class="fa fa-arrow-right"></span>
             </button>
         </div>
@@ -274,7 +276,7 @@
             <div id="problemNavigation">
                 {% for another_problem in contest.problems %}
                 {% with class = "active" if another_problem.number == problem.number else "" %}
-                <button class="btn-flat bd-lightgrey hover-dark action {{ class }}" number="{{ another_problem.number }}">
+                <button class="btn-flat btn-transparent bd-lightgrey action {{ class }}" number="{{ another_problem.number }}">
                     <span>{{ another_problem.number }}</span>
                 </button>
                 {% endwith %}
