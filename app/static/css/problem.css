@@ -116,7 +116,6 @@
     flex-flow: column;
     flex-grow: 1;
     flex-basis: 50%;
-    z-index: 1;
 }
 
 #extraBox.collapsed {
@@ -140,7 +139,13 @@
     box-shadow: 0 0 5px lightgrey;
 }
 
-#extraBox .extra-title {
+.extra-box {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+}
+
+.extra-box .extra-title {
     position: relative;
     display: flex;
     flex-flow: row;
@@ -151,7 +156,7 @@
     z-index: 1;
 }
 
-#extraBox .extra-content {
+.extra-box .extra-content {
     position: relative;
     display: flex;
     flex-flow: column;
@@ -160,25 +165,20 @@
     box-shadow: 0 0 15px -5px lightgrey;
 }
 
-#extraBox .extra-box {
-    display: flex;
-    flex-flow: column;
-    flex-grow: 1;
-}
-
-#submitTitle {
-    align-items: center;
-}
-
-#submitTitle::after {
+#submitBox::after {
     content: "";
     position: absolute;
-    top: 50%;
+    top: 40px;
     left: 100%;
     height: 12px;
     width: 12px;
     transform: translate(-50%, -50%) rotate(45deg);
     background-color: lightgreen;
+    z-index: 1;
+}
+
+#submitTitle {
+    align-items: center;
 }
 
 #submitText {
@@ -421,12 +421,17 @@
 
 #submissionInfoTable {
     width: 100%;
-    margin: 20px 0;
+    border-collapse: collapse;
     font-size: 16px;
 }
 
 #submissionInfoTable td {
-    padding: 10px 20px;
+    padding: 20px;
+    border: 1px solid whitesmoke;
+}
+
+#submissionInfoTable td:first-child {
+    font-size: 18px;
 }
 
 #contestInfoBox::after {

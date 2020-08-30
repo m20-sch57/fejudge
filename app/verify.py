@@ -30,12 +30,12 @@ def verify_register(username, email, password):
     return True
 
 
-def verify_submit(source_blob, language):
+def verify_submit(problem_manager, source_blob, language):
     if len(source_blob) > app.config['MAX_SUBMISSION_SIZE']:
         abort(413)
     try:
         source_blob.decode('utf-8')
     except UnicodeDecodeError:
         abort(400)
-    if language not in ['cpp', 'py']: # TODO: adjust for problem
+    if language not in problem_manager.program_languages:
         abort(400)

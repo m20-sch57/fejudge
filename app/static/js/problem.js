@@ -311,7 +311,7 @@ async function loadSubmissions() {
 
 function appendNewTestDetails(testNumber) {
     let protocolRow = document.createElement("tr");
-    let cellNames = ["number", "status", "time", "memory", "score"];
+    let cellNames = ["number", "status", "time", "memory", "group", "score"];
     for (let name of cellNames) {
         let elem = document.createElement("td");
         $(elem).addClass(name);
@@ -380,6 +380,7 @@ function initSubmissionProtocol(details) {
         let testStatus = testDetails.status;
         let testTime = testDetails.time_usage_s;
         let testMemory = testDetails.memory_usage_kb;
+        let testGroup = testDetails.group;
         let testScore = testDetails.score;
         let testMaxscore = testDetails.maxscore;
         let testScoreStr = testMaxscore === undefined ? "" : `${testScore} (${testMaxscore})`;
@@ -387,6 +388,7 @@ function initSubmissionProtocol(details) {
         $(`#protocol_${testNumber}_status`).text(testStatus);
         $(`#protocol_${testNumber}_time`).text(testTime);
         $(`#protocol_${testNumber}_memory`).text(testMemory);
+        $(`#protocol_${testNumber}_group`).text(testGroup);
         $(`#protocol_${testNumber}_score`).text(testScoreStr);
         if (testStatus === "OK")
             $(`#protocol_${testNumber}_status`).addClass("col-green");

@@ -152,7 +152,7 @@ def contest_problem(contest_id, number, language):
     if language not in problem_manager.statements_languages:
         flash(
             'Statements are not available in {} language'.format(language),
-            category='failure auto-dismiss'
+            category='warning auto-dismiss'
         )
         language = problem_manager.statements_languages[0]
         return redirect(url_for(
@@ -198,9 +198,10 @@ def submit_problem(contest_id, number):
     contest = get_contest_by_id_or_404(contest_id)
     contest_request = get_contest_request(contest, current_user)
     problem = get_problem_by_number_or_404(contest, number)
+    problem_manager = ProblemManager(problem.id)
     source_blob = request.files['sourceFile'].read()
     language = request.form['language']
-    verify_submit(source_blob, language)
+    verify_submit(problem_manager, source_blob, language)
     source_code = source_blob.decode('utf-8')
     submission = create_submission(
         contest=contest,

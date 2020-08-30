@@ -65,6 +65,9 @@
             </div>
         </div>
         <div class="bg-white collapsed" id="extraBox">
+            <button class="btn-flat btn-white" id="extraBoxCollapse">
+                <span class="fa fa-arrow-right"></span>
+            </button>
             <div class="extra-box" id="submitBox" style="display: none;">
                 <div class="extra-title bg-green" id="submitTitle">
                     <div id="submitText">
@@ -189,6 +192,7 @@
                                 <th>Status</th>
                                 <th>Time (s)</th>
                                 <th>Memory (KB)</th>
+                                <th>Group</th>
                                 <th>Score</th>
                             </thead>
                             <tbody>
@@ -211,31 +215,31 @@
                         <table id="submissionInfoTable">
                         <tbody>
                             <tr>
-                                <td>Sender:</td>
+                                <td>Sender</td>
                                 <td id="submissionInfoUser"></td>
                             </tr>
                             <tr>
-                                <td>Contest:</td>
+                                <td>Contest</td>
                                 <td id="submissionInfoContest"></td>
                             </tr>
                             <tr>
-                                <td>Problem number:</td>
+                                <td>Problem number</td>
                                 <td id="submissionInfoProblem"></td>
                             </tr>
                             <tr>
-                                <td>Programming language:</td>
+                                <td>Programming language</td>
                                 <td id="submissionInfoLanguage"></td>
                             </tr>
                             <tr>
-                                <td>Submit time:</td>
+                                <td>Submit time</td>
                                 <td id="submissionInfoTime"></td>
                             </tr>
                             <tr>
-                                <td>Result of checking:</td>
+                                <td>Result of checking</td>
                                 <td id="submissionInfoStatus"></td>
                             </tr>
                             <tr>
-                                <td>Points scored:</td>
+                                <td>Points scored</td>
                                 <td id="submissionInfoScore"></td>
                             </tr>
                         </tbody>
@@ -250,7 +254,6 @@
                     </div>
                 </div>
                 <div class="extra-content">
-                    Information here
                 </div>
             </div>
             <div class="extra-box" id="contestMessagesBox" style="display: none;">
@@ -260,12 +263,8 @@
                     </div>
                 </div>
                 <div class="extra-content">
-                    Messages here
                 </div>
             </div>
-            <button class="btn-flat btn-white" id="extraBoxCollapse">
-                <span class="fa fa-arrow-right"></span>
-            </button>
         </div>
         <div class="bg-white" id="rightBox">
             <div id="submitSection">

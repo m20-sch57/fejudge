@@ -137,6 +137,7 @@ def run_on_tests(binary_file: File, problem_manager: ProblemManager):
         test_score = test_points if test_status == 'OK' else 0
         evaluation_details[ind] = {
             'status': test_status,
+            'group': test_group,
             'score': test_score,
             'maxscore': test_points,
             **test_details
