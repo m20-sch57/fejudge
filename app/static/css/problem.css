@@ -334,7 +334,7 @@
 
 #submissionCompilation pre {
     padding: 30px 20px;
-    white-space: pre-wrap;
+    white-space: break-spaces;
 }
 
 #submissionEvaluation {
@@ -370,7 +370,7 @@
 #submissionCode pre {
     flex-grow: 1;
     padding: 30px 20px;
-    white-space: pre-wrap;
+    white-space: break-spaces;
 }
 
 #submissionCodeBottom {
