@@ -137,6 +137,7 @@
     border-radius: 0 30px 30px 0;
     font-size: 16px;
     box-shadow: 0 0 5px lightgrey;
+    z-index: 1;
 }
 
 .extra-box {
