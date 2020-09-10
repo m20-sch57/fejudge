@@ -45,6 +45,10 @@
     margin: 10px;
 }
 
+#problemId {
+    display: none;
+}
+
 #problemName {
     flex-grow: 1;
     width: 0;
@@ -104,10 +108,9 @@
     height: 100%;
     width: 100%;
     display: flex;
-}
-
-#statementsLoadingLabel {
-    margin: auto;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
 }
 
 #extraBox {
@@ -122,7 +125,7 @@
     flex: 0;
 }
 
-#extraBox.collapsed * {
+#extraBox.collapsed > * {
     display: none;
 }
 
@@ -130,13 +133,9 @@
     position: absolute;
     top: 50%;
     left: 0;
-    height: 60px;
-    width: 30px;
     transform: translateY(-50%);
-    padding-left: 3px;
-    border-radius: 0 30px 30px 0;
+    padding: 15px 5px;
     font-size: 16px;
-    box-shadow: 0 0 5px lightgrey;
     z-index: 1;
 }
 
@@ -210,6 +209,10 @@
     width: 200px;
 }
 
+#chooseFileInput {
+    display: none;
+}
+
 #chooseFileButton, #submitFileButton {
     width: 130px;
     font-size: 18px;
@@ -228,44 +231,64 @@
 }
 
 #submissions {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
     margin: 0 20px 20px 20px;
 }
 
 #submissionsLoading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
     display: flex;
-    margin: 25px;
-}
-
-#submissionsLoadingLabel {
-    margin: auto;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
 }
 
 #submissionsNone {
-    margin: 40px;
-    font-size: 20px;
-    text-align: center;
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
 }
 
 #submissionsTable {
     width: 100%;
+    border-collapse: collapse;
     font-size: 16px;
 }
 
-#submissionsTable tr {
-    vertical-align: middle;
-}
-
-#submissionsTable th {
+#submissionsTable thead tr {
     height: 60px;
 }
 
-#submissionsTable td {
-    height: 40px;
+#submissionsTable tbody tr {
+    height: 45px;
+}
+
+#submissionsTable tbody tr:first-child {
+    height: 60px;
+    transform: scale(1);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px lightgrey;
+}
+
+#submissionsTable tbody td {
     text-align: center;
 }
 
+#submissionsTable .id {
+    padding-left: 10px;
+}
+
 #submissionsTable .status {
-    min-width: 120px;
+    min-width: 110px;
 }
 
 #submissionsTable .status span {
@@ -295,7 +318,6 @@
     flex-flow: row;
     flex-wrap: wrap;
     flex-grow: 1;
-    margin: -2px 0;
 }
 
 #submissionDetailsNavigation .btn-nav {
@@ -328,7 +350,7 @@
     font-size: 20px;
 }
 
-#submissionResultTestsPassed {
+#submissionResultScore {
     margin: 5px;
     font-size: 18px;
 }
@@ -407,9 +429,9 @@
     content: "";
     position: absolute;
     top: 50%;
-    left: 3px;
-    height: 14px;
-    width: 14px;
+    left: 2px;
+    height: 12px;
+    width: 12px;
     transform: translate(-50%, -50%) rotate(45deg);
     background-color: inherit;
 }
@@ -541,12 +563,12 @@
     font-size: 16px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     #statementsBox.collapsed {
         flex: 0;
     }
 
-    #statementsBox.collapsed * {
+    #statementsBox.collapsed > * {
         display: none;
     }
 }

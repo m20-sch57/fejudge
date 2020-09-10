@@ -75,8 +75,14 @@ function initStatements() {
     });
 }
 
+function hideAllBoxes() {
+    $("#extraBox .extra-box").each(function () {
+        $(this).hide();
+    });
+}
+
 function expandBox(box, animate = true) {
-    $(localStorage.getItem("currentBox")).hide();
+    hideAllBoxes();
     localStorage.setItem("currentBox", box);
     if (animate) {
         $("#extraBox").css("transition", "all 60ms ease-out");
@@ -93,13 +99,7 @@ function expandBox(box, animate = true) {
     else {
         $("#extraBox").removeClass("collapsed");
         $("#statementsBox").addClass("collapsed");
-        $(box).show();
-    }
-    if (box === "" || box === "#submissionDetailsBox") {
-        $("#extraBoxCollapse").hide();
-    }
-    else {
-        $("#extraBoxCollapse").show();
+        $(box).fadeIn(100);
     }
 }
 
@@ -157,6 +157,7 @@ function resetFileInput() {
 function uploadFile(file) {
     if (file === undefined) {
         resetFileInput();
+        hideSubmitStatus();
     }
     else {
         hideSubmitStatus();
@@ -195,10 +196,13 @@ async function submitFile(file) {
     }
 }
 
-function showSubmissionsTable() {
-    $("#submissionsLoading").hide();
+function hideSubmissions() {
     $("#submissionsNone").hide();
     $("#submissionsTable").hide();
+}
+
+function showSubmissions() {
+    hideSubmissions();
     if ($("#submissionsTable tbody").children().length == 0) {
         $("#submissionsNone").show();
     }
@@ -221,18 +225,26 @@ function newSubmissionRow(submissionId) {
 }
 
 function appendNewSubmission(submissionId) {
-    let submissionRow = newSubmissionRow(submissionId);
-    $("#submissionsTable tbody").append(submissionRow);
+    $("#submissionsNone").hide();
+    $("#submissionsTable tbody").append(newSubmissionRow(submissionId));
 }
 
 function prependNewSubmission(submissionId) {
-    let submissionRow = newSubmissionRow(submissionId);
-    $("#submissionsTable tbody").prepend(submissionRow);
+    $("#submissionsNone").hide();
+    $("#submissionsTable tbody").prepend(newSubmissionRow(submissionId));
+}
+
+function ringElement(fontSize) {
+    let ring = document.createElement("span");
+    $(ring).addClass("lds-ring");
+    $(ring).css("font-size", `${fontSize}px`);
+    $(ring).html("<div></div><div></div><div></div>");
+    return ring;
 }
 
 function inQueue(submissionId, submissionLanguage) {
     $(`#submission_${submissionId}_language`).text(getLanguageName(submissionLanguage));
-    $(`#submission_${submissionId}_status`).text("In queue");
+    $(`#submission_${submissionId}_status`).append(ringElement(30));
     $(`#submission_${submissionId}_score`).html("&mdash;");
     $(`#submission_${submissionId}_details`).html("&mdash;");
 }
@@ -241,20 +253,19 @@ function compiling(submissionId) {
     let status = $(`#submission_${submissionId}_status`);
     status.empty();
     status.addClass("col-grey");
-    let spinner = document.createElement("span");
-    $(spinner).addClass("lds-spinner");
-    for (let it = 0; it < 12; it++) {
-        spinner.append(document.createElement("div"));
-    }
-    status.append(spinner);
+    status.append(ringElement(20));
     let statusLabel = document.createElement("span");
     $(statusLabel).attr("id", `submission_${submissionId}_statusLabel`);
-    $(statusLabel).text(" Compiling");
+    $(statusLabel).css("display", "inline-block");
+    $(statusLabel).css("margin-left", "5px");
+    $(statusLabel).css("text-align", "left");
+    $(statusLabel).css("width", "80px");
+    $(statusLabel).text("Compiling");
     status.append(statusLabel);
 }
 
 function evaluating(submissionId) {
-    $(`#submission_${submissionId}_statusLabel`).text(" Running");
+    $(`#submission_${submissionId}_statusLabel`).text("Running");
 }
 
 function completed(submissionId, submissionStatus, submissionScore) {
@@ -287,26 +298,23 @@ async function loadSubmissions() {
         let submissionStatus = submission.submission_status;
         let submissionScore = submission.submission_score;
         appendNewSubmission(submissionId);
-        if (submissionStatus === "in_queue") {
+        let statuses = ["evaluating", "compiling", "in_queue"];
+        let submissionStatusIndex = statuses.indexOf(submissionStatus);
+        if (submissionStatusIndex <= 2) {
             inQueue(submissionId, submissionLanguage);
         }
-        else if (submissionStatus === "compiling") {
-            inQueue(submissionId, submissionLanguage);
+        if (submissionStatusIndex <= 1) {
             compiling(submissionId);
         }
-        else if (submissionStatus === "evaluating") {
-            inQueue(submissionId, submissionLanguage);
-            compiling(submissionId);
+        if (submissionStatusIndex <= 0) {
             evaluating(submissionId);
         }
-        else {
-            inQueue(submissionId, submissionLanguage);
-            compiling(submissionId);
-            evaluating(submissionId);
+        if (submissionStatusIndex == -1) {
             completed(submissionId, submissionStatus, submissionScore);
         }
     }
-    showSubmissionsTable();
+    $("#submissionsLoading").fadeOut(100);
+    showSubmissions();
 }
 
 function appendNewTestDetails(testNumber) {
@@ -362,18 +370,17 @@ function showSubmissionInfo() {
 function initSubmissionProtocol(details) {
     $("#submissionResultStatus").removeClass();
     $("#submissionResultStatus").addClass(getStatusColor(details.status));
-    if (details.status === "AC")
+    if (details.status === "AC") {
         $("#submissionResultStatus").html(
             `<span class="fa fa-check"></span> ${getStatusName(details.status)}`
         );
-    else
+    }
+    else {
         $("#submissionResultStatus").html(
             `<span class="fa fa-times"></span> ${getStatusName(details.status)}`
         );
-    let testsPassed = numberOfTestsPassed(details.protocol.evaluation);
-    $("#submissionResultTestsPassed").text(
-        `Tests passed: ${testsPassed} of ${details.protocol.evaluation.length}`
-    );
+    }
+    $("#submissionResultScore").text(`Score: ${details.score}`);
     $("#submissionCompilationLog").text(details.protocol.compilation);
     for (let testNumber = 1; testNumber <= details.protocol.evaluation.length; ++testNumber) {
         let testDetails = details.protocol.evaluation[testNumber - 1];
@@ -400,6 +407,7 @@ function initSubmissionProtocol(details) {
 }
 
 function initSubmissionCode(details) {
+    $("#submissionCodeCopyHint").hide();
     $("#submissionSource").html(hljs.highlight(details.language, details.source).value);
     $("#submissionCodeCopy").click(() => {
         navigator.clipboard.writeText(details.source).then(() => {
@@ -419,14 +427,6 @@ function initSubmissionInfo(details) {
     $("#submissionInfoTime").text(details.time);
     $("#submissionInfoStatus").text(getStatusName(details.status));
     $("#submissionInfoScore").text(details.score);
-}
-
-function numberOfTestsPassed(tests) {
-    let counter = 0;
-    for (let testDetails of tests) {
-        if (testDetails.status === "OK") ++counter;
-    }
-    return counter;
 }
 
 async function loadSubmissionDetails(submissionId) {
@@ -450,7 +450,7 @@ window.onload = resize;
 socket.on("connect", () => socket.emit("join", problemId));
 socket.on("new_submission", (message) => {
     prependNewSubmission(message.submission_id);
-    showSubmissionsTable();
+    showSubmissions();
     inQueue(message.submission_id, message.submission_language);
 });
 socket.on("compiling", (message) => {
@@ -488,6 +488,7 @@ $("#taskSelect").change(function () {
 initProgramLanguageSelect();
 
 resetFileInput();
+hideSubmitStatus();
 $("#chooseFileInput").change(function () {
     uploadFile(this.files[0])
 });
