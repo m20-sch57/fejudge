@@ -65,7 +65,7 @@
 }
 
 #problemLanguageSelect {
-    margin-right: 5px;
+    margin: 5px;
 }
 
 #statementsContent {
@@ -207,6 +207,7 @@
 #taskSelect, #languageSelect {
     flex-grow: 1;
     width: 200px;
+    max-width: 620px;
 }
 
 #chooseFileInput {
@@ -235,7 +236,6 @@
     display: flex;
     flex-flow: column;
     flex-grow: 1;
-    margin: 0 20px 20px 20px;
 }
 
 #submissionsLoading {
@@ -259,13 +259,13 @@
 }
 
 #submissionsTable {
-    width: 100%;
+    max-width: 800px;
     border-collapse: collapse;
     font-size: 16px;
 }
 
-#submissionsTable thead tr {
-    height: 60px;
+#submissionsTable th {
+    padding: 20px 10px;
 }
 
 #submissionsTable tbody tr {
@@ -275,16 +275,11 @@
 #submissionsTable tbody tr:first-child {
     height: 60px;
     transform: scale(1);
-    border-radius: 10px;
     box-shadow: 0 3px 10px lightgrey;
 }
 
-#submissionsTable tbody td {
+#submissionsTable td {
     text-align: center;
-}
-
-#submissionsTable .id {
-    padding-left: 10px;
 }
 
 #submissionsTable .status {
@@ -366,6 +361,7 @@
 
 #submissionEvaluationTable {
     width: 100%;
+    max-width: 600px;
     margin: 20px 0;
     font-size: 16px;
 }
@@ -375,7 +371,7 @@
 }
 
 #submissionEvaluationTable th {
-    padding: 15px 5px;
+    padding: 15px;
     white-space: nowrap;
 }
 
