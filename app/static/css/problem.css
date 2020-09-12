@@ -259,6 +259,7 @@
 }
 
 #submissionsTable {
+    width: 100%;
     max-width: 800px;
     border-collapse: collapse;
     font-size: 16px;
