@@ -19,7 +19,7 @@ header {
 
 header h2 {
     margin: 0 auto 0 0;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 main {
@@ -44,7 +44,7 @@ main .contest-row:hover {
 
 main .contest-row h3 {
     margin: 5px auto 5px 5px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 main .contest-row .contest-details {

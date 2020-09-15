@@ -186,7 +186,7 @@
 
 #submitBox header h2 {
     margin: 20px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 #submitBox main .submit-form {
@@ -473,7 +473,7 @@
 
 #contestInfoBox header h2 {
     margin: 20px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 #contestMessagesBox::after {
@@ -492,7 +492,7 @@
 
 #contestMessagesBox header h2 {
     margin: 20px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 #rightBox {

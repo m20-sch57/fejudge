@@ -15,7 +15,7 @@ header {
 
 header h2 {
     margin: 5px auto 5px 5px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 header a {
@@ -28,7 +28,7 @@ main {
 
 main h3 {
     margin: 0 0 30px 0;
-    font-weight: lighter;
+    font-weight: normal;
 }
 
 main .contest-info {
