@@ -1,4 +1,4 @@
-#messages {
+#flashedMessages {
     position: absolute;
     display: flex;
     flex-flow: column;
@@ -7,7 +7,7 @@
     width: calc(100% - 40px);
 }
 
-#messages .message {
+#flashedMessages .message {
     display: flex;
     flex-flow: row;
     padding: 10px 15px 10px 15px;
@@ -20,32 +20,32 @@
     z-index: 999;
 }
 
-#messages .message.hidden {
+#flashedMessages .message.hidden {
     display: none;
 }
 
-#messages .message.info {
+#flashedMessages .message.info {
     background-color: lightblue;
 }
 
-#messages .message.failure {
+#flashedMessages .message.failure {
     background-color: coral;
 }
 
-#messages .message.warning {
+#flashedMessages .message.warning {
     background-color: gold;
 }
 
-#messages .message.success {
+#flashedMessages .message.success {
     background-color: lightgreen;
 }
 
-#messages .message .text {
+#flashedMessages .message .text {
     margin-top: auto;
     margin-bottom: auto;
 }
 
-#messages .message .close {
+#flashedMessages .message .close {
     flex-shrink: 0;
     padding: 0;
     margin-left: auto;
@@ -58,16 +58,16 @@
     line-height: 18px;
 }
 
-#messages .message .close:hover {
+#flashedMessages .message .close:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-#messages .message .close:active {
+#flashedMessages .message .close:active {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
 @media (min-width: 600px) {
-    #messages {
+    #flashedMessages {
         width: 300px;
     }
 }

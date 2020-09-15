@@ -2,43 +2,43 @@
 
 {% block content %}
 <div class="page">
-    <div id="box">
-        <form action="" method="POST">
-            <div class="bg-green" id="header">
-                <div id="title">
-                    Sign up
-                </div>
-                <a href="/login" class="link hover-underline" id="login">
-                    Sign in
-                </a>
-            </div>
-            <div class="bg-white" id="body">
-                <div id="label">
-                    Please fill in all fields.
-                </div>
-                <div id="username">
-                    <input class="input input-green" placeholder="Username" name="username" spellcheck="false" id="usernameInput">
-                </div>
-                <div class="col-red" id="usernameHint"></div>
-                <div id="email">
-                    <input class="input input-green" placeholder="Email" name="email" spellcheck="false" id="emailInput">
-                </div>
-                <div class="col-red" id="emailHint"></div>
-                <div id="password">
-                    <input type="password" class="input input-green" placeholder="Password" name="password" id="passwordInput">
-                </div>
-                <div class="col-red" id="passwordHint"></div>
-                <div id="confirmPassword">
-                    <input type="password" class="input input-green" placeholder="Confirm password" name="password2" id="confirmPasswordInput">
-                </div>
-                <div class="col-red" id="confirmPasswordHint"></div>
-                <div id="footer">
-                    <button type="button" class="btn btn-green" id="submitButton">
+    <div class="box">
+        <header class="bg-green">
+            <h2>Sign up</h2>
+            <a href="/login" class="link hover-underline">
+                Sign in
+            </a>
+        </header>
+        <main class="bg-white">
+            <form action="" method="POST">
+                <h4>Please fill in all fields.</h4>
+                <section>
+                    <input class="input input-green" placeholder="Username"
+                    name="username" spellcheck="false" id="usernameInput">
+                    <div class="col-red hint" id="usernameHint"></div>
+                </section>
+                <section>
+                    <input class="input input-green" placeholder="Email"
+                    name="email" spellcheck="false" id="emailInput">
+                    <div class="col-red hint" id="emailHint"></div>
+                </section>
+                <section>
+                    <input type="password" class="input input-green" placeholder="Password"
+                    name="password" id="passwordInput">
+                    <div class="col-red hint" id="passwordHint"></div>
+                </section>
+                <section>
+                    <input type="password" class="input input-green" placeholder="Confirm password"
+                    name="password2" id="confirmPasswordInput">
+                    <div class="col-red hint" id="confirmPasswordHint"></div>
+                </section>
+                <section class="actions">
+                    <button type="button" class="btn btn-green" id="register">
                         Sign up
                     </button>
-                </div>
-            </div>
-        </form>
+                </section>
+            </form>
+        </main>
     </div>
 </div>
 <script src="/static/js/register.js"></script>

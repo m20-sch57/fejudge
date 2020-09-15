@@ -1,4 +1,4 @@
-#content {
+.content {
     display: flex;
     flex-flow: row;
     width: 100%;
@@ -12,31 +12,33 @@
     flex-basis: 50%;
 }
 
-#statementsTitle {
+#statementsBox header {
+    position: relative;
     display: flex;
     flex-flow: row;
     height: 80px;
     border-bottom: 1px solid whitesmoke;
+    z-index: 1;
 }
 
-#statementsTitle.shadow {
+#statementsBox header.shadow {
     border-bottom: 1px solid #e9e9e9;
     box-shadow: 0 0 20px lightgrey;
 }
 
-#problemActions {
+#statementsBox header .problem-actions {
     display: flex;
     flex-flow: row;
     margin: 15px;
 }
 
-#goBack, #reloadStatements {
+#statementsBox header .action {
     height: 50px;
     width: 50px;
     font-size: 18px;
 }
 
-#problemInfo {
+#statementsBox header .problem-info {
     display: flex;
     flex-flow: row;
     flex-wrap: nowrap;
@@ -49,7 +51,7 @@
     display: none;
 }
 
-#problemName {
+#statementsBox header .problem-name {
     flex-grow: 1;
     width: 0;
     font-size: 25px;
@@ -58,28 +60,28 @@
     text-overflow: ellipsis;
 }
 
-#problemLanguage {
+#statementsBox header .problem-language {
     display: flex;
     flex-flow: row;
     align-items: center;
 }
 
-#problemLanguageSelect {
+#statementsBox header .problem-language select {
     margin: 5px;
 }
 
-#statementsContent {
+#statementsBox main {
     position: relative;
     flex-grow: 1;
 }
 
-#statementsContentScrollable {
+#statementsBox main .statements-scrollable {
     padding: 20px;
     max-height: 0;
     overflow: auto;
 }
 
-#statementsHeader {
+#statementsBox main .statements-header {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -89,19 +91,19 @@
     font-size: 20px;
 }
 
-#timeLimit {
+#statementsBox main .time-limit {
     margin: 5px 20px 5px 5px;
 }
 
-#memoryLimit {
+#statementsBox main .memory-limit {
     margin: 5px auto 5px 5px;
 }
 
-#inputOutput {
+#statementsBox main .input-output {
     margin: 5px;
 }
 
-#statementsLoading {
+#statementsBox main .statements-loading {
     position: absolute;
     top: 0;
     left: 0;
@@ -119,6 +121,7 @@
     flex-flow: column;
     flex-grow: 1;
     flex-basis: 50%;
+    z-index: 2;
 }
 
 #extraBox.collapsed {
@@ -139,13 +142,13 @@
     z-index: 1;
 }
 
-.extra-box {
+#extraBox .extra-box {
     display: flex;
     flex-flow: column;
     flex-grow: 1;
 }
 
-.extra-box .extra-title {
+#extraBox .extra-box header {
     position: relative;
     display: flex;
     flex-flow: row;
@@ -156,7 +159,7 @@
     z-index: 1;
 }
 
-.extra-box .extra-content {
+#extraBox .extra-box main {
     position: relative;
     display: flex;
     flex-flow: column;
@@ -177,20 +180,20 @@
     z-index: 1;
 }
 
-#submitTitle {
+#submitBox header {
     align-items: center;
 }
 
-#submitText {
+#submitBox header h2 {
     margin: 20px;
-    font-size: 25px;
+    font-weight: lighter;
 }
 
-#submitForm {
+#submitBox main .submit-form {
     margin: 25px 20px;
 }
 
-#taskRow, #languageRow, #chooseFileRow, #submitFileRow {
+#submitBox main .submit-form-row {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -198,13 +201,13 @@
     margin-bottom: 10px;
 }
 
-#taskLabel, #languageLabel, #chooseFileLabel, #submitFileLabel {
+#submitBox main .submit-form-label {
     flex-basis: 150px;
     margin: 5px 10px;
     font-size: 17px;
 }
 
-#taskSelect, #languageSelect {
+#submitBox main .submit-form-row select {
     flex-grow: 1;
     width: 200px;
     max-width: 620px;
@@ -214,13 +217,13 @@
     display: none;
 }
 
-#chooseFileButton, #submitFileButton {
+#submitBox main .file-button {
     width: 130px;
     font-size: 18px;
     text-align: center;
 }
 
-#chooseFileName, #submitLoading, #submitSuccess, #submitFail {
+#submitBox main .submit-status {
     flex-grow: 1;
     padding: 5px 0;
     margin: auto 10px;
@@ -231,14 +234,14 @@
     white-space: nowrap;
 }
 
-#submissions {
+#submitBox main .submissions {
     position: relative;
     display: flex;
     flex-flow: column;
     flex-grow: 1;
 }
 
-#submissionsLoading {
+#submitBox main .submissions-loading {
     position: absolute;
     top: 0;
     left: 0;
@@ -291,11 +294,11 @@
     vertical-align: middle;
 }
 
-#submissionDetailsTitle {
+#submissionDetailsBox header {
     flex-wrap: nowrap !important;
 }
 
-#submissionDetailsTitleMain {
+#submissionDetailsBox header .title-main {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -303,24 +306,24 @@
     padding-left: 20px;
 }
 
-#submissionDetailsLabel {
+#submissionDetailsBox header .submission-id {
     flex-grow: 1;
     margin: auto 20px auto 0;
     font-size: 25px;
 }
 
-#submissionDetailsNavigation {
+#submissionDetailsBox header .navigation {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
     flex-grow: 1;
 }
 
-#submissionDetailsNavigation .btn-nav {
+#submissionDetailsBox header .navigation .btn-nav {
     margin-right: 20px;
 }
 
-#submissionDetailsClose {
+#submissionDetailsBox header .close {
     height: 50px;
     width: 50px;
     margin: 15px;
@@ -333,7 +336,7 @@
     flex-grow: 1;
 }
 
-#submissionResult {
+#submissionProtocol .result {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -351,12 +354,12 @@
     font-size: 18px;
 }
 
-#submissionCompilation pre {
+#submissionProtocol .compilation pre {
     padding: 30px 20px;
     white-space: break-spaces;
 }
 
-#submissionEvaluation {
+#submissionProtocol .evaluation {
     overflow-x: auto;
 }
 
@@ -393,7 +396,7 @@
     white-space: break-spaces;
 }
 
-#submissionCodeBottom {
+#submissionCode .bottom {
     position: sticky;
     display: flex;
     flex-flow: row;
@@ -402,7 +405,7 @@
     width: 0;
 }
 
-#submissionCodeCopy {
+#submissionCode .code-copy {
     height: 50px;
     width: 50px;
     margin: 15px;
@@ -410,7 +413,7 @@
     box-shadow: 0 0 15px lightgrey;
 }
 
-#submissionCodeCopyHint {
+#submissionCode .code-copy-hint {
     position: relative;
     flex-shrink: 0;
     padding: 10px 20px 10px 15px;
@@ -422,7 +425,7 @@
     box-shadow: 0 0 15px lightgrey;
 }
 
-#submissionCodeCopyHint::after {
+#submissionCode .code-copy-hint::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -464,13 +467,13 @@
     background-color: lightblue;
 }
 
-#contestInfoTitle {
+#contestInfoBox header {
     align-items: center;
 }
 
-#contestInfoText {
+#contestInfoBox header h2 {
     margin: 20px;
-    font-size: 25px;
+    font-weight: lighter;
 }
 
 #contestMessagesBox::after {
@@ -483,65 +486,67 @@
     background-color: gold;
 }
 
-#contestMessagesTitle {
+#contestMessagesBox header {
     align-items: center;
 }
 
-#contestMessagesText {
+#contestMessagesBox header h2 {
     margin: 20px;
-    font-size: 25px;
+    font-weight: lighter;
 }
 
 #rightBox {
+    position: relative;
     display: flex;
     flex-flow: column;
     border-left: 1px solid whitesmoke;
+    z-index: 1;
 }
 
-#submitSection {
+#rightBox .submit {
     display: flex;
     height: 80px;
     border-bottom: 1px solid whitesmoke;
 }
 
-#submitExpand {
+#rightBox .submit button {
     margin: auto;
     height: 50px;
     width: 50px;
     font-size: 16px;
 }
 
-#submitExpand span {
+#rightBox .submit button span {
     padding-right: 2px;
 }
 
-#problemNavigation {
+#rightBox .navigation {
     flex-grow: 1;
     height: 0;
     overflow-y: auto;
 }
 
-#problemNavigation .action {
+#rightBox .navigation .action {
     height: 50px;
     width: 50px;
     margin: 15px;
     font-size: 18px;
 }
 
-#problemNavigation .action.active {
+#rightBox .navigation .action.active {
     color: white;
     background-color: rgb(21, 148, 252);
     border-color: transparent;
 }
 
-#infoSection {
+#rightBox .info {
     display: flex;
     flex-flow: column;
     border-top: 1px solid whitesmoke;
     text-align: center;
 }
 
-#timeRemaining {
+#rightBox .info .time-left {
     margin: 15px auto 15px auto;
     color: dimgrey;
     font-size: 14px;
@@ -553,7 +558,7 @@
     line-height: 35px;
 }
 
-#viewContestInfo, #viewContestMessages {
+#rightBox .info .action {
     height: 50px;
     width: 50px;
     margin: 0 auto 15px auto;
@@ -571,11 +576,11 @@
 }
 
 @media (max-width: 600px) {
-    #problemName {
+    #statementsBox .problem-name {
         visibility: hidden;
     }
 
-    #chooseFileLabel, #submitFileLabel {
+    #submitBox main .submit-form-label.collapsible {
         display: none;
     }
 

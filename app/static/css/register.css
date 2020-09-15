@@ -1,10 +1,11 @@
-#box {
+.box {
     margin-bottom: auto;
     width: 100%;
-    box-shadow: 0 0 10px lightgrey;
+    font-size: 20px;
+    box-shadow: 3px 3px 10px lightgrey;
 }
 
-#header {
+header {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -12,54 +13,53 @@
     padding: 30px;
 }
 
-#title {
-    margin-right: auto;
-    font-size: 30px;
+header h2 {
+    margin: 0 auto 0 0;
+    font-weight: lighter;
 }
 
-#login {
-    font-size: 20px;
-}
-
-#body {
+main {
     padding: 25px;
 }
 
-#label {
-    margin-left: 2px;
-    margin-bottom: 25px;
-    font-size: 20px;
+main h4 {
+    margin: 0 0 25px 2px;
+    font-weight: lighter;
 }
 
-#username, #email, #password, #confirmPassword {
-    margin-top: 20px;
+main .input-error {
+    border-color: red;
 }
 
-#footer {
+main .hint {
+    min-height: 20px;
+    font-size: 0.8em;
+}
+
+main .actions {
     display: flex;
     flex-flow: row;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
-#submitButton {
+main .actions button {
     margin-right: auto;
-    font-size: 20px;
 }
 
 @media (min-width: 700px) {
-    #box {
+    .box {
         margin: auto;
         width: 700px;
         border-radius: 10px;
     }
 
-    #header {
+    header {
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
 
-    #body {
+    main {
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
     }

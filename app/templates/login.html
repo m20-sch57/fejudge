@@ -2,36 +2,32 @@
 
 {% block content %}
 <div class="page">
-    <div id="box">
-        <form action="" method="POST">
-            <div class="bg-blue" id="header">
-                <div id="title">
-                    Sign in
-                </div>
-                <a href="/register" class="link hover-underline" id="register">
-                    Sign up
-                </a>
-            </div>
-            <div class="bg-white" id="body">
-                <div id="label">
-                    Please sign in.
-                </div>
-                <div id="username">
+    <div class="box">
+        <header class="bg-blue">
+            <h2>Sign in</h2>
+            <a href="/register" class="link hover-underline">
+                Sign up
+            </a>
+        </header>
+        <main class="bg-white">
+            <form action="" method="POST">
+                <h4>Please sign in.</h4>
+                <section>
                     <input class="input input-blue" placeholder="Username" name="username" spellcheck="false">
-                </div>
-                <div id="password">
+                </section>
+                <section>
                     <input type="password" class="input input-blue" placeholder="Password" name="password">
-                </div>
-                <div id="footer">
-                    <button type="submit" class="btn btn-blue" id="submitButton">
+                </section>
+                <section class="actions">
+                    <button type="submit" class="btn btn-blue">
                         Sign in
                     </button>
-                    <a href="/restorePassword" class="link hover-underline" id="forgotPassword">
+                    <a href="/restorePassword" class="link hover-underline">
                         Forgot password?
                     </a>
-                </div>
-            </div>
-        </form>
+                </section>
+            </form>
+        </main>
     </div>
 </div>
 {% endblock %}

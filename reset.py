@@ -14,6 +14,7 @@ user = register_user(
 )
 create_contest(
     name='Идейные задачи',
+    contest_type='virtual',
     duration=timedelta(hours=24),
     owner=user
 )

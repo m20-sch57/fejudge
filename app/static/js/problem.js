@@ -41,22 +41,22 @@ function goToProblem(problemNumber, problemLanguage) {
 }
 
 function resize() {
-    let height = $(window).height() - $("#statementsTitle").outerHeight();
+    let height = $(window).height() - $("#statementsBox header").outerHeight();
     let width = $(window).width() - $("#rightBox").outerWidth();
-    let navHeight = $(window).height() - $("#submitSection").outerHeight() - $("#infoSection").outerHeight();
-    $("#statementsContentScrollable").css("max-height", `${height}px`);
-    $("#statementsContentScrollable").css("max-width", `${width}px`);
-    $(".extra-content").css("max-height", `${height}px`);
-    $(".extra-content").css("max-width", `${width}px`);
+    let navHeight = $(window).height() - $("#rightBox .submit").outerHeight() - $("#infoSection").outerHeight();
+    $("#statementsScrollable").css("max-height", `${height}px`);
+    $("#statementsScrollable").css("max-width", `${width}px`);
+    $(".extra-box main").css("max-height", `${height}px`);
+    $(".extra-box main").css("max-width", `${width}px`);
     $("#problemNavigation").css("height", `${navHeight}px`);
 }
 
 function updateStatementsShadow() {
-    if ($("#statementsContentScrollable").scrollTop() == 0) {
-        $("#statementsTitle").removeClass("shadow");
+    if ($("#statementsScrollable").scrollTop() == 0) {
+        $("#statementsBox header").removeClass("shadow");
     }
     else {
-        $("#statementsTitle").addClass("shadow");
+        $("#statementsBox header").addClass("shadow");
     }
 }
 
@@ -66,7 +66,7 @@ function initStatements() {
         this.innerText = getLanguageName(this.value);
     });
     $("#problemLanguageSelect").val(problemLanguage);
-    $("#statementsContentScrollable").scroll(updateStatementsShadow);
+    $("#statementsScrollable").scroll(updateStatementsShadow);
     $("#statementsLoadedContent").load(
         `/contests/${contestId}/${problemNumber}/${problemLanguage}/problem.html`
     );
@@ -341,7 +341,7 @@ function hideAllDetails() {
 function showSubmissionProtocol() {
     hideAllDetails();
     $("#submissionProtocol").show();
-    $("#submissionDetailsBox .extra-content").scrollTop(0);
+    $("#submissionDetailsBox main").scrollTop(0);
     $("#submissionProtocolNavButton").addClass("active");
     $("#submissionCompilation").hide();
     $("#submissionEvaluation").hide();
@@ -356,14 +356,14 @@ function showSubmissionProtocol() {
 function showSubmissionCode() {
     hideAllDetails();
     $("#submissionCode").show();
-    $("#submissionDetailsBox .extra-content").scrollTop(0);
+    $("#submissionDetailsBox main").scrollTop(0);
     $("#submissionCodeNavButton").addClass("active");
 }
 
 function showSubmissionInfo() {
     hideAllDetails();
     $("#submissionInfo").show();
-    $("#submissionDetailsBox .extra-content").scrollTop(0);
+    $("#submissionDetailsBox main").scrollTop(0);
     $("#submissionInfoNavButton").addClass("active");
 }
 

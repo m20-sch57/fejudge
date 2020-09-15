@@ -2,21 +2,17 @@
 
 {% block content %}
 <div class="page">
-    <div id="content">
-        <div class="bg-grey" id="header">
-            <div id="title">
-                Contests
-            </div>
-            <a href="/logout" class="link hover-underline" id="logout">
+    <div class="content">
+        <header class="bg-grey">
+            <h2>Contests</h2>
+            <a href="/logout" class="link hover-underline">
                 Log out
             </a>
-        </div>
-        <div class="bg-white" id="body">
+        </header>
+        <main class="bg-white">
             {% for contest, contest_request in contests %}
             <a href="/contests/{{ contest.id }}" class="contest-row">
-                <div class="contest-label">
-                    {{ contest.name }}
-                </div>
+                <h3>{{ contest.name }}</h3>
                 <div class="contest-details">
                     {% if contest_request == None or contest_request.state() == 'Not started' %}
                     <div class="contest-status col-grey">
@@ -37,7 +33,7 @@
                 </div>
             </a>
             {% endfor %}
-        </div>
+        </main>
     </div>
 </div>
 <script src="/static/js/timer.js"></script>

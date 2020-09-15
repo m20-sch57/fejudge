@@ -82,7 +82,7 @@ footer {
     padding-bottom: 5px;
     border: none;
     border-bottom: 1px solid grey;
-    font-size: 20px;
+    font-size: inherit;
 }
 
 .input-blue:focus {
@@ -93,16 +93,13 @@ footer {
     border-color: lightgreen;
 }
 
-.input-error {
-    border-color: red !important;
-}
-
 .btn {
     display: inline-block;
     padding: 0.4em 0.9em;
     color: rgba(0, 0, 0, 0.8);
     border: 1px solid transparent;
     border-radius: 1.25em;
+    font-size: inherit;
     line-height: 1.5em;
     text-decoration: none;
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-let submit = document.getElementById("submitButton");
+let submit = document.getElementById("register");
 submit.onclick = () => {
     let usernameInput = document.getElementById("usernameInput");
     let usernameHint = document.getElementById("usernameHint");

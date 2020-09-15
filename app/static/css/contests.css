@@ -1,14 +1,15 @@
-#content {
+.content {
     display: flex;
     flex-flow: column;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
     max-width: 1000px;
+    font-size: 20px;
     box-shadow: 0 0 10px lightgrey;
 }
 
-#header {
+header {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -16,45 +17,42 @@
     padding: 30px;
 }
 
-#title {
-    margin-right: auto;
-    font-size: 30px;
+header h2 {
+    margin: 0 auto 0 0;
+    font-weight: lighter;
 }
 
-#logout {
-    font-size: 20px;
-}
-
-#body {
+main {
     flex-grow: 1;
 }
 
-.contest-row {
+main .contest-row {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
     align-items: center;
-    padding: 30px;
+    padding: 25px;
     color: inherit;
     border-bottom: 1px solid whitesmoke;
     text-decoration: none;
 }
 
-.contest-row:hover {
+main .contest-row:hover {
     background-color: whitesmoke;
-    box-shadow: 0 0 10px lightgrey;
+    box-shadow: 0 3px 10px lightgrey;
 }
 
-.contest-label {
-    margin-right: auto;
-    font-size: 22px;
+main .contest-row h3 {
+    margin: 5px auto 5px 5px;
+    font-weight: lighter;
 }
 
-.contest-details {
+main .contest-row .contest-details {
     display: flex;
     flex-flow: row;
+    margin: 5px;
 }
 
-.contest-status {
-    font-size: 18px;
+main .contest-row .contest-status {
+    font-size: 0.9em;
 }

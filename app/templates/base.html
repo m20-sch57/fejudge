@@ -19,7 +19,7 @@
         <p>&copy; 2020 Fedor Kuyanov. All rights reserved.</p>
     </footer>
     {% endif %}
-    <div id="messages">
+    <div id="flashedMessages">
         {% with messages = get_flashed_messages(with_categories=True) %}
         {% for category, message in messages %}
         <div class="message {{ category }}">

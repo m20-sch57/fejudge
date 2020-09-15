@@ -85,9 +85,10 @@ def create_problem(contest: Contest, problem_type: str) -> Problem:
     return problem
 
 
-def create_contest(name: str, duration: timedelta, owner: User) -> Contest:
+def create_contest(name: str, contest_type: str, duration: timedelta, owner: User) -> Contest:
     contest = Contest(
         name=name,
+        contest_type=contest_type,
         duration=duration,
         owner=owner
     )

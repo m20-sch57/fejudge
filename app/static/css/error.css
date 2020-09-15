@@ -1,19 +1,19 @@
-#content {
+.content {
     margin: auto;
+    font-size: 22px;
     text-align: center;
 }
 
-#title {
-    font-size: 30px;
+.content h3 {
+    font-weight: lighter;
 }
 
-#code {
-    margin: 10px;
+.content h1 {
+    margin: 40px;
     font-size: 150px;
-    font-weight: bold;
     letter-spacing: 10px;
 }
 
-#goHome {
-    font-size: 22px;
+.content .actions {
+    margin: 20px;
 }

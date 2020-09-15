@@ -2,72 +2,69 @@
 
 {% block content %}
 <div class="page">
-    <div id="content">
+    <div class="content">
         <div class="bg-white" id="statementsBox">
-            <div id="statementsTitle">
-                <div id="problemActions">
-                    <a href="/contests" class="btn-flat btn-transparent" id="goBack">
+            <header>
+                <section class="problem-actions">
+                    <a href="/contests" class="btn-flat btn-transparent action">
                         <span class="fa fa-arrow-left"></span>
                     </a>
-                    <button class="btn-flat btn-transparent" id="reloadStatements">
+                    <button class="btn-flat btn-transparent action" id="reloadStatements">
                         <span class="fa fa-redo"></span>
                     </button>
-                </div>
-                <div id="problemInfo">
+                </section>
+                <section class="problem-info">
                     <div id="problemId">
                         {{ problem.id }}
                     </div>
-                    <div id="problemName">
+                    <div class="problem-name">
                         Task {{ problem.number }}: {{ problem_manager.problem_name(language) }}
                     </div>
-                    <div id="problemLanguage">
+                    <div class="problem-language">
                         <select class="select select-small bd-lightgrey" id="problemLanguageSelect">
                             {% for statements_language in problem_manager.statements_languages %}
                             <option value="{{ statements_language }}"></option>
                             {% endfor %}
                         </select>
                     </div>
-                </div>
-            </div>
-            <div id="statementsContent">
-                <div id="statementsContentScrollable">
-                    <div id="statementsHeader">
-                        <div id="timeLimit">
+                </section>
+            </header>
+            <main>
+                <div class="statements-scrollable" id="statementsScrollable">
+                    <section class="statements-header">
+                        <div class="time-limit">
                             <span class="fa fa-clock"></span>
                             {{ (problem_manager.time_limit_ms / 1000) | round(2) }} second(s)
                         </div>
-                        <div id="memoryLimit">
+                        <div class="memory-limit">
                             <span class="fa fa-microchip"></span>
                             {{ problem_manager.memory_limit_kb // 1024 }} MiB
                         </div>
-                        <div id="inputOutput">
+                        <div class="input-output">
                             stdin &rarr; stdout
                         </div>
-                    </div>
-                    <div id="statementsLoadedContent">
-                    </div>
+                    </section>
+                    <section id="statementsLoadedContent"></section>
                 </div>
-                <div class="bg-white" id="statementsLoading">
+                <div class="bg-white statements-loading" id="statementsLoading">
                     <div class="lds-ring">
                         <div></div><div></div><div></div><div></div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
         <div class="bg-white collapsed" id="extraBox">
             <button class="btn-flat" id="extraBoxCollapse">
                 <span class="fa fa-arrow-right"></span>
             </button>
             <div class="extra-box" id="submitBox">
-                <div class="extra-title bg-green" id="submitTitle">
-                    <div id="submitText">
-                        Submit a solution
-                    </div>
-                </div>
-                <div class="extra-content">
-                    <div id="submitForm">
-                        <div id="taskRow">
-                            <div id="taskLabel">
+                <header class="bg-green">
+                    <h2>Submit a solution</h2>
+                </header>
+                <main>
+                    <section class="submit-form">
+                        <div class="submit-form-row">
+                            <div class="submit-form-label">
                                 Select task:
                             </div>
                             <select class="select select-small bd-lightgrey" id="taskSelect">
@@ -78,8 +75,8 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div id="languageRow">
-                            <div id="languageLabel">
+                        <div class="submit-form-row">
+                            <div class="submit-form-label">
                                 Select language:
                             </div>
                             <select class="select select-small bd-lightgrey" id="languageSelect">
@@ -88,38 +85,36 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div id="chooseFileRow">
-                            <div id="chooseFileLabel">
+                        <div class="submit-form-row">
+                            <div class="submit-form-label collapsible">
                                 Choose file:
                             </div>
                             <input type="file" id="chooseFileInput">
-                            <label for="chooseFileInput" class="btn btn-blue" id="chooseFileButton">
+                            <label for="chooseFileInput" class="btn btn-blue file-button" id="chooseFileButton">
                                 Choose file
                             </label>
-                            <div id="chooseFileName">
-                            </div>
+                            <div class="submit-status" id="chooseFileName"></div>
                         </div>
-                        <div id="submitFileRow">
-                            <div id="submitFileLabel">
+                        <div class="submit-form-row">
+                            <div class="submit-form-label collapsible">
                                 Submit:
                             </div>
-                            <button class="btn btn-green" id="submitFileButton">
+                            <button class="btn btn-green file-button" id="submitFileButton">
                                 Submit it!
                             </button>
-                            <div id="submitLoading">
+                            <div class="submit-status" id="submitLoading">
                                 <div class="lds-ring">
                                     <div></div><div></div><div></div><div></div>
                                 </div>
                             </div>
-                            <div class="col-green" id="submitSuccess">
+                            <div class="col-green submit-status" id="submitSuccess">
                                 <span class="fa fa-check"></span>
                                 Submitted
                             </div>
-                            <div class="col-red" id="submitFail">
-                            </div>
+                            <div class="col-red submit-status" id="submitFail"></div>
                         </div>
-                    </div>
-                    <div id="submissions">
+                    </section>
+                    <section class="submissions">
                         <div id="submissionsNone">
                             No submissions yet.
                         </div>
@@ -131,24 +126,23 @@
                             <th class="score">Score</th>
                             <th class="details">Details</th>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                         </table>
-                        <div class="bg-white" id="submissionsLoading">
+                        <div class="bg-white submissions-loading" id="submissionsLoading">
                             <div class="lds-ring">
                                 <div></div><div></div><div></div><div></div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </section>
+                </main>
             </div>
             <div class="extra-box" id="submissionDetailsBox">
-                <div class="extra-title bg-whitesmoke" id="submissionDetailsTitle">
-                    <div id="submissionDetailsTitleMain">
-                        <div id="submissionDetailsLabel">
+                <header class="bg-whitesmoke">
+                    <div class="title-main">
+                        <div class="submission-id">
                             Submission #<span id="submissionDetailsId"></span>
                         </div>
-                        <div id="submissionDetailsNavigation">
+                        <nav class="navigation">
                             <button class="btn-nav" id="submissionProtocolNavButton">
                                 Protocol
                             </button>
@@ -158,24 +152,22 @@
                             <button class="btn-nav" id="submissionInfoNavButton">
                                 Info
                             </button>
-                        </div>
+                        </nav>
                     </div>
-                    <button class="btn-flat btn-transparent" id="submissionDetailsClose">
+                    <button class="btn-flat btn-transparent close" id="submissionDetailsClose">
                         <span class="fa fa-times"></span>
                     </button>
-                </div>
-                <div class="extra-content">
+                </header>
+                <main>
                     <div id="submissionProtocol">
-                        <div id="submissionResult">
-                            <div id="submissionResultStatus">
-                            </div>
-                            <div class="col-grey" id="submissionResultScore">
-                            </div>
-                        </div>
-                        <div id="submissionCompilation">
+                        <section class="result">
+                            <div id="submissionResultStatus"></div>
+                            <div class="col-grey" id="submissionResultScore"></div>
+                        </section>
+                        <section class="compilation" id="submissionCompilation">
                             <pre><code id="submissionCompilationLog"></code></pre>
-                        </div>
-                        <div id="submissionEvaluation">
+                        </section>
+                        <section class="evaluation" id="submissionEvaluation">
                             <table id="submissionEvaluationTable">
                             <thead>
                                 <th>#</th>
@@ -185,21 +177,20 @@
                                 <th>Group</th>
                                 <th>Score</th>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                             </table>
-                        </div>
+                        </section>
                     </div>
                     <div id="submissionCode">
                         <pre><code id="submissionSource"></code></pre>
-                        <div id="submissionCodeBottom">
-                            <button class="btn-flat btn-green" id="submissionCodeCopy">
+                        <section class="bottom">
+                            <button class="btn-flat btn-green code-copy" id="submissionCodeCopy">
                                 <span class="fa fa-clipboard"></span>
                             </button>
-                            <div class="bg-green" id="submissionCodeCopyHint">
+                            <div class="bg-green code-copy-hint" id="submissionCodeCopyHint">
                                 Copied!
                             </div>
-                        </div>
+                        </section>
                     </div>
                     <div id="submissionInfo">
                         <table id="submissionInfoTable">
@@ -235,34 +226,28 @@
                         </tbody>
                         </table>
                     </div>
-                </div>
+                </main>
             </div>
             <div class="extra-box" id="contestInfoBox">
-                <div class="extra-title bg-blue" id="contestInfoTitle">
-                    <div id="contestInfoText">
-                        Contest information
-                    </div>
-                </div>
-                <div class="extra-content">
-                </div>
+                <header class="bg-blue">
+                    <h2>Contest information</h2>
+                </header>
+                <main></main>
             </div>
             <div class="extra-box" id="contestMessagesBox">
-                <div class="extra-title bg-yellow" id="contestMessagesTitle">
-                    <div id="contestMessagesText">
-                        Contest messages
-                    </div>
-                </div>
-                <div class="extra-content">
-                </div>
+                <header class="bg-yellow">
+                    <h2>Contest messages</h2>
+                </header>
+                <main></main>
             </div>
         </div>
         <div class="bg-white" id="rightBox">
-            <div id="submitSection">
+            <section class="submit">
                 <button class="btn-flat btn-green" id="submitExpand">
                     <span class="fa fa-paper-plane"></span>
                 </button>
-            </div>
-            <div id="problemNavigation">
+            </section>
+            <section class="navigation" id="problemNavigation">
                 {% for another_problem in contest.problems %}
                 {% with class = "active" if another_problem.number == problem.number else "" %}
                 <button class="btn-flat btn-transparent bd-lightgrey action {{ class }}" number="{{ another_problem.number }}">
@@ -270,21 +255,21 @@
                 </button>
                 {% endwith %}
                 {% endfor %}
-            </div>
-            <div id="infoSection">
-                <div id="timeRemaining">
+            </section>
+            <section class="info">
+                <div class="time-left">
                     Time left:<br>
                     <span id="contestTimer" name="timer" format="minutes">
                         {{ contest_request.time_remaining().total_seconds() | round }}
                     </span>
                 </div>
-                <button class="btn-flat btn-blue" id="viewContestInfo">
+                <button class="btn-flat btn-blue action" id="viewContestInfo">
                     <span class="fa fa-info"></span>
                 </button>
-                <button class="btn-flat btn-yellow" id="viewContestMessages">
+                <button class="btn-flat btn-yellow action" id="viewContestMessages">
                     <span class="fa fa-comment-alt"></span>
                 </button>
-            </div>
+            </section>
         </div>
     </div>
 </div>

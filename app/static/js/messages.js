@@ -5,10 +5,10 @@ function hideMessage(message) {
     setTimeout(() => message.classList.add("hidden"), 300);
 }
 
-document.querySelectorAll("#messages .message .close").forEach(
+document.querySelectorAll("#flashedMessages .message .close").forEach(
     (it) => it.onclick = () => hideMessage(it.parentElement)
 );
 
-document.querySelectorAll("#messages .message.auto-dismiss").forEach(
+document.querySelectorAll("#flashedMessages .message.auto-dismiss").forEach(
     (it) => setTimeout(() => hideMessage(it), 5000)
 );

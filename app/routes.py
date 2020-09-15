@@ -102,7 +102,7 @@ def contest_page(contest_id):
     contest = get_contest_by_id_or_404(contest_id)
     contest_request = get_contest_request(contest, current_user)
     if contest_request is None:
-        return render_template('contest_register.html', page='contest_register', contest=contest)
+        return render_template('contest_participate.html', page='contest_participate', contest=contest)
     if contest_request.state() == 'Not started':
         return render_template('contest_wait.html', page='contest_wait')
     return redirect(url_for(
@@ -254,7 +254,7 @@ def contest_admin(func):
     def decorated_view(contest_id, *args, **kwargs):
         contest = get_contest_by_id_or_404(contest_id)
         if contest.owner != current_user:
-            flash('You do not have admin privileges', category='alert-danger')
+            flash('You do not have admin privileges', category='failure')
             return redirect(url_for('contests_page'))
         return func(contest_id, *args, **kwargs)
     return decorated_view

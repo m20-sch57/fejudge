@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page">
+    <div class="box">
+        <header class="bg-green">
+            <h2>Participate in the contest</h2>
+            <a href="/contests" class="link hover-underline">
+                Back to contests
+            </a>
+        </header>
+        <main class="bg-white">
+            <h3>{{ contest.name }}</h3>
+            <section class="contest-info">
+                {% if contest.contest_type == 'virtual' %}
+                    <p>This is a <b>virtual</b> contest, that means you can start participating at any moment. Please read the <a href="/rules">rules</a> first. Here is some additional information about the contest:</p>
+                    <li>Contest duration: {{ contest.duration }}</li>
+                    <li>Number of tasks: {{ contest.problems.count() }}</li>
+                {% endif %}
+            </section>
+            <section class="actions">
+                <a href="/contests/{{ contest.id }}/participate" class="btn btn-green">
+                    Participate now
+                </a>
+            </section>
+        </main>
+    </div>
+</div>
+{% endblock %}
