@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="page">
-    <div class="box">
+    <article>
         <header class="bg-green">
             <h2>Sign up</h2>
             <a href="/login" class="link hover-underline">
@@ -11,26 +11,22 @@
         </header>
         <main class="bg-white">
             <form action="" method="POST">
-                <h4>Please fill in all fields.</h4>
-                <section>
+                <section class="title">
+                    <h4>Please fill in all fields.</h4>
+                </section>
+                <section class="inputs">
                     <input class="input input-green" placeholder="Username"
                     name="username" spellcheck="false" id="usernameInput">
-                    <div class="col-red hint" id="usernameHint"></div>
-                </section>
-                <section>
+                    <div class="hint" id="usernameHint"></div>
                     <input class="input input-green" placeholder="Email"
                     name="email" spellcheck="false" id="emailInput">
-                    <div class="col-red hint" id="emailHint"></div>
-                </section>
-                <section>
+                    <div class="hint" id="emailHint"></div>
                     <input type="password" class="input input-green" placeholder="Password"
                     name="password" id="passwordInput">
-                    <div class="col-red hint" id="passwordHint"></div>
-                </section>
-                <section>
+                    <div class="hint" id="passwordHint"></div>
                     <input type="password" class="input input-green" placeholder="Confirm password"
                     name="password2" id="confirmPasswordInput">
-                    <div class="col-red hint" id="confirmPasswordHint"></div>
+                    <div class="hint" id="confirmPasswordHint"></div>
                 </section>
                 <section class="actions">
                     <button type="button" class="btn btn-green" id="register">
@@ -39,7 +35,7 @@
                 </section>
             </form>
         </main>
-    </div>
+    </article>
 </div>
 <script src="/static/js/register.js"></script>
 {% endblock %}

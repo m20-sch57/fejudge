@@ -1,19 +1,19 @@
-.content {
+article {
     margin: auto;
     font-size: 22px;
     text-align: center;
 }
 
-.content h3 {
+article h3 {
     font-weight: normal;
 }
 
-.content h1 {
+article h1 {
     margin: 40px;
     font-size: 150px;
     letter-spacing: 10px;
 }
 
-.content .actions {
+article .actions {
     margin: 20px;
 }

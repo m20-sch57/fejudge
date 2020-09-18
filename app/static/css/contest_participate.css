@@ -1,4 +1,4 @@
-.box {
+article {
     margin-bottom: auto;
     width: 100%;
     font-size: 20px;
@@ -40,7 +40,7 @@ main .actions {
 }
 
 @media (min-width: 700px) {
-    .box {
+    article {
         margin: auto;
         width: 700px;
         border-radius: 10px;

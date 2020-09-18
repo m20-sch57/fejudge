@@ -190,7 +190,8 @@
 }
 
 #submitBox main .submit-form {
-    margin: 25px 20px;
+    padding: 25px 20px;
+    max-width: 800px;
 }
 
 #submitBox main .submit-form-row {
@@ -210,7 +211,6 @@
 #submitBox main .submit-form-row select {
     flex-grow: 1;
     width: 200px;
-    max-width: 620px;
 }
 
 #chooseFileInput {
@@ -239,6 +239,7 @@
     display: flex;
     flex-flow: column;
     flex-grow: 1;
+    max-width: 800px;
 }
 
 #submitBox main .submissions-loading {
@@ -263,7 +264,6 @@
 
 #submissionsTable {
     width: 100%;
-    max-width: 800px;
     border-collapse: collapse;
     font-size: 16px;
 }

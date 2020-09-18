@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="page">
-    <div class="box">
+    <article>
         <header class="bg-blue">
             <h2>Sign in</h2>
             <a href="/register" class="link hover-underline">
@@ -11,11 +11,11 @@
         </header>
         <main class="bg-white">
             <form action="" method="POST">
-                <h4>Please sign in.</h4>
-                <section>
-                    <input class="input input-blue" placeholder="Username" name="username" spellcheck="false">
+                <section class="title">
+                    <h4>Please sign in.</h4>
                 </section>
-                <section>
+                <section class="inputs">
+                    <input class="input input-blue" placeholder="Username" name="username" spellcheck="false">
                     <input type="password" class="input input-blue" placeholder="Password" name="password">
                 </section>
                 <section class="actions">
@@ -28,6 +28,6 @@
                 </section>
             </form>
         </main>
-    </div>
+    </article>
 </div>
 {% endblock %}

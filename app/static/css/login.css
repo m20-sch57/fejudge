@@ -1,4 +1,4 @@
-.box {
+article {
     margin-bottom: auto;
     width: 100%;
     font-size: 20px;
@@ -22,12 +22,12 @@ main {
     padding: 25px;
 }
 
-main h4 {
+main .title h4 {
     margin: 0 0 25px 2px;
     font-weight: normal;
 }
 
-main input {
+main .inputs input {
     margin-bottom: 20px;
 }
 
@@ -48,7 +48,7 @@ main .actions a {
 }
 
 @media (min-width: 700px) {
-    .box {
+    article {
         margin: auto;
         width: 600px;
         border-radius: 10px;

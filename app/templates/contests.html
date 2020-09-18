@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="page">
-    <div class="content">
+    <article>
         <header class="bg-grey">
             <h2>Contests</h2>
             <a href="/logout" class="link hover-underline">
@@ -13,7 +13,7 @@
             {% for contest, contest_request in contests %}
             <a href="/contests/{{ contest.id }}" class="contest-row">
                 <h3>{{ contest.name }}</h3>
-                <div class="contest-details">
+                <section class="contest-details">
                     {% if contest_request == None or contest_request.state() == 'Not started' %}
                     <div class="contest-status col-grey">
                         Not started yet
@@ -30,11 +30,11 @@
                         Finished
                     </div>
                     {% endif %}
-                </div>
+                </section>
             </a>
             {% endfor %}
         </main>
-    </div>
+    </article>
 </div>
 <script src="/static/js/timer.js"></script>
 {% endblock %}

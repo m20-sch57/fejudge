@@ -3,7 +3,7 @@
 {% block content %}
 <div class="page">
     <div class="content">
-        <div class="bg-white" id="statementsBox">
+        <article class="bg-white" id="statementsBox">
             <header>
                 <section class="problem-actions">
                     <a href="/contests" class="btn-flat btn-transparent action">
@@ -52,12 +52,12 @@
                     </div>
                 </div>
             </main>
-        </div>
+        </article>
         <div class="bg-white collapsed" id="extraBox">
             <button class="btn-flat" id="extraBoxCollapse">
                 <span class="fa fa-arrow-right"></span>
             </button>
-            <div class="extra-box" id="submitBox">
+            <article class="extra-box" id="submitBox" style="display: none;">
                 <header class="bg-green">
                     <h2>Submit a solution</h2>
                 </header>
@@ -135,8 +135,8 @@
                         </div>
                     </section>
                 </main>
-            </div>
-            <div class="extra-box" id="submissionDetailsBox">
+            </article>
+            <article class="extra-box" id="submissionDetailsBox" style="display: none;">
                 <header class="bg-whitesmoke">
                     <div class="title-main">
                         <div class="submission-id">
@@ -227,21 +227,21 @@
                         </table>
                     </div>
                 </main>
-            </div>
-            <div class="extra-box" id="contestInfoBox">
+            </article>
+            <article class="extra-box" id="contestInfoBox" style="display: none;">
                 <header class="bg-blue">
                     <h2>Contest information</h2>
                 </header>
                 <main></main>
-            </div>
-            <div class="extra-box" id="contestMessagesBox">
+            </article>
+            <article class="extra-box" id="contestMessagesBox" style="display: none;">
                 <header class="bg-yellow">
                     <h2>Contest messages</h2>
                 </header>
                 <main></main>
-            </div>
+            </article>
         </div>
-        <div class="bg-white" id="rightBox">
+        <article class="bg-white" id="rightBox">
             <section class="submit">
                 <button class="btn-flat btn-green" id="submitExpand">
                     <span class="fa fa-paper-plane"></span>
@@ -270,7 +270,7 @@
                     <span class="fa fa-comment-alt"></span>
                 </button>
             </section>
-        </div>
+        </article>
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

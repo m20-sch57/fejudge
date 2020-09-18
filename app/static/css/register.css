@@ -1,4 +1,4 @@
-.box {
+article {
     margin-bottom: auto;
     width: 100%;
     font-size: 20px;
@@ -22,17 +22,18 @@ main {
     padding: 25px;
 }
 
-main h4 {
+main .title h4 {
     margin: 0 0 25px 2px;
     font-weight: normal;
 }
 
-main .input-error {
+main .inputs .input-error {
     border-color: red;
 }
 
-main .hint {
+main .inputs .hint {
     min-height: 20px;
+    color: red;
     font-size: 0.8em;
 }
 
@@ -48,7 +49,7 @@ main .actions button {
 }
 
 @media (min-width: 700px) {
-    .box {
+    article {
         margin: auto;
         width: 700px;
         border-radius: 10px;
