@@ -4,7 +4,7 @@ from app.services import register_user, create_contest
 
 
 for table in reversed(db.metadata.sorted_tables):
-    db.session.execute(table.delete())
+    db.session.query(table).delete()
 db.session.commit()
 
 user = register_user(

@@ -79,7 +79,7 @@ If you use another login and password, then specify `POSTGRES_USER` and `POSTGRE
 1. Upgrade database and initialize defaults
 ```
 flask db upgrade
-sudo ./reset.sh
+sudo -E ./reset.sh
 ```
 2. Run main server
 ```
@@ -87,7 +87,7 @@ export POSTGRES_URL=<...>:5432
 export NATS_URL=<...>:4222
 export MAIL_USERNAME=<...>
 export MAIL_PASSWORD=<...>
-sudo -E ./run.sh
+./run.sh
 ```
 Your email will be used to send informational letters.
 

@@ -6,8 +6,8 @@ RUN pip3 install setuptools --upgrade
 
 COPY . /fejudge
 COPY docker/app_entrypoint.sh /fejudge/entrypoint.sh
+RUN rm -rf /fejudge/migrations
 WORKDIR /fejudge
 
 EXPOSE 3113
-ENTRYPOINT [ "/bin/bash", "-c", "sleep 3 && ./entrypoint.sh" ]
-# Best synchronization ever 
+ENTRYPOINT [ "./entrypoint.sh" ]
