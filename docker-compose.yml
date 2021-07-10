@@ -13,7 +13,9 @@ services:
         ports:
             - 4222:4222
     app:
-        build: .
+        build:
+            context: .
+            dockerfile: docker/app_dockerfile
         ports:
             - 3113:3113
         environment:
@@ -30,6 +32,7 @@ services:
     libsbox:
         build:
             context: invoker/libsbox/
+            dockerfile: ../../docker/libsbox_dockerfile
         privileged: true
         volumes:
             - libsboxd:/etc/libsboxd
@@ -38,6 +41,7 @@ services:
     invoker:
         build:
             context: invoker/
+            dockerfile: ../docker/invoker_dockerfile
         environment:
             PYTHONUNBUFFERED: 1
             POSTGRES_URL: db:5432
