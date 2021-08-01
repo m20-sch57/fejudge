@@ -27,7 +27,7 @@ class ProblemManager:
                 self.pdf_dir_dict[child.attrib['language']] = curdir
 
         self.statements_languages = list(self.html_dir_dict.keys())
-        self.program_languages = ['cpp', 'py']
+        self.program_languages = ['cpp', 'py', 'java']
 
         self.testset = root.find('judging')[0]
         self.time_limit_ms = int(self.testset.find('time-limit').text)
@@ -155,5 +155,7 @@ class ProblemManager:
     def match_language(language: str):
         if language.startswith('cpp'):
             return 'cpp'
+        elif language.startswith('java'):
+            return 'java'
         elif language.startswith('py'):
             return 'py'

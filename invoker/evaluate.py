@@ -31,7 +31,6 @@ def compile(submission):
     compilation_status, compilation_task, binary_file = libsbox.compile(source_file,
         time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
         memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
-        max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
     )

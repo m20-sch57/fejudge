@@ -8,8 +8,9 @@ const socket = io.connect(window.location.origin);
 const languageMatching = {
     "english": "English",
     "russian": "Russian",
-    "cpp": "GNU C++ 9.2.0",
-    "py": "Python 3.8"
+    "cpp": "GNU G++17",
+    "java": "Java 8",
+    "py": "Python 3"
 };
 const statusMatching = {
     "AC": "Accepted",

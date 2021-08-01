@@ -1,12 +1,10 @@
 FROM ubuntu:20.04
-
-# build with `sudo docker image build -t libsbox .`
-# run with `sudo docker run --rm --privileged -i libsbox`
-
 ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
-    apt-get -y install git build-essential cmake bsdmainutils && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get -y install git build-essential cmake bsdmainutils
+
+RUN apt-get -y install openjdk-13-jdk
 
 COPY . /libsbox
 WORKDIR /libsbox

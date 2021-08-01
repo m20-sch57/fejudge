@@ -79,7 +79,7 @@ If you use another login and password, then specify `POSTGRES_USER` and `POSTGRE
 1. Upgrade database and initialize defaults
 ```
 flask db upgrade
-sudo -E ./reset.sh
+./reset.sh
 ```
 2. Run main server
 ```

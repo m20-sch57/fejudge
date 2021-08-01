@@ -10,17 +10,23 @@ from config import Config
 def compilation_argv(source_path, binary_path, language):
     if language == 'cpp':
         return ['g++-9', source_path, '-o', binary_path, '-std=c++17', '-Wall', '-Wextra', '-O2']
-    else:
+    elif language == 'java':
+        return ['/usr/lib/jvm/java-8-oracle/bin/javac', source_path]
+    elif language == 'py':
         return ['cp', source_path, binary_path]
+    else:
+        raise ValueError('Unknown language')
 
 
 def launch_argv(binary_path, language):
     if language == 'cpp':
         return ['./' + binary_path]
+    elif language == 'java':
+        return ['/usr/lib/jvm/java-8-oracle/bin/java', binary_path]
     elif language == 'py':
         return ['python3', binary_path]
     else:
-        return ['cp', binary_path, 'output.txt']
+        raise ValueError('Unknown language')
 
 
 class File:
@@ -37,6 +43,7 @@ class Libsbox:
         self.home_dir = Config.LIBSBOX_DIR
         if not os.path.exists(self.home_dir):
             os.makedirs(self.home_dir)
+            os.chmod(self.home_dir, 0o777)
         self.clear()
 
     def connect(self):
@@ -62,8 +69,13 @@ class Libsbox:
             for file_item in files_to_stay:
                 if file_item.internal_path == item:
                     should_remove = False
-            if should_remove:
-                os.remove(os.path.join(self.home_dir, item))
+            if not should_remove:
+                continue
+            item_path = os.path.join(self.home_dir, item)
+            if os.path.isfile(item_path):
+                os.remove(item_path)
+            elif os.path.isdir(item_path):
+                shutil.rmtree(item_path)
 
     def write_file(self, source_file: File, content: str):
         path = os.path.join(self.home_dir, source_file.internal_path)
@@ -130,7 +142,7 @@ class Libsbox:
                     "memory_limit_kb": kwargs['memory_limit_kb'],
                     "fsize_limit_kb": kwargs.get('fsize_limit_kb', 33554432),
                     "max_files": kwargs.get('max_files', 128),
-                    "max_threads": kwargs.get('max_threads', 1),
+                    "max_threads": kwargs.get('max_threads', 128),
                     "stdin": kwargs.get('stdin', None),
                     "stdout": kwargs.get('stdout', None),
                     "stderr": kwargs.get('stderr', None),

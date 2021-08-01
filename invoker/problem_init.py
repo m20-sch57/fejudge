@@ -41,7 +41,6 @@ def compile_checker(problem_manager: ProblemManager):
     compilation_status, compilation_task, checker_binary_file = libsbox.compile(checker_source_file,
         time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
         memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
-        max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
     )
@@ -67,7 +66,6 @@ def compile_main_solution(problem_manager: ProblemManager):
     compilation_status, compilation_task, main_solution_binary_file = libsbox.compile(main_solution_source_file,
         time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
         memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
-        max_threads=10,
         stdout=error_file.internal_path,
         stderr='@_stdout'
     )
@@ -94,7 +92,6 @@ def compile_executables(problem_manager: ProblemManager):
         compilation_status, compilation_task, executable_binary_file = libsbox.compile(executable_source_file,
             time_limit_ms=Config.COMPILATION_TIME_LIMIT_MS,
             memory_limit_kb=Config.COMPILATION_MEMORY_LIMIT_KB,
-            max_threads=10,
             stdout=error_file.internal_path,
             stderr='@_stdout'
         )

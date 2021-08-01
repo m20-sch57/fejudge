@@ -4,7 +4,7 @@ if ! [ -d 'storage' ]; then
     mkdir 'storage'
 fi
 
-rm -rf storage/*
+sudo rm -rf storage/*
 mkdir storage/download
 mkdir storage/download/submissions
 mkdir storage/upload
