@@ -2,16 +2,12 @@ version: '3'
 services:
     db:
         image: postgres
-        ports:
-            - 5432:5432
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: database.db
     nats:
         image: nats
-        ports:
-            - 4222:4222
     app:
         build:
             context: .
